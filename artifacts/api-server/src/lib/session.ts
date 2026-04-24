@@ -34,6 +34,10 @@ export async function getOrAssignCurrentUserId(
   return first.id;
 }
 
+export function readCurrentUserId(req: Request): string | undefined {
+  return req.cookies?.[COOKIE_NAME] as string | undefined;
+}
+
 export function setCurrentUserId(res: Response, userId: string): void {
   res.cookie(COOKIE_NAME, userId, {
     httpOnly: true,

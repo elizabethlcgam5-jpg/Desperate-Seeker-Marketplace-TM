@@ -8,6 +8,8 @@
 
 export * from "./activityEvent";
 export * from "./activityEventKind";
+export * from "./analyticsOffer";
+export * from "./analyticsOfferStatus";
 export * from "./categoryCount";
 export * from "./createRequestBody";
 export * from "./createRequestBodyUrgency";
@@ -26,6 +28,7 @@ export * from "./requestDetail";
 export * from "./requestSummary";
 export * from "./requestSummaryStatus";
 export * from "./requestSummaryUrgency";
+export * from "./sellerAnalytics";
 export * from "./sellerResponse";
 export * from "./sellerResponseCondition";
 export * from "./sellerResponseStatus";

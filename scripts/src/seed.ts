@@ -353,6 +353,9 @@ async function seed() {
   for (const r of responsesSeed) {
     const id = randomUUID();
     respIds.push({ id, requestId: r.requestId, sellerId: r.sellerId });
+    // Older offers tend to have more views; mix in some randomness for realism.
+    const baseViews = Math.floor(r.hoursAgo / 4) + 1;
+    const noise = Math.floor(Math.random() * 6);
     await db.insert(responsesTable).values({
       id,
       requestId: r.requestId,
@@ -362,6 +365,7 @@ async function seed() {
       message: r.message,
       photos: r.photos,
       status: "pending",
+      viewCount: baseViews + noise,
       createdAt: new Date(Date.now() - r.hoursAgo * 60 * 60 * 1000),
     });
   }

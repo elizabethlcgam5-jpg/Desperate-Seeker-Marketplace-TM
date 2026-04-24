@@ -2,13 +2,17 @@ import { Link } from "wouter";
 import { UserSwitcher } from "./user-switcher";
 import { TierBadge } from "./tier-badge";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Search, Sparkles } from "lucide-react";
+import { MessageSquare, Search, Sparkles, BarChart3 } from "lucide-react";
 import { useGetCurrentUser } from "@workspace/api-client-react";
 
 export function Header() {
   const { data: user } = useGetCurrentUser();
   const isSubscribed =
     user && user.subscriptionTier && user.subscriptionTier !== "free";
+  const isPro =
+    user &&
+    (user.subscriptionTier === "seller_pro" ||
+      user.subscriptionTier === "seller_annual");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -46,6 +50,13 @@ export function Header() {
           {user && isSubscribed && (
             <Link href="/pricing" className="hidden sm:block">
               <TierBadge tier={user.subscriptionTier} />
+            </Link>
+          )}
+          {isPro && (
+            <Link href="/me/analytics">
+              <Button variant="ghost" size="icon" title="Seller analytics">
+                <BarChart3 className="h-5 w-5" />
+              </Button>
             </Link>
           )}
           {user && (

@@ -19,5 +19,6 @@ export interface SellerResponse {
   photos: string[];
   status: SellerResponseStatus;
   threadId?: string | null;
+  viewCount: number;
   createdAt: Date;
 }

@@ -5,6 +5,7 @@ import requestsRouter from "./requests";
 import responsesRouter from "./responses";
 import messagesRouter from "./messages";
 import statsRouter from "./stats";
+import analyticsRouter from "./analytics";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(requestsRouter);
 router.use(responsesRouter);
 router.use(messagesRouter);
 router.use(statsRouter);
+router.use(analyticsRouter);
 
 export default router;

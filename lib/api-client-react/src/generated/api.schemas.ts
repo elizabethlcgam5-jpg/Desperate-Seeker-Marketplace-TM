@@ -31,6 +31,36 @@ export interface User {
   subscriptionRenewsAt?: string | null;
 }
 
+export type AnalyticsOfferStatus =
+  (typeof AnalyticsOfferStatus)[keyof typeof AnalyticsOfferStatus];
+
+export const AnalyticsOfferStatus = {
+  pending: "pending",
+  accepted: "accepted",
+  declined: "declined",
+} as const;
+
+export interface AnalyticsOffer {
+  id: string;
+  requestId: string;
+  requestTitle: string;
+  price: number;
+  status: AnalyticsOfferStatus;
+  viewCount: number;
+  createdAt: string;
+}
+
+export interface SellerAnalytics {
+  totalOffers: number;
+  totalViews: number;
+  accepted: number;
+  declined: number;
+  pending: number;
+  acceptanceRate: number;
+  avgViewsPerOffer: number;
+  recentOffers: AnalyticsOffer[];
+}
+
 export type PricingPlanTier =
   (typeof PricingPlanTier)[keyof typeof PricingPlanTier];
 
@@ -138,6 +168,7 @@ export interface SellerResponse {
   photos: string[];
   status: SellerResponseStatus;
   threadId?: string | null;
+  viewCount: number;
   createdAt: string;
 }
 

@@ -15,7 +15,7 @@ import {
 } from "@workspace/api-client-react";
 import { useLocation, useParams, Link } from "wouter";
 import { formatDistanceToNow } from "date-fns";
-import { MapPin, Clock, MessageSquare, CheckCircle, XCircle } from "lucide-react";
+import { MapPin, Clock, MessageSquare, CheckCircle, XCircle, Eye } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -402,6 +402,15 @@ export default function RequestDetail() {
                           </Avatar>
                           <span className="font-medium group-hover:text-primary transition-colors">{response.seller.name}</span>
                           <TierBadge tier={response.seller.subscriptionTier} size="xs" />
+                          {currentUser?.id === response.seller.id && (
+                            <span
+                              className="ml-1 inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+                              title="Buyers who viewed this offer"
+                            >
+                              <Eye className="h-3 w-3" />
+                              {response.viewCount}
+                            </span>
+                          )}
                         </Link>
                         <div className="text-right">
                           <div className="text-xl font-bold">${response.price}</div>

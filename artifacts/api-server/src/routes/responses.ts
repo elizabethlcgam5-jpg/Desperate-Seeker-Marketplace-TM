@@ -6,7 +6,7 @@ import {
   threadsTable,
   usersTable,
 } from "@workspace/db";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and, ne, sql } from "drizzle-orm";
 import {
   ListResponsesForRequestParams,
   ListResponsesForRequestResponse,
@@ -18,7 +18,7 @@ import {
   UpdateResponseStatusBody,
   UpdateResponseStatusResponse,
 } from "@workspace/api-zod";
-import { withCurrentUser } from "../lib/session";
+import { withCurrentUser, readCurrentUserId } from "../lib/session";
 import { serializeUser } from "../lib/serializers";
 import { randomUUID } from "node:crypto";
 
@@ -26,6 +26,21 @@ const router: IRouter = Router();
 
 router.get("/requests/:requestId/responses", async (req, res) => {
   const params = ListResponsesForRequestParams.parse(req.params);
+  const viewerId = readCurrentUserId(req);
+
+  // Bump view counts for any offers the viewer didn't post themselves.
+  if (viewerId) {
+    await db
+      .update(responsesTable)
+      .set({ viewCount: sql`${responsesTable.viewCount} + 1` })
+      .where(
+        and(
+          eq(responsesTable.requestId, params.requestId),
+          ne(responsesTable.sellerId, viewerId),
+        ),
+      );
+  }
+
   const rows = await db
     .select({ r: responsesTable, u: usersTable })
     .from(responsesTable)
@@ -44,6 +59,7 @@ router.get("/requests/:requestId/responses", async (req, res) => {
         photos: r.photos,
         status: r.status,
         threadId: r.threadId,
+        viewCount: r.viewCount,
         createdAt: r.createdAt.toISOString(),
       })),
     ),

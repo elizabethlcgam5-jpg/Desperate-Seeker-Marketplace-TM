@@ -103,6 +103,19 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
 
+  /me/analytics:
+    get:
+      operationId: getSellerAnalytics
+      tags: [stats]
+      summary: Seller analytics for the current user (Pro perk)
+      responses:
+        "200":
+          description: Analytics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellerAnalytics"
+
   /pricing/plans:
     get:
       operationId: listPricingPlans
@@ -508,6 +521,60 @@ components:
           format: date-time
           nullable: true
 
+    SellerAnalytics:
+      type: object
+      required:
+        [
+          totalOffers,
+          totalViews,
+          accepted,
+          declined,
+          pending,
+          acceptanceRate,
+          avgViewsPerOffer,
+          recentOffers,
+        ]
+      properties:
+        totalOffers:
+          type: integer
+        totalViews:
+          type: integer
+        accepted:
+          type: integer
+        declined:
+          type: integer
+        pending:
+          type: integer
+        acceptanceRate:
+          type: number
+        avgViewsPerOffer:
+          type: number
+        recentOffers:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnalyticsOffer"
+
+    AnalyticsOffer:
+      type: object
+      required: [id, requestId, requestTitle, price, status, viewCount, createdAt]
+      properties:
+        id:
+          type: string
+        requestId:
+          type: string
+        requestTitle:
+          type: string
+        price:
+          type: number
+        status:
+          type: string
+          enum: [pending, accepted, declined]
+        viewCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
     PricingPlan:
       type: object
       required: [tier, name, priceCents, interval, tagline, features]
@@ -672,6 +739,7 @@ components:
           message,
           photos,
           status,
+          viewCount,
           createdAt,
         ]
       properties:
@@ -698,6 +766,8 @@ components:
         threadId:
           type: string
           nullable: true
+        viewCount:
+          type: integer
         createdAt:
           type: string
           format: date-time

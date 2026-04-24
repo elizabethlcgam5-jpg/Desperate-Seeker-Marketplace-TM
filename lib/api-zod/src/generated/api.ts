@@ -107,6 +107,30 @@ export const SubscribeCurrentUserResponse = zod.object({
 });
 
 /**
+ * @summary Seller analytics for the current user (Pro perk)
+ */
+export const GetSellerAnalyticsResponse = zod.object({
+  totalOffers: zod.number(),
+  totalViews: zod.number(),
+  accepted: zod.number(),
+  declined: zod.number(),
+  pending: zod.number(),
+  acceptanceRate: zod.number(),
+  avgViewsPerOffer: zod.number(),
+  recentOffers: zod.array(
+    zod.object({
+      id: zod.string(),
+      requestId: zod.string(),
+      requestTitle: zod.string(),
+      price: zod.number(),
+      status: zod.enum(["pending", "accepted", "declined"]),
+      viewCount: zod.number(),
+      createdAt: zod.coerce.date(),
+    }),
+  ),
+});
+
+/**
  * @summary Public pricing plans for sellers
  */
 export const ListPricingPlansResponseItem = zod.object({
@@ -334,6 +358,7 @@ export const GetRequestResponse = zod
             photos: zod.array(zod.string()),
             status: zod.enum(["pending", "accepted", "declined"]),
             threadId: zod.string().nullish(),
+            viewCount: zod.number(),
             createdAt: zod.coerce.date(),
           }),
         )
@@ -415,6 +440,7 @@ export const UpdateRequestResponse = zod
             photos: zod.array(zod.string()),
             status: zod.enum(["pending", "accepted", "declined"]),
             threadId: zod.string().nullish(),
+            viewCount: zod.number(),
             createdAt: zod.coerce.date(),
           }),
         )
@@ -454,6 +480,7 @@ export const ListResponsesForRequestResponseItem = zod.object({
   photos: zod.array(zod.string()),
   status: zod.enum(["pending", "accepted", "declined"]),
   threadId: zod.string().nullish(),
+  viewCount: zod.number(),
   createdAt: zod.coerce.date(),
 });
 export const ListResponsesForRequestResponse = zod.array(
@@ -506,6 +533,7 @@ export const GetResponseResponse = zod.object({
   photos: zod.array(zod.string()),
   status: zod.enum(["pending", "accepted", "declined"]),
   threadId: zod.string().nullish(),
+  viewCount: zod.number(),
   createdAt: zod.coerce.date(),
 });
 
@@ -545,6 +573,7 @@ export const UpdateResponseStatusResponse = zod.object({
   photos: zod.array(zod.string()),
   status: zod.enum(["pending", "accepted", "declined"]),
   threadId: zod.string().nullish(),
+  viewCount: zod.number(),
   createdAt: zod.coerce.date(),
 });
 
