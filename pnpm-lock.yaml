@@ -197,6 +197,12 @@ importers:
       pino-http:
         specifier: ^10
         version: 10.5.0
+      stripe:
+        specifier: ^22.0.2
+        version: 22.0.2(@types/node@25.3.5)
+      stripe-replit-sync:
+        specifier: ^1.0.0
+        version: 1.0.0(stripe@22.0.2(@types/node@25.3.5))
     devDependencies:
       '@types/cookie-parser':
         specifier: ^1.4.10
@@ -642,6 +648,10 @@ importers:
         version: 0.31.9
 
   scripts:
+    dependencies:
+      stripe:
+        specifier: ^22.0.2
+        version: 22.0.2(@types/node@25.3.5)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

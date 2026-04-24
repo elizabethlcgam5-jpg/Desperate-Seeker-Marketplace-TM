@@ -57,6 +57,16 @@ Buyer-first reverse marketplace. Buyers post ISO requests; subscribed sellers br
 - `/me/requests` — Buyer's own requests
 - `/messages` — Message threads
 
+### Stripe Payments (Live)
+- **Integration**: Replit Stripe connector (`connection:conn_stripe_01KQ0GR8C27WK3ZCTR22VWGRQY`)
+- **Products seeded**: `seller_basic` ($4.99/mo), `seller_pro` ($12.99/6mo), `seller_annual` ($19.99/yr)
+- **DB sync**: `stripe-replit-sync` backfills Stripe data into `stripe.*` tables (products, prices, subscriptions, etc.)
+- **Webhook**: Auto-configured via `stripeSync.findOrCreateManagedWebhook` on startup → `/api/stripe/webhook`
+- **Stripe tables migration**: If `stripe.*` tables are missing, run migration SQL files manually from `node_modules/.pnpm/stripe-replit-sync@*/node_modules/stripe-replit-sync/dist/migrations/*.sql`
+- **Seed script**: `cd scripts && pnpm tsx src/seed-products.ts` (idempotent)
+- **Checkout flow**: `POST /api/stripe/checkout { tier }` → redirect to Stripe-hosted checkout → success page syncs tier
+- **Billing portal**: `POST /api/stripe/portal` → redirect to Stripe-managed billing portal
+
 ### Key Backend Routes
 - `GET /api/requests` — List requests (private filtering by subscription tier)
 - `POST /api/requests` — Create request (isPrivate, style, dimensions, photos)
@@ -66,11 +76,16 @@ Buyer-first reverse marketplace. Buyers post ISO requests; subscribed sellers br
 - `GET /api/me/matches` — Inventory matching algorithm (category + style + size scoring)
 - `GET /api/me/prospecting` — Live buyer feed for sellers
 - `POST /api/me/feedback` — Seller feedback (rating 1-5 + comment)
+- `GET /api/stripe/plans` — Live Stripe plans from synced DB
+- `POST /api/stripe/checkout` — Create Stripe checkout session (accepts `{ tier }`)
+- `GET /api/stripe/success` — Post-checkout sync (called from success page)
+- `POST /api/stripe/portal` — Create billing portal session
 
 ### DB Schema Key Tables
 - `requestsTable`: isPrivate, style, lengthIn/widthIn/heightIn, photos[]
 - `inventoryItemsTable`: sellerId, title, category, style, priceMin/Max, dimensions, condition
 - `sellerFeedbackTable`: sellerId, rating, comment
+- `usersTable` (extended): `stripeCustomerId`, `stripeSubscriptionId` columns added
 
 ### Lead Teaser UI
 Free-tier users see first 2 request cards blurred with "Unlock for $4.99/mo" button.

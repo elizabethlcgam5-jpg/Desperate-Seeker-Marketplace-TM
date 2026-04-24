@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -5,11 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import {
   useGetCurrentUser,
   useListPricingPlans,
-  useSubscribeCurrentUser,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, Sparkles, BadgeCheck, Crown, Wallet } from "lucide-react";
+import { Check, Sparkles, BadgeCheck, Crown, Wallet, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+import { getApiUrl } from "@/lib/api";
 
 const ICONS = {
   free: Wallet,
@@ -30,27 +31,72 @@ function formatPrice(cents: number, interval: "month" | "semi" | "year" | "none"
 export default function Pricing() {
   const { data: plans, isLoading } = useListPricingPlans();
   const { data: currentUser } = useGetCurrentUser();
-  const subscribe = useSubscribeCurrentUser();
   const qc = useQueryClient();
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [portalLoading, setPortalLoading] = useState(false);
 
-  const handleSelect = (
+  const isSubscribed =
+    currentUser?.subscriptionTier &&
+    currentUser.subscriptionTier !== "free";
+
+  const handleSelect = async (
     tier: "free" | "seller_basic" | "seller_pro" | "seller_annual",
     name: string,
   ) => {
-    subscribe.mutate(
-      { data: { tier } },
-      {
-        onSuccess: () => {
-          qc.invalidateQueries();
-          toast.success(
-            tier === "free"
-              ? "You're back on the free plan."
-              : `You're now on ${name}!`,
-          );
-        },
-        onError: () => toast.error("Couldn't update your plan. Try again."),
-      },
-    );
+    if (tier === "free") {
+      // Open billing portal to cancel — only if user has an active subscription
+      if (isSubscribed) {
+        handleManage();
+      }
+      return;
+    }
+
+    setLoadingTier(tier);
+    try {
+      const res = await fetch(getApiUrl("stripe/checkout"), {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? "Checkout failed");
+      }
+
+      const { url } = await res.json();
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (err: any) {
+      toast.error(err.message ?? "Couldn't start checkout. Try again.");
+    } finally {
+      setLoadingTier(null);
+    }
+  };
+
+  const handleManage = async () => {
+    setPortalLoading(true);
+    try {
+      const res = await fetch(getApiUrl("stripe/portal"), {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error ?? "Could not open billing portal");
+      }
+
+      const { url } = await res.json();
+      if (url) window.location.href = url;
+    } catch (err: any) {
+      toast.error(err.message ?? "Couldn't open billing portal. Try again.");
+    } finally {
+      setPortalLoading(false);
+    }
   };
 
   return (
@@ -70,6 +116,17 @@ export default function Pricing() {
           <p className="mt-4 text-white/65 text-lg max-w-xl mx-auto">
             Browse open requests, list your inventory, message buyers, and close deals — all for less than a coffee a week.
           </p>
+          {isSubscribed && (
+            <Button
+              variant="outline"
+              className="mt-6 border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37]/10"
+              onClick={handleManage}
+              disabled={portalLoading}
+            >
+              <ExternalLink className="mr-2 h-4 w-4" />
+              {portalLoading ? "Opening portal…" : "Manage Subscription"}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -85,6 +142,7 @@ export default function Pricing() {
                 const isCurrent = currentUser?.subscriptionTier === plan.tier;
                 const isAnnual = plan.tier === "seller_annual";
                 const isHighlighted = plan.highlight;
+                const isPending = loadingTier === plan.tier;
 
                 return (
                   <Card
@@ -146,7 +204,7 @@ export default function Pricing() {
                       <ul className="flex-1 space-y-2.5">
                         {plan.features.map((f) => (
                           <li key={f} className="flex items-start gap-2 text-sm">
-                            <Check className={`mt-0.5 h-4 w-4 flex-shrink-0 ${isHighlighted ? "text-[#D4AF37]" : "text-[#D4AF37]"}`} />
+                            <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#D4AF37]" />
                             <span className={isHighlighted ? "text-white/85" : "text-foreground/80"}>{f}</span>
                           </li>
                         ))}
@@ -163,14 +221,16 @@ export default function Pricing() {
                                 : "bg-[#0B3954] text-white hover:bg-[#0B3954]/90 border-0"
                         }`}
                         variant={isHighlighted || (!isCurrent && plan.tier !== "free") ? "default" : "outline"}
-                        disabled={isCurrent || subscribe.isPending}
+                        disabled={isCurrent || isPending || !!loadingTier}
                         onClick={() => handleSelect(plan.tier, plan.name)}
                       >
                         {isCurrent
                           ? "✓ Current plan"
-                          : plan.tier === "free"
-                            ? "Switch to free"
-                            : `Get ${plan.name}`}
+                          : isPending
+                            ? "Redirecting…"
+                            : plan.tier === "free"
+                              ? "Downgrade to free"
+                              : `Get ${plan.name}`}
                       </Button>
                     </CardContent>
                   </Card>
@@ -178,7 +238,7 @@ export default function Pricing() {
               })}
         </div>
 
-        {/* FAQ / trust bar */}
+        {/* Trust bar */}
         <div className="mt-14 mx-auto max-w-2xl grid sm:grid-cols-3 gap-6 text-center">
           {[
             { icon: "🔒", title: "No transaction fees", desc: "Keep 100% of every deal you close with buyers." },
@@ -193,8 +253,8 @@ export default function Pricing() {
           ))}
         </div>
 
-        <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-muted-foreground">
-          This is a demo — selecting a plan updates your account immediately without a real payment. In production, checkout routes through Stripe.
+        <p className="mx-auto mt-8 max-w-2xl text-center text-xs text-muted-foreground">
+          Payments are securely processed by Stripe. Your card details never touch our servers.
         </p>
       </div>
     </Layout>

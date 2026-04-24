@@ -15,6 +15,7 @@ import Analytics from "@/pages/me/analytics";
 import Inventory from "@/pages/me/inventory";
 import SellerDashboard from "@/pages/me/dashboard";
 import Pricing from "@/pages/pricing";
+import CheckoutSuccess from "@/pages/checkout/success";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +41,7 @@ function Router() {
       <Route path="/me/inventory" component={Inventory} />
       <Route path="/me/dashboard" component={SellerDashboard} />
       <Route path="/pricing" component={Pricing} />
+      <Route path="/checkout/success" component={CheckoutSuccess} />
       <Route component={NotFound} />
     </Switch>
   );

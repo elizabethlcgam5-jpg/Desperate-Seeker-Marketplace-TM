@@ -13,5 +13,8 @@
     "@workspace/db": "workspace:*",
     "drizzle-orm": "catalog:",
     "tsx": "catalog:"
+  },
+  "dependencies": {
+    "stripe": "^22.0.2"
   }
 }

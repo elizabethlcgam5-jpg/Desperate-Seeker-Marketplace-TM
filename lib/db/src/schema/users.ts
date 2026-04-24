@@ -12,6 +12,8 @@ export const usersTable = pgTable("users", {
   subscriptionRenewsAt: timestamp("subscription_renews_at", {
     withTimezone: true,
   }),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
 });
 
 export type User = typeof usersTable.$inferSelect;
