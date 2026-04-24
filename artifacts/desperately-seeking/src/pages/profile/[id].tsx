@@ -1,12 +1,29 @@
 import { Layout } from "@/components/layout";
-import { useGetUser, useListRequests, useGetCurrentUser, useUpdateCurrentUser } from "@workspace/api-client-react";
+import {
+  useGetUser,
+  useGetCurrentUser,
+  useUpdateCurrentUser,
+  useSubscribeCurrentUser,
+} from "@workspace/api-client-react";
 import { useParams, Link } from "wouter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MapPin, Calendar, Edit } from "lucide-react";
+import { MapPin, Calendar, Edit, Sparkles, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
 import { RequestCard } from "@/components/request-card";
+import { TierBadge } from "@/components/tier-badge";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
@@ -45,6 +62,7 @@ export default function UserProfile() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const queryClient = useQueryClient();
   const updateCurrentUser = useUpdateCurrentUser();
+  const subscribe = useSubscribeCurrentUser();
   
   const { data: profile, isLoading } = useGetUser(userId as string, {
     query: { enabled: !!userId },
@@ -117,7 +135,10 @@ export default function UserProfile() {
                 <AvatarFallback className="text-3xl">{user.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="space-y-2">
-                <h1 className="text-3xl font-serif font-bold">{user.name}</h1>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-3xl font-serif font-bold">{user.name}</h1>
+                  <TierBadge tier={user.subscriptionTier} />
+                </div>
                 <p className="text-muted-foreground font-medium">@{user.handle}</p>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">
                   {user.location && (
@@ -235,7 +256,25 @@ export default function UserProfile() {
         </div>
       </div>
 
-      <div className="container max-w-4xl mx-auto px-4 py-12">
+      {isMe && <div className="container max-w-4xl mx-auto px-4 pt-12"><SubscriptionPanel
+        tier={user.subscriptionTier}
+        renewsAt={user.subscriptionRenewsAt}
+        onCancel={() =>
+          subscribe.mutate(
+            { data: { tier: "free" } },
+            {
+              onSuccess: () => {
+                queryClient.invalidateQueries();
+                toast.success("You're back on the free plan.");
+              },
+              onError: () => toast.error("Couldn't cancel right now."),
+            },
+          )
+        }
+        cancelling={subscribe.isPending}
+      /></div>}
+
+      <div className="container max-w-4xl mx-auto px-4 pt-12">
         <h2 className="text-2xl font-serif font-bold mb-6">Recent Requests</h2>
         {recentRequests && recentRequests.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -250,5 +289,102 @@ export default function UserProfile() {
         )}
       </div>
     </Layout>
+  );
+}
+
+const TIER_LABELS: Record<string, { name: string; price: string; cycle: string }> = {
+  free: { name: "Free Buyer", price: "$0", cycle: "no card on file" },
+  seller_basic: { name: "Seller Basic", price: "$4.99", cycle: "billed monthly" },
+  seller_pro: { name: "Seller Pro", price: "$9.99", cycle: "billed monthly" },
+  seller_annual: { name: "Seller Annual", price: "$19.99", cycle: "billed yearly" },
+};
+
+function SubscriptionPanel({
+  tier,
+  renewsAt,
+  onCancel,
+  cancelling,
+}: {
+  tier: string | null | undefined;
+  renewsAt: Date | string | null | undefined;
+  onCancel: () => void;
+  cancelling: boolean;
+}) {
+  const t = (tier || "free") as keyof typeof TIER_LABELS;
+  const label = TIER_LABELS[t] || TIER_LABELS.free;
+  const isPaid = t !== "free";
+  const renews = renewsAt ? new Date(renewsAt) : null;
+
+  return (
+    <section className="rounded-2xl border bg-card p-6 md:p-8 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-serif font-bold">My Subscription</h2>
+            <TierBadge tier={(tier as never) ?? "free"} />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            You're on the <span className="font-medium text-foreground">{label.name}</span> plan
+            {" — "}
+            <span>{label.price}</span>{" "}
+            <span className="text-muted-foreground">{label.cycle}</span>
+            {isPaid && renews && (
+              <>
+                . Renews on{" "}
+                <span className="font-medium text-foreground">
+                  {format(renews, "MMM d, yyyy")}
+                </span>
+                .
+              </>
+            )}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {isPaid ? (
+            <>
+              <Link href="/pricing">
+                <Button variant="outline" className="gap-1.5">
+                  Change plan
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Button>
+              </Link>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" className="text-muted-foreground hover:text-destructive">
+                    Cancel
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Cancel your subscription?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      You'll lose your seller perks immediately and switch back to
+                      the free buyer plan. You can resubscribe anytime.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Keep subscription</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={onCancel}
+                      disabled={cancelling}
+                      className="bg-destructive hover:bg-destructive/90"
+                    >
+                      {cancelling ? "Cancelling..." : "Yes, cancel"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
+          ) : (
+            <Link href="/pricing">
+              <Button className="gap-1.5">
+                <Sparkles className="h-4 w-4" />
+                Upgrade to seller
+              </Button>
+            </Link>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
