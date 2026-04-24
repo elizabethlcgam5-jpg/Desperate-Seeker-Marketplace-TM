@@ -137,7 +137,7 @@ export const ListPricingPlansResponseItem = zod.object({
   tier: zod.enum(["free", "seller_basic", "seller_pro", "seller_annual"]),
   name: zod.string(),
   priceCents: zod.number(),
-  interval: zod.enum(["month", "year", "none"]),
+  interval: zod.enum(["month", "semi", "year", "none"]),
   tagline: zod.string(),
   features: zod.array(zod.string()),
   highlight: zod.boolean().optional(),
@@ -202,11 +202,17 @@ export const GetUserResponse = zod.object({
         title: zod.string(),
         description: zod.string(),
         category: zod.string(),
+        style: zod.string().optional(),
         budgetMin: zod.number().nullish(),
         budgetMax: zod.number().nullish(),
+        lengthIn: zod.number().nullish(),
+        widthIn: zod.number().nullish(),
+        heightIn: zod.number().nullish(),
+        photos: zod.array(zod.string()).optional(),
         status: zod.enum(["open", "fulfilled", "closed"]),
         urgency: zod.enum(["low", "normal", "high"]),
         location: zod.string(),
+        isPrivate: zod.boolean(),
         createdAt: zod.coerce.date(),
         buyer: zod.object({
           id: zod.string(),
@@ -250,11 +256,17 @@ export const ListRequestsResponseItem = zod.object({
   title: zod.string(),
   description: zod.string(),
   category: zod.string(),
+  style: zod.string().optional(),
   budgetMin: zod.number().nullish(),
   budgetMax: zod.number().nullish(),
+  lengthIn: zod.number().nullish(),
+  widthIn: zod.number().nullish(),
+  heightIn: zod.number().nullish(),
+  photos: zod.array(zod.string()).optional(),
   status: zod.enum(["open", "fulfilled", "closed"]),
   urgency: zod.enum(["low", "normal", "high"]),
   location: zod.string(),
+  isPrivate: zod.boolean(),
   createdAt: zod.coerce.date(),
   buyer: zod.object({
     id: zod.string(),
@@ -284,11 +296,17 @@ export const CreateRequestBody = zod.object({
   title: zod.string().min(1),
   description: zod.string().min(1),
   category: zod.string(),
+  style: zod.string().optional(),
   budgetMin: zod.number().optional(),
   budgetMax: zod.number().optional(),
+  lengthIn: zod.number().optional(),
+  widthIn: zod.number().optional(),
+  heightIn: zod.number().optional(),
   location: zod.string().optional(),
   urgency: zod.enum(["low", "normal", "high"]).optional(),
   tags: zod.array(zod.string()).optional(),
+  photos: zod.array(zod.string()).optional(),
+  isPrivate: zod.boolean().optional(),
 });
 
 /**
@@ -304,11 +322,17 @@ export const GetRequestResponse = zod
     title: zod.string(),
     description: zod.string(),
     category: zod.string(),
+    style: zod.string().optional(),
     budgetMin: zod.number().nullish(),
     budgetMax: zod.number().nullish(),
+    lengthIn: zod.number().nullish(),
+    widthIn: zod.number().nullish(),
+    heightIn: zod.number().nullish(),
+    photos: zod.array(zod.string()).optional(),
     status: zod.enum(["open", "fulfilled", "closed"]),
     urgency: zod.enum(["low", "normal", "high"]),
     location: zod.string(),
+    isPrivate: zod.boolean(),
     createdAt: zod.coerce.date(),
     buyer: zod.object({
       id: zod.string(),
@@ -386,11 +410,17 @@ export const UpdateRequestResponse = zod
     title: zod.string(),
     description: zod.string(),
     category: zod.string(),
+    style: zod.string().optional(),
     budgetMin: zod.number().nullish(),
     budgetMax: zod.number().nullish(),
+    lengthIn: zod.number().nullish(),
+    widthIn: zod.number().nullish(),
+    heightIn: zod.number().nullish(),
+    photos: zod.array(zod.string()).optional(),
     status: zod.enum(["open", "fulfilled", "closed"]),
     urgency: zod.enum(["low", "normal", "high"]),
     location: zod.string(),
+    isPrivate: zod.boolean(),
     createdAt: zod.coerce.date(),
     buyer: zod.object({
       id: zod.string(),
@@ -620,11 +650,17 @@ export const GetThreadResponse = zod.object({
     title: zod.string(),
     description: zod.string(),
     category: zod.string(),
+    style: zod.string().optional(),
     budgetMin: zod.number().nullish(),
     budgetMax: zod.number().nullish(),
+    lengthIn: zod.number().nullish(),
+    widthIn: zod.number().nullish(),
+    heightIn: zod.number().nullish(),
+    photos: zod.array(zod.string()).optional(),
     status: zod.enum(["open", "fulfilled", "closed"]),
     urgency: zod.enum(["low", "normal", "high"]),
     location: zod.string(),
+    isPrivate: zod.boolean(),
     createdAt: zod.coerce.date(),
     buyer: zod.object({
       id: zod.string(),
@@ -762,11 +798,17 @@ export const GetTrendingRequestsResponseItem = zod.object({
   title: zod.string(),
   description: zod.string(),
   category: zod.string(),
+  style: zod.string().optional(),
   budgetMin: zod.number().nullish(),
   budgetMax: zod.number().nullish(),
+  lengthIn: zod.number().nullish(),
+  widthIn: zod.number().nullish(),
+  heightIn: zod.number().nullish(),
+  photos: zod.array(zod.string()).optional(),
   status: zod.enum(["open", "fulfilled", "closed"]),
   urgency: zod.enum(["low", "normal", "high"]),
   location: zod.string(),
+  isPrivate: zod.boolean(),
   createdAt: zod.coerce.date(),
   buyer: zod.object({
     id: zod.string(),
@@ -789,3 +831,167 @@ export const GetTrendingRequestsResponseItem = zod.object({
 export const GetTrendingRequestsResponse = zod.array(
   GetTrendingRequestsResponseItem,
 );
+
+/**
+ * @summary List the current seller's inventory
+ */
+export const ListInventoryItemsResponseItem = zod.object({
+  id: zod.string(),
+  sellerId: zod.string(),
+  title: zod.string(),
+  category: zod.string(),
+  style: zod.string(),
+  description: zod.string().optional(),
+  priceMin: zod.number().nullish(),
+  priceMax: zod.number().nullish(),
+  lengthIn: zod.number().nullish(),
+  widthIn: zod.number().nullish(),
+  heightIn: zod.number().nullish(),
+  condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
+  photos: zod.array(zod.string()),
+  isAvailable: zod.boolean(),
+  createdAt: zod.coerce.date(),
+});
+export const ListInventoryItemsResponse = zod.array(
+  ListInventoryItemsResponseItem,
+);
+
+/**
+ * @summary Add an item to the seller's inventory
+ */
+
+export const CreateInventoryItemBody = zod.object({
+  title: zod.string().min(1),
+  category: zod.string(),
+  style: zod.string().optional(),
+  description: zod.string().optional(),
+  priceMin: zod.number().optional(),
+  priceMax: zod.number().optional(),
+  lengthIn: zod.number().optional(),
+  widthIn: zod.number().optional(),
+  heightIn: zod.number().optional(),
+  condition: zod.enum(["new", "like_new", "good", "fair", "used"]).optional(),
+  photos: zod.array(zod.string()).optional(),
+});
+
+/**
+ * @summary Remove an item from inventory
+ */
+export const DeleteInventoryItemParams = zod.object({
+  itemId: zod.coerce.string(),
+});
+
+/**
+ * @summary Match seller inventory against open buyer requests
+ */
+export const GetInventoryMatchesResponseItem = zod.object({
+  inventoryItem: zod.object({
+    id: zod.string(),
+    sellerId: zod.string(),
+    title: zod.string(),
+    category: zod.string(),
+    style: zod.string(),
+    description: zod.string().optional(),
+    priceMin: zod.number().nullish(),
+    priceMax: zod.number().nullish(),
+    lengthIn: zod.number().nullish(),
+    widthIn: zod.number().nullish(),
+    heightIn: zod.number().nullish(),
+    condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
+    photos: zod.array(zod.string()),
+    isAvailable: zod.boolean(),
+    createdAt: zod.coerce.date(),
+  }),
+  request: zod.object({
+    id: zod.string(),
+    title: zod.string(),
+    description: zod.string(),
+    category: zod.string(),
+    style: zod.string().optional(),
+    budgetMin: zod.number().nullish(),
+    budgetMax: zod.number().nullish(),
+    lengthIn: zod.number().nullish(),
+    widthIn: zod.number().nullish(),
+    heightIn: zod.number().nullish(),
+    photos: zod.array(zod.string()).optional(),
+    status: zod.enum(["open", "fulfilled", "closed"]),
+    urgency: zod.enum(["low", "normal", "high"]),
+    location: zod.string(),
+    isPrivate: zod.boolean(),
+    createdAt: zod.coerce.date(),
+    buyer: zod.object({
+      id: zod.string(),
+      name: zod.string(),
+      handle: zod.string(),
+      avatarUrl: zod.string(),
+      joinedAt: zod.coerce.date(),
+      bio: zod.string(),
+      location: zod.string(),
+      subscriptionTier: zod.enum([
+        "free",
+        "seller_basic",
+        "seller_pro",
+        "seller_annual",
+      ]),
+      subscriptionRenewsAt: zod.coerce.date().nullish(),
+    }),
+    responseCount: zod.number(),
+  }),
+  score: zod.number().describe("Match percentage 0-100"),
+  matchReasons: zod.array(zod.string()),
+});
+export const GetInventoryMatchesResponse = zod.array(
+  GetInventoryMatchesResponseItem,
+);
+
+/**
+ * @summary Live feed of the 20 most recent buyer requests (seller view)
+ */
+export const GetProspectingFeedResponseItem = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  category: zod.string(),
+  style: zod.string().optional(),
+  budgetMin: zod.number().nullish(),
+  budgetMax: zod.number().nullish(),
+  lengthIn: zod.number().nullish(),
+  widthIn: zod.number().nullish(),
+  heightIn: zod.number().nullish(),
+  photos: zod.array(zod.string()).optional(),
+  status: zod.enum(["open", "fulfilled", "closed"]),
+  urgency: zod.enum(["low", "normal", "high"]),
+  location: zod.string(),
+  isPrivate: zod.boolean(),
+  createdAt: zod.coerce.date(),
+  buyer: zod.object({
+    id: zod.string(),
+    name: zod.string(),
+    handle: zod.string(),
+    avatarUrl: zod.string(),
+    joinedAt: zod.coerce.date(),
+    bio: zod.string(),
+    location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
+  }),
+  responseCount: zod.number(),
+});
+export const GetProspectingFeedResponse = zod.array(
+  GetProspectingFeedResponseItem,
+);
+
+/**
+ * @summary Submit marketplace feedback from a seller
+ */
+export const submitSellerFeedbackBodyRatingMax = 5;
+
+export const SubmitSellerFeedbackBody = zod.object({
+  rating: zod.number().min(1).max(submitSellerFeedbackBodyRatingMax),
+  comment: zod.string().optional(),
+});

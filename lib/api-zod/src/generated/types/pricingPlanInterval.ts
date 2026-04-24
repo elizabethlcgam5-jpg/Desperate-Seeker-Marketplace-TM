@@ -11,6 +11,7 @@ export type PricingPlanInterval =
 
 export const PricingPlanInterval = {
   month: "month",
+  semi: "semi",
   year: "year",
   none: "none",
 } as const;

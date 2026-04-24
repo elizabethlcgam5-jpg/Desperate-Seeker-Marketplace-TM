@@ -14,11 +14,17 @@ export interface RequestSummary {
   title: string;
   description: string;
   category: string;
+  style?: string;
   budgetMin?: number | null;
   budgetMax?: number | null;
+  lengthIn?: number | null;
+  widthIn?: number | null;
+  heightIn?: number | null;
+  photos?: string[];
   status: RequestSummaryStatus;
   urgency: RequestSummaryUrgency;
   location: string;
+  isPrivate: boolean;
   createdAt: Date;
   buyer: User;
   responseCount: number;

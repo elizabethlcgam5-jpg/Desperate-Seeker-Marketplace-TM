@@ -60,84 +60,93 @@
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
 
+  --color-gold: hsl(var(--gold));
+  --color-gold-foreground: hsl(var(--gold-foreground));
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* LIGHT MODE */
+/* LIGHT MODE – Deep Navy × Antique Gold × Cream */
 :root {
-  --button-outline: rgba(0,0,0, .10);
-  --badge-outline: rgba(0,0,0, .05);
+  --button-outline: rgba(0,0,0, .12);
+  --badge-outline: rgba(0,0,0, .06);
 
-  --opaque-button-border-intensity: -8;
+  --opaque-button-border-intensity: -10;
 
   --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .08);
+  --elevate-2: rgba(0,0,0, .07);
 
-  /* Warm paper background */
-  --background: 40 33% 98%;
-  --foreground: 20 14% 15%;
+  /* Cream parchment background #FDF5E6 */
+  --background: 39 83% 95%;
+  /* Deep Navy #0B3954 */
+  --foreground: 206 74% 19%;
 
-  --border: 30 15% 85%;
+  --border: 39 30% 84%;
 
   --card: 0 0% 100%;
-  --card-foreground: 20 14% 15%;
-  --card-border: 30 15% 85%;
+  --card-foreground: 206 74% 19%;
+  --card-border: 39 30% 84%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 20 14% 15%;
-  --popover-border: 30 15% 85%;
+  --popover-foreground: 206 74% 19%;
+  --popover-border: 39 30% 84%;
 
-  /* Terracotta Primary */
-  --primary: 15 75% 55%;
+  /* Deep Navy primary – buttons/headers */
+  --primary: 206 74% 19%;
   --primary-foreground: 0 0% 100%;
 
-  /* Sage Green Secondary */
-  --secondary: 130 20% 60%;
-  --secondary-foreground: 0 0% 100%;
+  /* Antique Gold secondary #D4AF37 */
+  --secondary: 45 65% 52%;
+  --secondary-foreground: 206 74% 12%;
 
-  --muted: 40 20% 93%;
-  --muted-foreground: 25 10% 40%;
+  --muted: 39 40% 90%;
+  --muted-foreground: 206 20% 38%;
 
-  --accent: 40 40% 90%;
-  --accent-foreground: 15 75% 50%;
+  /* Gold accent */
+  --accent: 45 65% 52%;
+  --accent-foreground: 206 74% 12%;
 
-  --destructive: 0 70% 50%;
+  /* Gold extra vars */
+  --gold: 45 65% 52%;
+  --gold-foreground: 206 74% 12%;
+
+  --destructive: 0 68% 50%;
   --destructive-foreground: 0 0% 100%;
 
-  --input: 30 15% 80%;
-  --ring: 15 75% 55%;
+  --input: 39 30% 80%;
+  --ring: 206 74% 35%;
 
-  --chart-1: 15 75% 55%;
-  --chart-2: 130 20% 60%;
-  --chart-3: 40 40% 50%;
-  --chart-4: 200 30% 50%;
-  --chart-5: 320 20% 50%;
+  --chart-1: 206 74% 25%;
+  --chart-2: 45 65% 52%;
+  --chart-3: 165 40% 40%;
+  --chart-4: 310 30% 45%;
+  --chart-5: 25 55% 48%;
 
-  --sidebar: 40 33% 96%;
-  --sidebar-foreground: 20 14% 15%;
-  --sidebar-border: 30 15% 85%;
-  --sidebar-primary: 15 75% 55%;
+  --sidebar: 39 50% 93%;
+  --sidebar-foreground: 206 74% 19%;
+  --sidebar-border: 39 30% 84%;
+  --sidebar-primary: 206 74% 19%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 40 20% 90%;
-  --sidebar-accent-foreground: 20 14% 15%;
-  --sidebar-ring: 15 75% 55%;
+  --sidebar-accent: 45 65% 52%;
+  --sidebar-accent-foreground: 206 74% 12%;
+  --sidebar-ring: 206 74% 35%;
 
-  --app-font-sans: 'Geist', 'Inter', sans-serif;
-  --app-font-serif: 'Instrument Serif', Georgia, serif;
+  --app-font-sans: 'Inter', sans-serif;
+  --app-font-serif: 'Playfair Display', Georgia, serif;
   --app-font-mono: 'Space Mono', Menlo, monospace;
-  --radius: 0.75rem; 
+  --radius: 1rem; 
 
-  --shadow-2xs: 0px 2px 0px 0px rgba(0,0,0,0.02);
-  --shadow-xs: 0px 2px 0px 0px rgba(0,0,0,0.03);
-  --shadow-sm: 0px 2px 0px 0px rgba(0,0,0,0.02), 0px 1px 2px -1px rgba(0,0,0,0.04);
-  --shadow: 0px 2px 0px 0px rgba(0,0,0,0.02), 0px 1px 2px -1px rgba(0,0,0,0.05);
-  --shadow-md: 0px 2px 0px 0px rgba(0,0,0,0.02), 0px 2px 4px -1px rgba(0,0,0,0.05);
-  --shadow-lg: 0px 2px 0px 0px rgba(0,0,0,0.02), 0px 4px 6px -1px rgba(0,0,0,0.05);
-  --shadow-xl: 0px 2px 0px 0px rgba(0,0,0,0.02), 0px 8px 10px -1px rgba(0,0,0,0.05);
-  --shadow-2xl: 0px 2px 0px 0px rgba(0,0,0,0.02);
+  --shadow-2xs: 0px 1px 3px 0px rgba(11,57,84,0.04);
+  --shadow-xs: 0px 2px 6px 0px rgba(11,57,84,0.06);
+  --shadow-sm: 0px 2px 8px 0px rgba(11,57,84,0.07), 0px 1px 2px -1px rgba(11,57,84,0.04);
+  --shadow: 0px 4px 16px 0px rgba(11,57,84,0.09), 0px 1px 3px -1px rgba(11,57,84,0.05);
+  --shadow-md: 0px 6px 20px 0px rgba(11,57,84,0.10), 0px 2px 6px -2px rgba(11,57,84,0.06);
+  --shadow-lg: 0px 10px 30px 0px rgba(11,57,84,0.12), 0px 4px 10px -4px rgba(11,57,84,0.08);
+  --shadow-xl: 0px 16px 48px 0px rgba(11,57,84,0.14), 0px 8px 16px -6px rgba(11,57,84,0.10);
+  --shadow-2xl: 0px 24px 64px 0px rgba(11,57,84,0.18);
 
   --tracking-normal: 0em;
   --spacing: 0.25rem;

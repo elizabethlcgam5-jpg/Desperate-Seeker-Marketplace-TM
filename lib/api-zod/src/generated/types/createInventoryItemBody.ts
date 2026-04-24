@@ -5,23 +5,19 @@
  * Desperately Seeking - buyer-first marketplace API
  * OpenAPI spec version: 0.1.0
  */
-import type { CreateRequestBodyUrgency } from "./createRequestBodyUrgency";
+import type { CreateInventoryItemBodyCondition } from "./createInventoryItemBodyCondition";
 
-export interface CreateRequestBody {
+export interface CreateInventoryItemBody {
   /** @minLength 1 */
   title: string;
-  /** @minLength 1 */
-  description: string;
   category: string;
   style?: string;
-  budgetMin?: number;
-  budgetMax?: number;
+  description?: string;
+  priceMin?: number;
+  priceMax?: number;
   lengthIn?: number;
   widthIn?: number;
   heightIn?: number;
-  location?: string;
-  urgency?: CreateRequestBodyUrgency;
-  tags?: string[];
+  condition?: CreateInventoryItemBodyCondition;
   photos?: string[];
-  isPrivate?: boolean;
 }

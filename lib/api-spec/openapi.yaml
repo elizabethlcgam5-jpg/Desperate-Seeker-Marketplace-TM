@@ -484,6 +484,102 @@ paths:
                 items:
                   $ref: "#/components/schemas/RequestSummary"
 
+  /me/inventory:
+    get:
+      operationId: listInventoryItems
+      tags: [inventory]
+      summary: List the current seller's inventory
+      responses:
+        "200":
+          description: Items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InventoryItem"
+    post:
+      operationId: createInventoryItem
+      tags: [inventory]
+      summary: Add an item to the seller's inventory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInventoryItemBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryItem"
+
+  /me/inventory/{itemId}:
+    delete:
+      operationId: deleteInventoryItem
+      tags: [inventory]
+      summary: Remove an item from inventory
+      parameters:
+        - in: path
+          name: itemId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /me/matches:
+    get:
+      operationId: getInventoryMatches
+      tags: [inventory]
+      summary: Match seller inventory against open buyer requests
+      responses:
+        "200":
+          description: Matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InventoryMatch"
+
+  /me/prospecting:
+    get:
+      operationId: getProspectingFeed
+      tags: [stats]
+      summary: Live feed of the 20 most recent buyer requests (seller view)
+      responses:
+        "200":
+          description: Feed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RequestSummary"
+
+  /me/feedback:
+    post:
+      operationId: submitSellerFeedback
+      tags: [users]
+      summary: Submit marketplace feedback from a seller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSellerFeedbackBody"
+      responses:
+        "201":
+          description: Submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SellerFeedback"
+
 components:
   schemas:
     HealthStatus:
@@ -588,7 +684,7 @@ components:
           type: integer
         interval:
           type: string
-          enum: [month, year, none]
+          enum: [month, semi, year, none]
         tagline:
           type: string
         features:
@@ -597,6 +693,124 @@ components:
             type: string
         highlight:
           type: boolean
+
+    InventoryItem:
+      type: object
+      required: [id, sellerId, title, category, style, condition, photos, isAvailable, createdAt]
+      properties:
+        id:
+          type: string
+        sellerId:
+          type: string
+        title:
+          type: string
+        category:
+          type: string
+        style:
+          type: string
+        description:
+          type: string
+        priceMin:
+          type: number
+          nullable: true
+        priceMax:
+          type: number
+          nullable: true
+        lengthIn:
+          type: number
+          nullable: true
+        widthIn:
+          type: number
+          nullable: true
+        heightIn:
+          type: number
+          nullable: true
+        condition:
+          type: string
+          enum: [new, like_new, good, fair, used]
+        photos:
+          type: array
+          items:
+            type: string
+        isAvailable:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateInventoryItemBody:
+      type: object
+      required: [title, category]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        category:
+          type: string
+        style:
+          type: string
+        description:
+          type: string
+        priceMin:
+          type: number
+        priceMax:
+          type: number
+        lengthIn:
+          type: number
+        widthIn:
+          type: number
+        heightIn:
+          type: number
+        condition:
+          type: string
+          enum: [new, like_new, good, fair, used]
+        photos:
+          type: array
+          items:
+            type: string
+
+    InventoryMatch:
+      type: object
+      required: [inventoryItem, request, score, matchReasons]
+      properties:
+        inventoryItem:
+          $ref: "#/components/schemas/InventoryItem"
+        request:
+          $ref: "#/components/schemas/RequestSummary"
+        score:
+          type: integer
+          description: Match percentage 0-100
+        matchReasons:
+          type: array
+          items:
+            type: string
+
+    CreateSellerFeedbackBody:
+      type: object
+      required: [rating]
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+
+    SellerFeedback:
+      type: object
+      required: [id, sellerId, rating, createdAt]
+      properties:
+        id:
+          type: string
+        sellerId:
+          type: string
+        rating:
+          type: integer
+        comment:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
 
     UserProfile:
       type: object
@@ -641,6 +855,7 @@ components:
           buyer,
           responseCount,
           location,
+          isPrivate,
         ]
       properties:
         id:
@@ -651,12 +866,27 @@ components:
           type: string
         category:
           type: string
+        style:
+          type: string
         budgetMin:
           type: number
           nullable: true
         budgetMax:
           type: number
           nullable: true
+        lengthIn:
+          type: number
+          nullable: true
+        widthIn:
+          type: number
+          nullable: true
+        heightIn:
+          type: number
+          nullable: true
+        photos:
+          type: array
+          items:
+            type: string
         status:
           type: string
           enum: [open, fulfilled, closed]
@@ -665,6 +895,8 @@ components:
           enum: [low, normal, high]
         location:
           type: string
+        isPrivate:
+          type: boolean
         createdAt:
           type: string
           format: date-time
@@ -699,9 +931,17 @@ components:
           minLength: 1
         category:
           type: string
+        style:
+          type: string
         budgetMin:
           type: number
         budgetMax:
+          type: number
+        lengthIn:
+          type: number
+        widthIn:
+          type: number
+        heightIn:
           type: number
         location:
           type: string
@@ -712,6 +952,12 @@ components:
           type: array
           items:
             type: string
+        photos:
+          type: array
+          items:
+            type: string
+        isPrivate:
+          type: boolean
 
     UpdateRequestBody:
       type: object

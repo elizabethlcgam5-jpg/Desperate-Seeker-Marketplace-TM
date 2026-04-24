@@ -16,7 +16,7 @@ import {
   UpdateRequestBody,
   UpdateRequestResponse,
 } from "@workspace/api-zod";
-import { withCurrentUser } from "../lib/session";
+import { withCurrentUser, readCurrentUserId } from "../lib/session";
 import { serializeUser } from "../lib/serializers";
 import { randomUUID } from "node:crypto";
 
@@ -42,11 +42,17 @@ async function loadSummary(requestId: string) {
     title: row.r.title,
     description: row.r.description,
     category: row.r.category,
+    style: row.r.style ?? "",
     budgetMin: row.r.budgetMin === null ? null : Number(row.r.budgetMin),
     budgetMax: row.r.budgetMax === null ? null : Number(row.r.budgetMax),
+    lengthIn: row.r.lengthIn === null ? null : Number(row.r.lengthIn),
+    widthIn: row.r.widthIn === null ? null : Number(row.r.widthIn),
+    heightIn: row.r.heightIn === null ? null : Number(row.r.heightIn),
+    photos: row.r.photos ?? [],
     status: row.r.status,
     urgency: row.r.urgency,
     location: row.r.location,
+    isPrivate: row.r.isPrivate,
     createdAt: row.r.createdAt.toISOString(),
     buyer: serializeUser(row.u),
     responseCount: rc.c,
@@ -55,6 +61,20 @@ async function loadSummary(requestId: string) {
 
 router.get("/requests", async (req, res) => {
   const params = ListRequestsQueryParams.parse(req.query);
+  const viewerId = readCurrentUserId(req);
+
+  // Determine if viewer is a subscribed seller (can see private listings)
+  let viewerTier: string = "free";
+  if (viewerId) {
+    const [viewerRow] = await db
+      .select({ t: usersTable.subscriptionTier })
+      .from(usersTable)
+      .where(eq(usersTable.id, viewerId))
+      .limit(1);
+    viewerTier = viewerRow?.t ?? "free";
+  }
+  const isSubscribedSeller = viewerTier !== "free";
+
   const conditions = [];
   if (params.search) {
     conditions.push(
@@ -72,6 +92,16 @@ router.get("/requests", async (req, res) => {
   }
   if (params.buyerId) {
     conditions.push(eq(requestsTable.buyerId, params.buyerId));
+  }
+  // Filter private listings: only show them to their owner or subscribed sellers
+  if (!isSubscribedSeller) {
+    if (viewerId) {
+      conditions.push(
+        or(eq(requestsTable.isPrivate, false), eq(requestsTable.buyerId, viewerId)),
+      );
+    } else {
+      conditions.push(eq(requestsTable.isPrivate, false));
+    }
   }
 
   const whereClause =
@@ -110,11 +140,17 @@ router.get("/requests", async (req, res) => {
         title: r.title,
         description: r.description,
         category: r.category,
+        style: r.style ?? "",
         budgetMin: r.budgetMin === null ? null : Number(r.budgetMin),
         budgetMax: r.budgetMax === null ? null : Number(r.budgetMax),
+        lengthIn: r.lengthIn === null ? null : Number(r.lengthIn),
+        widthIn: r.widthIn === null ? null : Number(r.widthIn),
+        heightIn: r.heightIn === null ? null : Number(r.heightIn),
+        photos: r.photos ?? [],
         status: r.status,
         urgency: r.urgency,
         location: r.location,
+        isPrivate: r.isPrivate,
         createdAt: r.createdAt.toISOString(),
         buyer: serializeUser(u),
         responseCount: rc.c,
@@ -139,13 +175,19 @@ router.post("/requests", withCurrentUser, async (req, res) => {
     title: body.title,
     description: body.description,
     category: body.category,
+    style: body.style ?? "",
     budgetMin:
       body.budgetMin !== undefined ? body.budgetMin.toString() : null,
     budgetMax:
       body.budgetMax !== undefined ? body.budgetMax.toString() : null,
+    lengthIn: body.lengthIn !== undefined ? body.lengthIn.toString() : null,
+    widthIn: body.widthIn !== undefined ? body.widthIn.toString() : null,
+    heightIn: body.heightIn !== undefined ? body.heightIn.toString() : null,
+    photos: body.photos ?? [],
     location: body.location ?? "",
     urgency: body.urgency ?? "normal",
     tags: body.tags ?? [],
+    isPrivate: body.isPrivate ?? false,
   });
 
   const summary = await loadSummary(id);

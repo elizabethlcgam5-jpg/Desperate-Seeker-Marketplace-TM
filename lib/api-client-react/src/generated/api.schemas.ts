@@ -76,6 +76,7 @@ export type PricingPlanInterval =
 
 export const PricingPlanInterval = {
   month: "month",
+  semi: "semi",
   year: "year",
   none: "none",
 } as const;
@@ -88,6 +89,61 @@ export interface PricingPlan {
   tagline: string;
   features: string[];
   highlight?: boolean;
+}
+
+export type InventoryItemCondition =
+  (typeof InventoryItemCondition)[keyof typeof InventoryItemCondition];
+
+export const InventoryItemCondition = {
+  new: "new",
+  like_new: "like_new",
+  good: "good",
+  fair: "fair",
+  used: "used",
+} as const;
+
+export interface InventoryItem {
+  id: string;
+  sellerId: string;
+  title: string;
+  category: string;
+  style: string;
+  description?: string;
+  priceMin?: number | null;
+  priceMax?: number | null;
+  lengthIn?: number | null;
+  widthIn?: number | null;
+  heightIn?: number | null;
+  condition: InventoryItemCondition;
+  photos: string[];
+  isAvailable: boolean;
+  createdAt: string;
+}
+
+export type CreateInventoryItemBodyCondition =
+  (typeof CreateInventoryItemBodyCondition)[keyof typeof CreateInventoryItemBodyCondition];
+
+export const CreateInventoryItemBodyCondition = {
+  new: "new",
+  like_new: "like_new",
+  good: "good",
+  fair: "fair",
+  used: "used",
+} as const;
+
+export interface CreateInventoryItemBody {
+  /** @minLength 1 */
+  title: string;
+  category: string;
+  style?: string;
+  description?: string;
+  priceMin?: number;
+  priceMax?: number;
+  lengthIn?: number;
+  widthIn?: number;
+  heightIn?: number;
+  condition?: CreateInventoryItemBodyCondition;
+  photos?: string[];
 }
 
 export type RequestSummaryStatus =
@@ -113,14 +169,45 @@ export interface RequestSummary {
   title: string;
   description: string;
   category: string;
+  style?: string;
   budgetMin?: number | null;
   budgetMax?: number | null;
+  lengthIn?: number | null;
+  widthIn?: number | null;
+  heightIn?: number | null;
+  photos?: string[];
   status: RequestSummaryStatus;
   urgency: RequestSummaryUrgency;
   location: string;
+  isPrivate: boolean;
   createdAt: string;
   buyer: User;
   responseCount: number;
+}
+
+export interface InventoryMatch {
+  inventoryItem: InventoryItem;
+  request: RequestSummary;
+  /** Match percentage 0-100 */
+  score: number;
+  matchReasons: string[];
+}
+
+export interface CreateSellerFeedbackBody {
+  /**
+   * @minimum 1
+   * @maximum 5
+   */
+  rating: number;
+  comment?: string;
+}
+
+export interface SellerFeedback {
+  id: string;
+  sellerId: string;
+  rating: number;
+  comment?: string;
+  createdAt: string;
 }
 
 export interface UserProfile {
@@ -192,11 +279,17 @@ export interface CreateRequestBody {
   /** @minLength 1 */
   description: string;
   category: string;
+  style?: string;
   budgetMin?: number;
   budgetMax?: number;
+  lengthIn?: number;
+  widthIn?: number;
+  heightIn?: number;
   location?: string;
   urgency?: CreateRequestBodyUrgency;
   tags?: string[];
+  photos?: string[];
+  isPrivate?: boolean;
 }
 
 export type UpdateRequestBodyStatus =

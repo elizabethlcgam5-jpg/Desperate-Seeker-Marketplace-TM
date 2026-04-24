@@ -54,7 +54,9 @@ router.post("/me/subscribe", withCurrentUser, async (req, res) => {
       ? null
       : body.tier === "seller_annual"
         ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        : body.tier === "seller_pro"
+          ? new Date(Date.now() + 180 * 24 * 60 * 60 * 1000)
+          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   const [updated] = await db
     .update(usersTable)
     .set({ subscriptionTier: body.tier, subscriptionRenewsAt: renews })
@@ -81,43 +83,47 @@ router.get("/pricing/plans", async (_req, res) => {
     },
     {
       tier: "seller_basic" as const,
-      name: "Seller Basic",
+      name: "Monthly",
       priceCents: 499,
       interval: "month" as const,
-      tagline: "Start responding to buyer requests.",
+      tagline: "Unlock buyer leads, one month at a time.",
       features: [
-        "Send unlimited offers",
-        "Verified Seller badge",
-        "Standard placement in buyer inbox",
+        "Browse all open buyer requests",
+        "Reveal buyer contact info",
+        "Direct chat with matched buyers",
+        "Instant local match notifications",
+        "Verified Seller gold badge",
         "Cancel anytime",
       ],
       highlight: false,
     },
     {
       tier: "seller_pro" as const,
-      name: "Seller Pro",
-      priceCents: 999,
-      interval: "month" as const,
-      tagline: "For active sellers who want more eyes on their offers.",
+      name: "6 Months",
+      priceCents: 1299,
+      interval: "semi" as const,
+      tagline: "Save vs. monthly. More time to close deals.",
       features: [
-        "Everything in Basic",
-        "Featured placement at the top of buyer inboxes",
+        "Everything in Monthly",
+        "6-month access — best for seasonal sellers",
         "Response analytics & view counts",
+        "Seller prospecting live feed",
         "Priority support",
       ],
       highlight: true,
     },
     {
       tier: "seller_annual" as const,
-      name: "Seller Annual",
+      name: "Annual",
       priceCents: 1999,
       interval: "year" as const,
-      tagline: "Limited launch deal — Pro perks for the year.",
+      tagline: "Best value — lock in launch pricing for a full year.",
       features: [
-        "Everything in Pro",
-        "One full year of Pro access",
-        "Early access to new seller tools",
-        "Lock in launch pricing",
+        "Everything in 6-Month",
+        "One full year of access",
+        "Inventory Quick-List tool",
+        "Early access to new seller features",
+        "Lock in launch pricing forever",
       ],
       highlight: false,
     },
