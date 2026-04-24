@@ -8,6 +8,10 @@ export const usersTable = pgTable("users", {
   bio: text("bio").notNull().default(""),
   location: text("location").notNull().default(""),
   joinedAt: timestamp("joined_at", { withTimezone: true }).notNull().defaultNow(),
+  subscriptionTier: text("subscription_tier").notNull().default("free"),
+  subscriptionRenewsAt: timestamp("subscription_renews_at", {
+    withTimezone: true,
+  }),
 });
 
 export type User = typeof usersTable.$inferSelect;

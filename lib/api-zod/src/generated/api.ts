@@ -25,6 +25,13 @@ export const GetCurrentUserResponse = zod.object({
   joinedAt: zod.coerce.date(),
   bio: zod.string(),
   location: zod.string(),
+  subscriptionTier: zod.enum([
+    "free",
+    "seller_basic",
+    "seller_pro",
+    "seller_annual",
+  ]),
+  subscriptionRenewsAt: zod.coerce.date().nullish(),
 });
 
 /**
@@ -45,6 +52,13 @@ export const UpdateCurrentUserResponse = zod.object({
   joinedAt: zod.coerce.date(),
   bio: zod.string(),
   location: zod.string(),
+  subscriptionTier: zod.enum([
+    "free",
+    "seller_basic",
+    "seller_pro",
+    "seller_annual",
+  ]),
+  subscriptionRenewsAt: zod.coerce.date().nullish(),
 });
 
 /**
@@ -58,8 +72,53 @@ export const ListUsersResponseItem = zod.object({
   joinedAt: zod.coerce.date(),
   bio: zod.string(),
   location: zod.string(),
+  subscriptionTier: zod.enum([
+    "free",
+    "seller_basic",
+    "seller_pro",
+    "seller_annual",
+  ]),
+  subscriptionRenewsAt: zod.coerce.date().nullish(),
 });
 export const ListUsersResponse = zod.array(ListUsersResponseItem);
+
+/**
+ * @summary Set the seller subscription tier for the current user
+ */
+export const SubscribeCurrentUserBody = zod.object({
+  tier: zod.enum(["free", "seller_basic", "seller_pro", "seller_annual"]),
+});
+
+export const SubscribeCurrentUserResponse = zod.object({
+  id: zod.string(),
+  name: zod.string(),
+  handle: zod.string(),
+  avatarUrl: zod.string(),
+  joinedAt: zod.coerce.date(),
+  bio: zod.string(),
+  location: zod.string(),
+  subscriptionTier: zod.enum([
+    "free",
+    "seller_basic",
+    "seller_pro",
+    "seller_annual",
+  ]),
+  subscriptionRenewsAt: zod.coerce.date().nullish(),
+});
+
+/**
+ * @summary Public pricing plans for sellers
+ */
+export const ListPricingPlansResponseItem = zod.object({
+  tier: zod.enum(["free", "seller_basic", "seller_pro", "seller_annual"]),
+  name: zod.string(),
+  priceCents: zod.number(),
+  interval: zod.enum(["month", "year", "none"]),
+  tagline: zod.string(),
+  features: zod.array(zod.string()),
+  highlight: zod.boolean().optional(),
+});
+export const ListPricingPlansResponse = zod.array(ListPricingPlansResponseItem);
 
 /**
  * @summary Switch the active user (demo)
@@ -76,6 +135,13 @@ export const SwitchUserResponse = zod.object({
   joinedAt: zod.coerce.date(),
   bio: zod.string(),
   location: zod.string(),
+  subscriptionTier: zod.enum([
+    "free",
+    "seller_basic",
+    "seller_pro",
+    "seller_annual",
+  ]),
+  subscriptionRenewsAt: zod.coerce.date().nullish(),
 });
 
 /**
@@ -94,6 +160,13 @@ export const GetUserResponse = zod.object({
     joinedAt: zod.coerce.date(),
     bio: zod.string(),
     location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
   }),
   requestCount: zod.number(),
   responseCount: zod.number(),
@@ -119,6 +192,13 @@ export const GetUserResponse = zod.object({
           joinedAt: zod.coerce.date(),
           bio: zod.string(),
           location: zod.string(),
+          subscriptionTier: zod.enum([
+            "free",
+            "seller_basic",
+            "seller_pro",
+            "seller_annual",
+          ]),
+          subscriptionRenewsAt: zod.coerce.date().nullish(),
         }),
         responseCount: zod.number(),
       }),
@@ -160,6 +240,13 @@ export const ListRequestsResponseItem = zod.object({
     joinedAt: zod.coerce.date(),
     bio: zod.string(),
     location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
   }),
   responseCount: zod.number(),
 });
@@ -207,6 +294,13 @@ export const GetRequestResponse = zod
       joinedAt: zod.coerce.date(),
       bio: zod.string(),
       location: zod.string(),
+      subscriptionTier: zod.enum([
+        "free",
+        "seller_basic",
+        "seller_pro",
+        "seller_annual",
+      ]),
+      subscriptionRenewsAt: zod.coerce.date().nullish(),
     }),
     responseCount: zod.number(),
   })
@@ -226,6 +320,13 @@ export const GetRequestResponse = zod
               joinedAt: zod.coerce.date(),
               bio: zod.string(),
               location: zod.string(),
+              subscriptionTier: zod.enum([
+                "free",
+                "seller_basic",
+                "seller_pro",
+                "seller_annual",
+              ]),
+              subscriptionRenewsAt: zod.coerce.date().nullish(),
             }),
             price: zod.number(),
             condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -274,6 +375,13 @@ export const UpdateRequestResponse = zod
       joinedAt: zod.coerce.date(),
       bio: zod.string(),
       location: zod.string(),
+      subscriptionTier: zod.enum([
+        "free",
+        "seller_basic",
+        "seller_pro",
+        "seller_annual",
+      ]),
+      subscriptionRenewsAt: zod.coerce.date().nullish(),
     }),
     responseCount: zod.number(),
   })
@@ -293,6 +401,13 @@ export const UpdateRequestResponse = zod
               joinedAt: zod.coerce.date(),
               bio: zod.string(),
               location: zod.string(),
+              subscriptionTier: zod.enum([
+                "free",
+                "seller_basic",
+                "seller_pro",
+                "seller_annual",
+              ]),
+              subscriptionRenewsAt: zod.coerce.date().nullish(),
             }),
             price: zod.number(),
             condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -325,6 +440,13 @@ export const ListResponsesForRequestResponseItem = zod.object({
     joinedAt: zod.coerce.date(),
     bio: zod.string(),
     location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
   }),
   price: zod.number(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -370,6 +492,13 @@ export const GetResponseResponse = zod.object({
     joinedAt: zod.coerce.date(),
     bio: zod.string(),
     location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
   }),
   price: zod.number(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -402,6 +531,13 @@ export const UpdateResponseStatusResponse = zod.object({
     joinedAt: zod.coerce.date(),
     bio: zod.string(),
     location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
   }),
   price: zod.number(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -427,6 +563,13 @@ export const ListThreadsResponseItem = zod.object({
     joinedAt: zod.coerce.date(),
     bio: zod.string(),
     location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
   }),
   lastMessage: zod.string(),
   updatedAt: zod.coerce.date(),
@@ -462,6 +605,13 @@ export const GetThreadResponse = zod.object({
       joinedAt: zod.coerce.date(),
       bio: zod.string(),
       location: zod.string(),
+      subscriptionTier: zod.enum([
+        "free",
+        "seller_basic",
+        "seller_pro",
+        "seller_annual",
+      ]),
+      subscriptionRenewsAt: zod.coerce.date().nullish(),
     }),
     responseCount: zod.number(),
   }),
@@ -474,6 +624,13 @@ export const GetThreadResponse = zod.object({
       joinedAt: zod.coerce.date(),
       bio: zod.string(),
       location: zod.string(),
+      subscriptionTier: zod.enum([
+        "free",
+        "seller_basic",
+        "seller_pro",
+        "seller_annual",
+      ]),
+      subscriptionRenewsAt: zod.coerce.date().nullish(),
     }),
   ),
   messages: zod.array(
@@ -488,6 +645,13 @@ export const GetThreadResponse = zod.object({
         joinedAt: zod.coerce.date(),
         bio: zod.string(),
         location: zod.string(),
+        subscriptionTier: zod.enum([
+          "free",
+          "seller_basic",
+          "seller_pro",
+          "seller_annual",
+        ]),
+        subscriptionRenewsAt: zod.coerce.date().nullish(),
       }),
       body: zod.string(),
       createdAt: zod.coerce.date(),
@@ -546,6 +710,13 @@ export const GetRecentActivityResponseItem = zod.object({
     joinedAt: zod.coerce.date(),
     bio: zod.string(),
     location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
   }),
   summary: zod.string(),
   requestId: zod.string().nullish(),
@@ -576,6 +747,13 @@ export const GetTrendingRequestsResponseItem = zod.object({
     joinedAt: zod.coerce.date(),
     bio: zod.string(),
     location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
   }),
   responseCount: zod.number(),
 });

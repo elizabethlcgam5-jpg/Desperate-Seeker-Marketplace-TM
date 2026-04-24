@@ -25,10 +25,12 @@ import type {
   ListRequestsParams,
   Message,
   OverviewStats,
+  PricingPlan,
   RequestDetail,
   RequestSummary,
   SellerResponse,
   SendMessageBody,
+  SubscribeCurrentUserBody,
   SwitchUserBody,
   Thread,
   ThreadDetail,
@@ -339,6 +341,168 @@ export function useListUsers<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getListUsersQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Set the seller subscription tier for the current user
+ */
+export const getSubscribeCurrentUserUrl = () => {
+  return `/api/me/subscribe`;
+};
+
+export const subscribeCurrentUser = async (
+  subscribeCurrentUserBody: SubscribeCurrentUserBody,
+  options?: RequestInit,
+): Promise<User> => {
+  return customFetch<User>(getSubscribeCurrentUserUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(subscribeCurrentUserBody),
+  });
+};
+
+export const getSubscribeCurrentUserMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof subscribeCurrentUser>>,
+    TError,
+    { data: BodyType<SubscribeCurrentUserBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof subscribeCurrentUser>>,
+  TError,
+  { data: BodyType<SubscribeCurrentUserBody> },
+  TContext
+> => {
+  const mutationKey = ["subscribeCurrentUser"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof subscribeCurrentUser>>,
+    { data: BodyType<SubscribeCurrentUserBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return subscribeCurrentUser(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SubscribeCurrentUserMutationResult = NonNullable<
+  Awaited<ReturnType<typeof subscribeCurrentUser>>
+>;
+export type SubscribeCurrentUserMutationBody =
+  BodyType<SubscribeCurrentUserBody>;
+export type SubscribeCurrentUserMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Set the seller subscription tier for the current user
+ */
+export const useSubscribeCurrentUser = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof subscribeCurrentUser>>,
+    TError,
+    { data: BodyType<SubscribeCurrentUserBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof subscribeCurrentUser>>,
+  TError,
+  { data: BodyType<SubscribeCurrentUserBody> },
+  TContext
+> => {
+  return useMutation(getSubscribeCurrentUserMutationOptions(options));
+};
+
+/**
+ * @summary Public pricing plans for sellers
+ */
+export const getListPricingPlansUrl = () => {
+  return `/api/pricing/plans`;
+};
+
+export const listPricingPlans = async (
+  options?: RequestInit,
+): Promise<PricingPlan[]> => {
+  return customFetch<PricingPlan[]>(getListPricingPlansUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListPricingPlansQueryKey = () => {
+  return [`/api/pricing/plans`] as const;
+};
+
+export const getListPricingPlansQueryOptions = <
+  TData = Awaited<ReturnType<typeof listPricingPlans>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listPricingPlans>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListPricingPlansQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof listPricingPlans>>
+  > = ({ signal }) => listPricingPlans({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listPricingPlans>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListPricingPlansQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listPricingPlans>>
+>;
+export type ListPricingPlansQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Public pricing plans for sellers
+ */
+
+export function useListPricingPlans<
+  TData = Awaited<ReturnType<typeof listPricingPlans>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listPricingPlans>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListPricingPlansQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

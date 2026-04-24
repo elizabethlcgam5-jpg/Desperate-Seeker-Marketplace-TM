@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { TierBadge } from "@/components/tier-badge";
 import {
   useGetRequest,
   useGetCurrentUser,
@@ -400,6 +401,7 @@ export default function RequestDetail() {
                             <AvatarFallback>{response.seller.name.charAt(0)}</AvatarFallback>
                           </Avatar>
                           <span className="font-medium group-hover:text-primary transition-colors">{response.seller.name}</span>
+                          <TierBadge tier={response.seller.subscriptionTier} size="xs" />
                         </Link>
                         <div className="text-right">
                           <div className="text-xl font-bold">${response.price}</div>

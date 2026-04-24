@@ -10,6 +10,9 @@ import {
   GetUserResponse,
   UpdateCurrentUserBody,
   UpdateCurrentUserResponse,
+  SubscribeCurrentUserBody,
+  SubscribeCurrentUserResponse,
+  ListPricingPlansResponse,
 } from "@workspace/api-zod";
 import { withCurrentUser, setCurrentUserId } from "../lib/session";
 import { serializeUser } from "../lib/serializers";
@@ -42,6 +45,84 @@ router.put("/me", withCurrentUser, async (req, res) => {
     .where(eq(usersTable.id, req.currentUserId!))
     .returning();
   res.json(UpdateCurrentUserResponse.parse(serializeUser(updated)));
+});
+
+router.post("/me/subscribe", withCurrentUser, async (req, res) => {
+  const body = SubscribeCurrentUserBody.parse(req.body);
+  const renews =
+    body.tier === "free"
+      ? null
+      : body.tier === "seller_annual"
+        ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const [updated] = await db
+    .update(usersTable)
+    .set({ subscriptionTier: body.tier, subscriptionRenewsAt: renews })
+    .where(eq(usersTable.id, req.currentUserId!))
+    .returning();
+  res.json(SubscribeCurrentUserResponse.parse(serializeUser(updated)));
+});
+
+router.get("/pricing/plans", async (_req, res) => {
+  const plans = [
+    {
+      tier: "free" as const,
+      name: "Buyer",
+      priceCents: 0,
+      interval: "none" as const,
+      tagline: "Always free for buyers.",
+      features: [
+        "Post unlimited buyer requests",
+        "Receive offers from sellers",
+        "In-app messaging with sellers",
+        "Accept the best offer, no fees",
+      ],
+      highlight: false,
+    },
+    {
+      tier: "seller_basic" as const,
+      name: "Seller Basic",
+      priceCents: 499,
+      interval: "month" as const,
+      tagline: "Start responding to buyer requests.",
+      features: [
+        "Send unlimited offers",
+        "Verified Seller badge",
+        "Standard placement in buyer inbox",
+        "Cancel anytime",
+      ],
+      highlight: false,
+    },
+    {
+      tier: "seller_pro" as const,
+      name: "Seller Pro",
+      priceCents: 999,
+      interval: "month" as const,
+      tagline: "For active sellers who want more eyes on their offers.",
+      features: [
+        "Everything in Basic",
+        "Featured placement at the top of buyer inboxes",
+        "Response analytics & view counts",
+        "Priority support",
+      ],
+      highlight: true,
+    },
+    {
+      tier: "seller_annual" as const,
+      name: "Seller Annual",
+      priceCents: 1999,
+      interval: "year" as const,
+      tagline: "Limited launch deal — Pro perks for the year.",
+      features: [
+        "Everything in Pro",
+        "One full year of Pro access",
+        "Early access to new seller tools",
+        "Lock in launch pricing",
+      ],
+      highlight: false,
+    },
+  ];
+  res.json(ListPricingPlansResponse.parse(plans));
 });
 
 router.get("/users", async (_req, res) => {

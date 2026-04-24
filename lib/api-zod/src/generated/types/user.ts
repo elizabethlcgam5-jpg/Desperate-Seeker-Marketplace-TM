@@ -5,6 +5,7 @@
  * Desperately Seeking - buyer-first marketplace API
  * OpenAPI spec version: 0.1.0
  */
+import type { UserSubscriptionTier } from "./userSubscriptionTier";
 
 export interface User {
   id: string;
@@ -14,4 +15,6 @@ export interface User {
   joinedAt: Date;
   bio: string;
   location: string;
+  subscriptionTier: UserSubscriptionTier;
+  subscriptionRenewsAt?: Date | null;
 }

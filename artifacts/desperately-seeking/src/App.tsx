@@ -11,6 +11,7 @@ import Messages from "@/pages/messages/index";
 import ThreadDetail from "@/pages/messages/[id]";
 import UserProfile from "@/pages/profile/[id]";
 import MyRequests from "@/pages/me/requests";
+import Pricing from "@/pages/pricing";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/profile" component={UserProfile} />
       <Route path="/profile/:id" component={UserProfile} />
       <Route path="/me/requests" component={MyRequests} />
+      <Route path="/pricing" component={Pricing} />
       <Route component={NotFound} />
     </Switch>
   );

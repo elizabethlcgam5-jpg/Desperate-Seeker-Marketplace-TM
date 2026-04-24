@@ -66,7 +66,30 @@ const usersSeed = [
 
 async function seed() {
   await reset();
-  await db.insert(usersTable).values(usersSeed);
+  await db.insert(usersTable).values(
+    usersSeed.map((u) => {
+      // Theo is a Pro seller, Rafa is on Basic — show off badges in the demo.
+      if (u.handle === "theo_l") {
+        return {
+          ...u,
+          subscriptionTier: "seller_pro",
+          subscriptionRenewsAt: new Date(
+            Date.now() + 30 * 24 * 60 * 60 * 1000,
+          ),
+        };
+      }
+      if (u.handle === "rafa") {
+        return {
+          ...u,
+          subscriptionTier: "seller_basic",
+          subscriptionRenewsAt: new Date(
+            Date.now() + 30 * 24 * 60 * 60 * 1000,
+          ),
+        };
+      }
+      return u;
+    }),
+  );
 
   const [maya, theo, june, rafa, sasha] = usersSeed;
 

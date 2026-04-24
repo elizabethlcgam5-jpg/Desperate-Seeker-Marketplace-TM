@@ -9,6 +9,16 @@ export interface HealthStatus {
   status: string;
 }
 
+export type UserSubscriptionTier =
+  (typeof UserSubscriptionTier)[keyof typeof UserSubscriptionTier];
+
+export const UserSubscriptionTier = {
+  free: "free",
+  seller_basic: "seller_basic",
+  seller_pro: "seller_pro",
+  seller_annual: "seller_annual",
+} as const;
+
 export interface User {
   id: string;
   name: string;
@@ -17,6 +27,37 @@ export interface User {
   joinedAt: string;
   bio: string;
   location: string;
+  subscriptionTier: UserSubscriptionTier;
+  subscriptionRenewsAt?: string | null;
+}
+
+export type PricingPlanTier =
+  (typeof PricingPlanTier)[keyof typeof PricingPlanTier];
+
+export const PricingPlanTier = {
+  free: "free",
+  seller_basic: "seller_basic",
+  seller_pro: "seller_pro",
+  seller_annual: "seller_annual",
+} as const;
+
+export type PricingPlanInterval =
+  (typeof PricingPlanInterval)[keyof typeof PricingPlanInterval];
+
+export const PricingPlanInterval = {
+  month: "month",
+  year: "year",
+  none: "none",
+} as const;
+
+export interface PricingPlan {
+  tier: PricingPlanTier;
+  name: string;
+  priceCents: number;
+  interval: PricingPlanInterval;
+  tagline: string;
+  features: string[];
+  highlight?: boolean;
 }
 
 export type RequestSummaryStatus =
@@ -227,6 +268,20 @@ export interface ActivityEvent {
   summary: string;
   requestId?: string | null;
 }
+
+export type SubscribeCurrentUserBodyTier =
+  (typeof SubscribeCurrentUserBodyTier)[keyof typeof SubscribeCurrentUserBodyTier];
+
+export const SubscribeCurrentUserBodyTier = {
+  free: "free",
+  seller_basic: "seller_basic",
+  seller_pro: "seller_pro",
+  seller_annual: "seller_annual",
+} as const;
+
+export type SubscribeCurrentUserBody = {
+  tier: SubscribeCurrentUserBodyTier;
+};
 
 export type SwitchUserBody = {
   userId: string;

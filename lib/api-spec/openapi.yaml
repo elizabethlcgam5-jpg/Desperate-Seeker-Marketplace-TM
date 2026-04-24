@@ -79,6 +79,45 @@ paths:
                 items:
                   $ref: "#/components/schemas/User"
 
+  /me/subscribe:
+    post:
+      operationId: subscribeCurrentUser
+      tags: [users]
+      summary: Set the seller subscription tier for the current user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tier]
+              properties:
+                tier:
+                  type: string
+                  enum: [free, seller_basic, seller_pro, seller_annual]
+      responses:
+        "200":
+          description: Updated user with new tier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /pricing/plans:
+    get:
+      operationId: listPricingPlans
+      tags: [users]
+      summary: Public pricing plans for sellers
+      responses:
+        "200":
+          description: Plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PricingPlan"
+
   /users/switch:
     post:
       operationId: switchUser
@@ -443,7 +482,8 @@ components:
 
     User:
       type: object
-      required: [id, name, handle, avatarUrl, joinedAt, bio, location]
+      required:
+        [id, name, handle, avatarUrl, joinedAt, bio, location, subscriptionTier]
       properties:
         id:
           type: string
@@ -460,6 +500,36 @@ components:
           type: string
         location:
           type: string
+        subscriptionTier:
+          type: string
+          enum: [free, seller_basic, seller_pro, seller_annual]
+        subscriptionRenewsAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    PricingPlan:
+      type: object
+      required: [tier, name, priceCents, interval, tagline, features]
+      properties:
+        tier:
+          type: string
+          enum: [free, seller_basic, seller_pro, seller_annual]
+        name:
+          type: string
+        priceCents:
+          type: integer
+        interval:
+          type: string
+          enum: [month, year, none]
+        tagline:
+          type: string
+        features:
+          type: array
+          items:
+            type: string
+        highlight:
+          type: boolean
 
     UserProfile:
       type: object

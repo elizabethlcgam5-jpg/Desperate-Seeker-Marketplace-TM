@@ -9,6 +9,14 @@ export function serializeUser(u: User) {
     joinedAt: u.joinedAt.toISOString(),
     bio: u.bio,
     location: u.location,
+    subscriptionTier: u.subscriptionTier as
+      | "free"
+      | "seller_basic"
+      | "seller_pro"
+      | "seller_annual",
+    subscriptionRenewsAt: u.subscriptionRenewsAt
+      ? u.subscriptionRenewsAt.toISOString()
+      : null,
   };
 }
 
