@@ -20,13 +20,16 @@ import type {
   ActivityEvent,
   CategoryCount,
   CreateInventoryItemBody,
+  CreateListingBody,
   CreateRequestBody,
   CreateResponseBody,
   CreateSellerFeedbackBody,
   HealthStatus,
   InventoryItem,
   InventoryMatch,
+  ListListingsParams,
   ListRequestsParams,
+  Listing,
   Message,
   OverviewStats,
   PricingPlan,
@@ -2492,3 +2495,270 @@ export const useSubmitSellerFeedback = <
 > => {
   return useMutation(getSubmitSellerFeedbackMutationOptions(options));
 };
+
+/**
+ * @summary Browse marketplace listings
+ */
+export const getListListingsUrl = (params?: ListListingsParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/listings?${stringifiedParams}`
+    : `/api/listings`;
+};
+
+export const listListings = async (
+  params?: ListListingsParams,
+  options?: RequestInit,
+): Promise<Listing[]> => {
+  return customFetch<Listing[]>(getListListingsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListListingsQueryKey = (params?: ListListingsParams) => {
+  return [`/api/listings`, ...(params ? [params] : [])] as const;
+};
+
+export const getListListingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listListings>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListListingsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listListings>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListListingsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listListings>>> = ({
+    signal,
+  }) => listListings(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listListings>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListListingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listListings>>
+>;
+export type ListListingsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Browse marketplace listings
+ */
+
+export function useListListings<
+  TData = Awaited<ReturnType<typeof listListings>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListListingsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listListings>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListListingsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Create a new listing
+ */
+export const getCreateListingUrl = () => {
+  return `/api/listings`;
+};
+
+export const createListing = async (
+  createListingBody: CreateListingBody,
+  options?: RequestInit,
+): Promise<Listing> => {
+  return customFetch<Listing>(getCreateListingUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createListingBody),
+  });
+};
+
+export const getCreateListingMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createListing>>,
+    TError,
+    { data: BodyType<CreateListingBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createListing>>,
+  TError,
+  { data: BodyType<CreateListingBody> },
+  TContext
+> => {
+  const mutationKey = ["createListing"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createListing>>,
+    { data: BodyType<CreateListingBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createListing(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateListingMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createListing>>
+>;
+export type CreateListingMutationBody = BodyType<CreateListingBody>;
+export type CreateListingMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Create a new listing
+ */
+export const useCreateListing = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createListing>>,
+    TError,
+    { data: BodyType<CreateListingBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createListing>>,
+  TError,
+  { data: BodyType<CreateListingBody> },
+  TContext
+> => {
+  return useMutation(getCreateListingMutationOptions(options));
+};
+
+/**
+ * @summary Get a single listing by ID
+ */
+export const getGetListingUrl = (listingId: string) => {
+  return `/api/listings/${listingId}`;
+};
+
+export const getListing = async (
+  listingId: string,
+  options?: RequestInit,
+): Promise<Listing> => {
+  return customFetch<Listing>(getGetListingUrl(listingId), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetListingQueryKey = (listingId: string) => {
+  return [`/api/listings/${listingId}`] as const;
+};
+
+export const getGetListingQueryOptions = <
+  TData = Awaited<ReturnType<typeof getListing>>,
+  TError = ErrorType<unknown>,
+>(
+  listingId: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getListing>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetListingQueryKey(listingId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getListing>>> = ({
+    signal,
+  }) => getListing(listingId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!listingId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getListing>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetListingQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getListing>>
+>;
+export type GetListingQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get a single listing by ID
+ */
+
+export function useGetListing<
+  TData = Awaited<ReturnType<typeof getListing>>,
+  TError = ErrorType<unknown>,
+>(
+  listingId: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getListing>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetListingQueryOptions(listingId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}

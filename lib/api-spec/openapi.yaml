@@ -20,6 +20,8 @@ tags:
     description: Conversation messages
   - name: stats
     description: Marketplace stats and feeds
+  - name: listings
+    description: Marketplace listings posted by sellers
 paths:
   /healthz:
     get:
@@ -580,6 +582,69 @@ paths:
               schema:
                 $ref: "#/components/schemas/SellerFeedback"
 
+  /listings:
+    get:
+      operationId: listListings
+      tags: [listings]
+      summary: Browse marketplace listings
+      parameters:
+        - name: zip
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by ZIP code prefix (first 3 digits matched)
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+    post:
+      operationId: createListing
+      tags: [listings]
+      summary: Create a new listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateListingBody"
+      responses:
+        "201":
+          description: Created listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+
+  /listings/{listingId}:
+    get:
+      operationId: getListing
+      tags: [listings]
+      summary: Get a single listing by ID
+      parameters:
+        - name: listingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Listing detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+
 components:
   schemas:
     HealthStatus:
@@ -1139,3 +1204,50 @@ components:
         requestId:
           type: string
           nullable: true
+
+    Listing:
+      type: object
+      required: [id, title, description, price, imageUrl, category, zipCode, status, isAvailable, createdAt]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        category:
+          type: string
+        zipCode:
+          type: string
+        status:
+          type: string
+          enum: [active, sold]
+        isAvailable:
+          type: boolean
+        sellerId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateListingBody:
+      type: object
+      required: [title, description, price, imageUrl, category, zipCode]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        category:
+          type: string
+        zipCode:
+          type: string

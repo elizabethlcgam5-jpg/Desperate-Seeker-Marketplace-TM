@@ -16,6 +16,7 @@ import Inventory from "@/pages/me/inventory";
 import SellerDashboard from "@/pages/me/dashboard";
 import Pricing from "@/pages/pricing";
 import CheckoutSuccess from "@/pages/checkout/success";
+import Browse from "@/pages/browse";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +31,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/browse" component={Browse} />
       <Route path="/requests/new" component={NewRequest} />
       <Route path="/requests/:id" component={RequestDetail} />
       <Route path="/messages" component={Messages} />

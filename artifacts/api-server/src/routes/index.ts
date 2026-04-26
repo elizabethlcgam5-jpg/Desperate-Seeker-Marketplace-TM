@@ -9,6 +9,7 @@ import analyticsRouter from "./analytics";
 import inventoryRouter from "./inventory";
 import feedbackRouter from "./feedback";
 import stripeRouter from "./stripe";
+import listingsRouter from "./listings";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(analyticsRouter);
 router.use(inventoryRouter);
 router.use(feedbackRouter);
 router.use(stripeRouter);
+router.use(listingsRouter);
 
 export default router;

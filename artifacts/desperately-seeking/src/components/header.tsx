@@ -23,7 +23,7 @@ export function Header() {
           </span>
         </Link>
         <nav className="flex flex-1 items-center space-x-5 text-sm font-medium">
-          <Link href="/" className="text-white/80 transition-colors hover:text-white">
+          <Link href="/browse" className="text-white/80 transition-colors hover:text-white">
             Browse
           </Link>
           <Link href="/requests/new" className="text-white/80 transition-colors hover:text-white">

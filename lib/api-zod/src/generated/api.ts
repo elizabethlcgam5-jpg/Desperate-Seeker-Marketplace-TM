@@ -995,3 +995,62 @@ export const SubmitSellerFeedbackBody = zod.object({
   rating: zod.number().min(1).max(submitSellerFeedbackBodyRatingMax),
   comment: zod.string().optional(),
 });
+
+/**
+ * @summary Browse marketplace listings
+ */
+export const ListListingsQueryParams = zod.object({
+  zip: zod.coerce
+    .string()
+    .optional()
+    .describe("Filter by ZIP code prefix (first 3 digits matched)"),
+  category: zod.coerce.string().optional(),
+});
+
+export const ListListingsResponseItem = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  price: zod.number(),
+  imageUrl: zod.string(),
+  category: zod.string(),
+  zipCode: zod.string(),
+  status: zod.enum(["active", "sold"]),
+  isAvailable: zod.boolean(),
+  sellerId: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+});
+export const ListListingsResponse = zod.array(ListListingsResponseItem);
+
+/**
+ * @summary Create a new listing
+ */
+export const CreateListingBody = zod.object({
+  title: zod.string(),
+  description: zod.string(),
+  price: zod.number(),
+  imageUrl: zod.string(),
+  category: zod.string(),
+  zipCode: zod.string(),
+});
+
+/**
+ * @summary Get a single listing by ID
+ */
+export const GetListingParams = zod.object({
+  listingId: zod.coerce.string(),
+});
+
+export const GetListingResponse = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  price: zod.number(),
+  imageUrl: zod.string(),
+  category: zod.string(),
+  zipCode: zod.string(),
+  status: zod.enum(["active", "sold"]),
+  isAvailable: zod.boolean(),
+  sellerId: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+});

@@ -393,6 +393,36 @@ export interface ActivityEvent {
   requestId?: string | null;
 }
 
+export type ListingStatus = (typeof ListingStatus)[keyof typeof ListingStatus];
+
+export const ListingStatus = {
+  active: "active",
+  sold: "sold",
+} as const;
+
+export interface Listing {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  category: string;
+  zipCode: string;
+  status: ListingStatus;
+  isAvailable: boolean;
+  sellerId?: string | null;
+  createdAt: string;
+}
+
+export interface CreateListingBody {
+  title: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  category: string;
+  zipCode: string;
+}
+
 export type SubscribeCurrentUserBodyTier =
   (typeof SubscribeCurrentUserBodyTier)[keyof typeof SubscribeCurrentUserBodyTier];
 
@@ -454,4 +484,12 @@ export type UpdateResponseStatusBody = {
 export type SendMessageBody = {
   /** @minLength 1 */
   body: string;
+};
+
+export type ListListingsParams = {
+  /**
+   * Filter by ZIP code prefix (first 3 digits matched)
+   */
+  zip?: string;
+  category?: string;
 };
