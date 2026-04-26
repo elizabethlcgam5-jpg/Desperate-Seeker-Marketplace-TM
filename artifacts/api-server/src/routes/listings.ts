@@ -1,14 +1,18 @@
 import { Router, type IRouter } from "express";
-import { db, listingsTable } from "@workspace/db";
-import { eq, desc } from "drizzle-orm";
+import { db, listingsTable, usersTable } from "@workspace/db";
+import { eq, desc, and } from "drizzle-orm";
 import {
   ListListingsResponse,
   GetListingResponse,
   CreateListingBody,
+  ListMyListingsResponse,
 } from "@workspace/api-zod";
 import { randomUUID } from "node:crypto";
+import { withCurrentUser } from "../lib/session";
 
 const router: IRouter = Router();
+
+const PREMIUM_TIERS = new Set(["seller_basic", "seller_pro", "seller_annual"]);
 
 function serializeListing(row: typeof listingsTable.$inferSelect) {
   return {
@@ -21,7 +25,9 @@ function serializeListing(row: typeof listingsTable.$inferSelect) {
     zipCode: row.zipCode,
     status: row.status as "active" | "sold",
     isAvailable: row.isAvailable,
+    isFeatured: row.isFeatured,
     sellerId: row.sellerId ?? null,
+    sellerName: row.sellerName ?? null,
     createdAt: row.createdAt.toISOString(),
   };
 }
@@ -63,7 +69,22 @@ router.get("/listings", async (req, res) => {
     rows = [...exact, ...nearby, ...rest];
   }
 
+  // Featured listings always come first
+  const featured = rows.filter((r) => r.isFeatured);
+  const regular = rows.filter((r) => !r.isFeatured);
+  rows = [...featured, ...regular];
+
   res.json(ListListingsResponse.parse(rows.map(serializeListing)));
+});
+
+router.get("/me/listings", withCurrentUser, async (req, res) => {
+  const rows = await db
+    .select()
+    .from(listingsTable)
+    .where(eq(listingsTable.sellerId, req.currentUserId!))
+    .orderBy(desc(listingsTable.createdAt));
+
+  res.json(ListMyListingsResponse.parse(rows.map(serializeListing)));
 });
 
 router.get("/listings/:listingId", async (req, res) => {
@@ -82,8 +103,24 @@ router.get("/listings/:listingId", async (req, res) => {
   res.json(GetListingResponse.parse(serializeListing(row)));
 });
 
-router.post("/listings", async (req, res) => {
+router.post("/listings", withCurrentUser, async (req, res) => {
   const body = CreateListingBody.parse(req.body);
+
+  // Check seller's tier to determine if listing should be featured
+  let isFeatured = false;
+  let sellerName = "";
+  const sellerId = req.currentUserId!;
+
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, sellerId))
+    .limit(1);
+
+  if (user) {
+    isFeatured = PREMIUM_TIERS.has(user.subscriptionTier ?? "");
+    sellerName = user.name;
+  }
 
   const [row] = await db
     .insert(listingsTable)
@@ -95,6 +132,9 @@ router.post("/listings", async (req, res) => {
       imageUrl: body.imageUrl,
       category: body.category,
       zipCode: body.zipCode,
+      sellerId,
+      sellerName,
+      isFeatured,
     })
     .returning();
 

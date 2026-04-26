@@ -687,6 +687,21 @@ paths:
                 items:
                   $ref: "#/components/schemas/Commission"
 
+  /me/listings:
+    get:
+      operationId: listMyListings
+      tags: [listings]
+      summary: List all listings posted by the current seller (active + sold)
+      responses:
+        "200":
+          description: Seller's listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
+
 components:
   schemas:
     HealthStatus:
@@ -1249,7 +1264,7 @@ components:
 
     Listing:
       type: object
-      required: [id, title, description, price, imageUrl, category, zipCode, status, isAvailable, createdAt]
+      required: [id, title, description, price, imageUrl, category, zipCode, status, isAvailable, isFeatured, createdAt]
       properties:
         id:
           type: string
@@ -1270,7 +1285,12 @@ components:
           enum: [active, sold]
         isAvailable:
           type: boolean
+        isFeatured:
+          type: boolean
         sellerId:
+          type: string
+          nullable: true
+        sellerName:
           type: string
           nullable: true
         createdAt:

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useListListings } from "@workspace/api-client-react";
-import { MapPin, Search, Tag, X } from "lucide-react";
+import { MapPin, Search, Tag, X, Star } from "lucide-react";
 
 const CATEGORIES = [
   "All",
@@ -35,26 +35,49 @@ function ListingCard({
     zipCode: string;
     status: string;
     isAvailable: boolean;
+    isFeatured: boolean;
+    sellerName?: string | null;
     createdAt: string;
   };
 }) {
   return (
-    <div className="bg-white rounded-2xl border shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+    <div
+      className={`bg-white rounded-2xl border overflow-hidden hover:shadow-md transition-all flex flex-col ${
+        listing.isFeatured
+          ? "border-[#D4AF37] shadow-md ring-1 ring-[#D4AF37]/20 hover:-translate-y-0.5"
+          : "border-border/60 shadow-sm"
+      }`}
+    >
       {listing.imageUrl ? (
-        <div className="aspect-[4/3] overflow-hidden bg-gray-100">
+        <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
           <img
             src={listing.imageUrl}
             alt={listing.title}
             className="w-full h-full object-cover"
             onError={(e) => {
-              (e.target as HTMLImageElement).src =
-                `https://picsum.photos/seed/${listing.id}/400/300`;
+              (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${listing.id}/400/300`;
             }}
           />
+          {listing.isFeatured && (
+            <div className="absolute top-2 left-2">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-2.5 py-1 text-[10px] font-bold text-[#0B3954] shadow-sm">
+                <Star className="h-3 w-3 fill-[#0B3954]" />
+                Featured
+              </span>
+            </div>
+          )}
         </div>
       ) : (
-        <div className="aspect-[4/3] bg-[#0B3954]/10 flex items-center justify-center">
+        <div className="aspect-[4/3] bg-[#0B3954]/10 flex items-center justify-center relative">
           <Tag className="h-10 w-10 text-[#0B3954]/30" />
+          {listing.isFeatured && (
+            <div className="absolute top-2 left-2">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-2.5 py-1 text-[10px] font-bold text-[#0B3954] shadow-sm">
+                <Star className="h-3 w-3 fill-[#0B3954]" />
+                Featured
+              </span>
+            </div>
+          )}
         </div>
       )}
       <div className="p-4 flex flex-col flex-1">
@@ -81,6 +104,17 @@ function ListingCard({
             {listing.zipCode}
           </span>
         </div>
+        {listing.sellerName && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            by{" "}
+            <span className={listing.isFeatured ? "text-[#D4AF37] font-medium" : ""}>
+              {listing.sellerName}
+            </span>
+            {listing.isFeatured && (
+              <span className="ml-1 text-[10px] font-medium text-[#D4AF37]">✓ Verified</span>
+            )}
+          </p>
+        )}
         {!listing.isAvailable && (
           <div className="mt-2 text-center text-xs font-medium text-red-500 bg-red-50 rounded-full py-1">
             Sold
@@ -109,6 +143,8 @@ export default function Browse() {
     setZipInput("");
     setActiveZip("");
   }
+
+  const featuredCount = listings?.filter((l) => l.isFeatured).length ?? 0;
 
   return (
     <Layout>
@@ -156,8 +192,9 @@ export default function Browse() {
 
           {activeZip && (
             <p className="text-white/60 text-sm mt-2">
-              Showing listings near ZIP <strong className="text-white">{activeZip}</strong>
-              {" "}— exact matches first, then nearby area.
+              Showing listings near ZIP{" "}
+              <strong className="text-white">{activeZip}</strong> — exact
+              matches first, then nearby area.
             </p>
           )}
         </div>
@@ -183,11 +220,19 @@ export default function Browse() {
 
         {/* Results count */}
         {!isLoading && listings && (
-          <p className="text-sm text-muted-foreground mb-4">
-            {listings.length} listing{listings.length !== 1 ? "s" : ""} found
-            {activeCategory !== "All" && ` in ${activeCategory}`}
-            {activeZip && ` near ${activeZip}`}
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-muted-foreground">
+              {listings.length} listing{listings.length !== 1 ? "s" : ""} found
+              {activeCategory !== "All" && ` in ${activeCategory}`}
+              {activeZip && ` near ${activeZip}`}
+            </p>
+            {featuredCount > 0 && (
+              <div className="flex items-center gap-1.5 text-xs text-[#D4AF37] font-medium">
+                <Star className="h-3.5 w-3.5 fill-[#D4AF37]" />
+                {featuredCount} featured
+              </div>
+            )}
+          </div>
         )}
 
         {/* Listings grid */}

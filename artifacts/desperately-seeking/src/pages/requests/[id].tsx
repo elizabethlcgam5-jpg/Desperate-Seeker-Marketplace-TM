@@ -47,6 +47,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { PaywallModal } from "@/components/paywall-modal";
 
 const responseSchema = z.object({
   price: z.coerce.number().min(0),
@@ -60,8 +61,13 @@ export default function RequestDetail() {
   const [_, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const [isResponseDialogOpen, setIsResponseDialogOpen] = useState(false);
+  const [paywallOpen, setPaywallOpen] = useState(false);
 
   const { data: currentUser } = useGetCurrentUser();
+  const isSeller =
+    currentUser &&
+    currentUser.subscriptionTier &&
+    currentUser.subscriptionTier !== "free";
   const { data: request, isLoading: requestLoading } = useGetRequest(id as string, {
     query: { enabled: !!id },
   });
@@ -280,6 +286,15 @@ export default function RequestDetail() {
                 </Button>
               )
             ) : request.status === "open" ? (
+              !isSeller ? (
+                <Button
+                  size="lg"
+                  className="rounded-full shadow-lg bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0"
+                  onClick={() => setPaywallOpen(true)}
+                >
+                  I have this!
+                </Button>
+              ) :
               <Dialog open={isResponseDialogOpen} onOpenChange={setIsResponseDialogOpen}>
                 <DialogTrigger asChild>
                   <Button size="lg" className="rounded-full shadow-lg shadow-primary/20">
@@ -471,6 +486,12 @@ export default function RequestDetail() {
           </div>
         )}
       </div>
+
+      <PaywallModal
+        open={paywallOpen}
+        onOpenChange={setPaywallOpen}
+        reason="Upgrade to respond to buyer requests"
+      />
     </Layout>
   );
 }

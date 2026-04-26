@@ -2926,3 +2926,78 @@ export function useListMyCommissions<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary List all listings posted by the current seller (active + sold)
+ */
+export const getListMyListingsUrl = () => {
+  return `/api/me/listings`;
+};
+
+export const listMyListings = async (
+  options?: RequestInit,
+): Promise<Listing[]> => {
+  return customFetch<Listing[]>(getListMyListingsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListMyListingsQueryKey = () => {
+  return [`/api/me/listings`] as const;
+};
+
+export const getListMyListingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyListings>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listMyListings>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyListingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyListings>>> = ({
+    signal,
+  }) => listMyListings({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyListings>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListMyListingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listMyListings>>
+>;
+export type ListMyListingsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List all listings posted by the current seller (active + sold)
+ */
+
+export function useListMyListings<
+  TData = Awaited<ReturnType<typeof listMyListings>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listMyListings>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListMyListingsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}

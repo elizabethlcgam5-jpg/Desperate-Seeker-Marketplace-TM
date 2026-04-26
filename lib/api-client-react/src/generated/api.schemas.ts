@@ -410,7 +410,9 @@ export interface Listing {
   zipCode: string;
   status: ListingStatus;
   isAvailable: boolean;
+  isFeatured: boolean;
   sellerId?: string | null;
+  sellerName?: string | null;
   createdAt: string;
 }
 

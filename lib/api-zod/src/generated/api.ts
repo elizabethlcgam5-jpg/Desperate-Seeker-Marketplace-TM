@@ -1017,7 +1017,9 @@ export const ListListingsResponseItem = zod.object({
   zipCode: zod.string(),
   status: zod.enum(["active", "sold"]),
   isAvailable: zod.boolean(),
+  isFeatured: zod.boolean(),
   sellerId: zod.string().nullish(),
+  sellerName: zod.string().nullish(),
   createdAt: zod.coerce.date(),
 });
 export const ListListingsResponse = zod.array(ListListingsResponseItem);
@@ -1051,7 +1053,9 @@ export const GetListingResponse = zod.object({
   zipCode: zod.string(),
   status: zod.enum(["active", "sold"]),
   isAvailable: zod.boolean(),
+  isFeatured: zod.boolean(),
   sellerId: zod.string().nullish(),
+  sellerName: zod.string().nullish(),
   createdAt: zod.coerce.date(),
 });
 
@@ -1100,3 +1104,23 @@ export const ListMyCommissionsResponseItem = zod.object({
 export const ListMyCommissionsResponse = zod.array(
   ListMyCommissionsResponseItem,
 );
+
+/**
+ * @summary List all listings posted by the current seller (active + sold)
+ */
+export const ListMyListingsResponseItem = zod.object({
+  id: zod.string(),
+  title: zod.string(),
+  description: zod.string(),
+  price: zod.number(),
+  imageUrl: zod.string(),
+  category: zod.string(),
+  zipCode: zod.string(),
+  status: zod.enum(["active", "sold"]),
+  isAvailable: zod.boolean(),
+  isFeatured: zod.boolean(),
+  sellerId: zod.string().nullish(),
+  sellerName: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+});
+export const ListMyListingsResponse = zod.array(ListMyListingsResponseItem);

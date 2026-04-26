@@ -1,7 +1,16 @@
 import { Link } from "wouter";
 import { UserSwitcher } from "./user-switcher";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Search, Sparkles, BarChart3, Package, Receipt } from "lucide-react";
+import {
+  MessageSquare,
+  Search,
+  Sparkles,
+  BarChart3,
+  Package,
+  Receipt,
+  Inbox,
+  ShoppingBag,
+} from "lucide-react";
 import { useGetCurrentUser } from "@workspace/api-client-react";
 
 export function Header() {
@@ -26,21 +35,24 @@ export function Header() {
           <Link href="/browse" className="text-white/80 transition-colors hover:text-white">
             Browse
           </Link>
-          <Link href="/requests/new" className="text-white/80 transition-colors hover:text-white">
+          <Link href="/buyer-requests" className="text-white/80 transition-colors hover:text-white hidden sm:block">
+            Requests
+          </Link>
+          <Link href="/requests/new" className="text-white/80 transition-colors hover:text-white hidden md:block">
             Post Request
           </Link>
-          <Link href="/pricing" className="text-white/80 transition-colors hover:text-white">
+          <Link href="/pricing" className="text-white/80 transition-colors hover:text-white hidden md:block">
             Pricing
           </Link>
           {isSubscribed && (
-            <Link href="/me/dashboard" className="text-white/80 transition-colors hover:text-white">
+            <Link href="/me/dashboard" className="text-white/80 transition-colors hover:text-white hidden lg:block">
               Dashboard
             </Link>
           )}
         </nav>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1">
           {user && !isSubscribed && (
-            <Link href="/pricing" className="hidden sm:block">
+            <Link href="/pricing" className="hidden sm:block mr-1">
               <Button
                 size="sm"
                 className="gap-1.5 bg-[#D4AF37] text-[#0B3954] font-semibold hover:bg-[#c9a430] border-0"
@@ -50,30 +62,76 @@ export function Header() {
               </Button>
             </Link>
           )}
+
+          {/* Buyer Requests inbox */}
+          <Link href="/buyer-requests">
+            <Button
+              variant="ghost"
+              size="icon"
+              title="Buyer Request Inbox"
+              className="text-white/80 hover:text-white hover:bg-white/10"
+            >
+              <Inbox className="h-5 w-5" />
+            </Button>
+          </Link>
+
+          {/* My Listings */}
+          {user && (
+            <Link href="/me/listings">
+              <Button
+                variant="ghost"
+                size="icon"
+                title="My Listings"
+                className="text-white/80 hover:text-white hover:bg-white/10"
+              >
+                <ShoppingBag className="h-5 w-5" />
+              </Button>
+            </Link>
+          )}
+
           {isSubscribed && (
             <Link href="/me/inventory">
-              <Button variant="ghost" size="icon" title="My Inventory" className="text-white/80 hover:text-white hover:bg-white/10">
+              <Button
+                variant="ghost"
+                size="icon"
+                title="My Inventory"
+                className="text-white/80 hover:text-white hover:bg-white/10"
+              >
                 <Package className="h-5 w-5" />
               </Button>
             </Link>
           )}
           {isSubscribed && (
             <Link href="/me/commissions">
-              <Button variant="ghost" size="icon" title="Commissions" className="text-white/80 hover:text-white hover:bg-white/10">
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Commissions"
+                className="text-white/80 hover:text-white hover:bg-white/10"
+              >
                 <Receipt className="h-5 w-5" />
               </Button>
             </Link>
           )}
           {isPro && (
             <Link href="/me/analytics">
-              <Button variant="ghost" size="icon" title="Seller analytics" className="text-white/80 hover:text-white hover:bg-white/10">
+              <Button
+                variant="ghost"
+                size="icon"
+                title="Seller analytics"
+                className="text-white/80 hover:text-white hover:bg-white/10"
+              >
                 <BarChart3 className="h-5 w-5" />
               </Button>
             </Link>
           )}
           {user && (
             <Link href="/messages">
-              <Button variant="ghost" size="icon" className="relative text-white/80 hover:text-white hover:bg-white/10">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative text-white/80 hover:text-white hover:bg-white/10"
+              >
                 <MessageSquare className="h-5 w-5" />
               </Button>
             </Link>

@@ -12,8 +12,10 @@ export const listingsTable = pgTable("listings", {
   sellerId: text("seller_id").references(() => usersTable.id, {
     onDelete: "set null",
   }),
+  sellerName: text("seller_name").default(""),
   status: text("status").notNull().default("active"),
   isAvailable: boolean("is_available").notNull().default(true),
+  isFeatured: boolean("is_featured").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

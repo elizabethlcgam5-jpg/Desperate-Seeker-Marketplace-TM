@@ -15,6 +15,8 @@ import Analytics from "@/pages/me/analytics";
 import Inventory from "@/pages/me/inventory";
 import SellerDashboard from "@/pages/me/dashboard";
 import CommissionsPage from "@/pages/me/commissions";
+import MyListingsPage from "@/pages/me/listings";
+import BuyerRequests from "@/pages/buyer-requests";
 import Pricing from "@/pages/pricing";
 import CheckoutSuccess from "@/pages/checkout/success";
 import Browse from "@/pages/browse";
@@ -44,6 +46,8 @@ function Router() {
       <Route path="/me/inventory" component={Inventory} />
       <Route path="/me/dashboard" component={SellerDashboard} />
       <Route path="/me/commissions" component={CommissionsPage} />
+      <Route path="/me/listings" component={MyListingsPage} />
+      <Route path="/buyer-requests" component={BuyerRequests} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/checkout/success" component={CheckoutSuccess} />
       <Route component={NotFound} />

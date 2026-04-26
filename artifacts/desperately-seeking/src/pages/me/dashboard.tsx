@@ -19,6 +19,9 @@ import {
   Target,
   Receipt,
   DollarSign,
+  ShoppingBag,
+  Inbox,
+  PlusCircle,
 } from "lucide-react";
 import { useListMyCommissions } from "@workspace/api-client-react";
 
@@ -86,11 +89,29 @@ export default function SellerDashboard() {
               Welcome back, {user.name}. Here's what's happening in your market today.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap justify-end">
+            <Link href="/listings/new">
+              <Button size="sm" className="rounded-full bg-[#D4AF37] text-[#0B3954] font-semibold hover:bg-[#c9a430] border-0 gap-1.5">
+                <PlusCircle className="h-4 w-4" />
+                New Listing
+              </Button>
+            </Link>
+            <Link href="/buyer-requests">
+              <Button variant="outline" size="sm" className="rounded-full border-[#0B3954]/20 text-[#0B3954] gap-1.5">
+                <Inbox className="h-4 w-4" />
+                Buyer Requests
+              </Button>
+            </Link>
+            <Link href="/me/listings">
+              <Button variant="outline" size="sm" className="rounded-full border-[#0B3954]/20 text-[#0B3954] gap-1.5">
+                <ShoppingBag className="h-4 w-4" />
+                My Listings
+              </Button>
+            </Link>
             <Link href="/me/inventory">
               <Button variant="outline" size="sm" className="rounded-full border-[#0B3954]/20 text-[#0B3954] gap-1.5">
                 <Package className="h-4 w-4" />
-                My Inventory
+                Inventory
               </Button>
             </Link>
           </div>
