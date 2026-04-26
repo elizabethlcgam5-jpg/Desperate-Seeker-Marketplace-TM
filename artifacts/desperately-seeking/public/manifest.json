@@ -1,7 +1,7 @@
 {
-  "name": "Desperately Seeking – A Buyer's Request Marketplace",
-  "short_name": "DS Requests",
-  "description": "The marketplace where buyers are in control. Post what you need, set your budget, and sellers come to you with offers.",
+  "name": "Desperately Seeking",
+  "short_name": "Desperately Seeking",
+  "description": "Post what you need. Help comes to you. The buyer-first marketplace where sellers compete for your business.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0B3954",

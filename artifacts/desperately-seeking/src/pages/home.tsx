@@ -72,7 +72,7 @@ export default function Home() {
       <section className="bg-[#0B3954] py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-8 max-w-4xl text-center space-y-6">
           <Badge className="mb-2 border-[#D4AF37]/30 bg-[#D4AF37]/15 text-[#D4AF37] text-sm px-4 py-1.5">
-            A Buyer's Request Marketplace
+            Post what you need. Help comes to you.
           </Badge>
           <h1 className="text-5xl md:text-7xl font-serif font-bold text-white leading-tight text-balance">
             You say what you want.

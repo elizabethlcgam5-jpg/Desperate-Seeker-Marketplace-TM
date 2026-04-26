@@ -12,7 +12,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 md:flex-row md:py-0 md:h-16">
           <p className="text-center text-sm leading-loose md:text-left">
             <span className="font-serif font-medium text-white/80">Desperately Seeking</span>{" "}
-            &copy; {new Date().getFullYear()}. The buyer-first marketplace.
+            &copy; {new Date().getFullYear()}. Post what you need. Help comes to you.
           </p>
           <nav className="flex gap-5 text-sm">
             <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
