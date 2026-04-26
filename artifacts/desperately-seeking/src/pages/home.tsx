@@ -72,16 +72,15 @@ export default function Home() {
       <section className="bg-[#0B3954] py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-8 max-w-4xl text-center space-y-6">
           <Badge className="mb-2 border-[#D4AF37]/30 bg-[#D4AF37]/15 text-[#D4AF37] text-sm px-4 py-1.5">
-            The Reverse Marketplace
+            A Buyer's Request Marketplace
           </Badge>
           <h1 className="text-5xl md:text-7xl font-serif font-bold text-white leading-tight text-balance">
-            Stop scrolling.
+            You say what you want.
             <br />
-            <span className="text-[#D4AF37]">Start finding.</span>
+            <span className="text-[#D4AF37]">Sellers come to you.</span>
           </h1>
           <p className="text-lg md:text-xl text-white/70 max-w-xl mx-auto leading-relaxed">
-            Post exactly what you're looking for — <RotatingCategory /> — and let sellers
-            come to you with photos and prices.
+            This is the <em>opposite</em> of a regular marketplace. Buyers post exactly what they need — <RotatingCategory /> — and sellers compete to win your business.
           </p>
           <div className="pt-4 flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/requests/new">
@@ -119,9 +118,9 @@ export default function Home() {
       <section className="bg-white border-b py-12">
         <div className="container mx-auto px-4 md:px-8 max-w-4xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <Step n={1} title="Post what you want" desc="Describe it, set your budget, share an inspiration photo. Takes 60 seconds." />
-            <Step n={2} title="Sellers find you" desc="Local sellers with matching inventory get notified instantly." />
-            <Step n={3} title="Chat & close the deal" desc="Accept the best offer and message directly through the app." />
+            <Step n={1} title="You post the request" desc="Describe exactly what you want, set your budget, and add photos if you have them. Takes 60 seconds." />
+            <Step n={2} title="Sellers respond with offers" desc="Sellers who have what you need send you photos, prices, and details — you don't search, they find you." />
+            <Step n={3} title="You pick the best offer" desc="Compare offers side by side, message the seller, and close the deal on your terms." />
           </div>
         </div>
       </section>

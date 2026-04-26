@@ -1,7 +1,7 @@
 {
-  "name": "Desperately Seeking",
-  "short_name": "DS Market",
-  "description": "The buyer-first reverse marketplace. Post what you're looking for, let sellers come to you.",
+  "name": "Desperately Seeking – A Buyer's Request Marketplace",
+  "short_name": "DS Requests",
+  "description": "The marketplace where buyers are in control. Post what you need, set your budget, and sellers come to you with offers.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0B3954",
@@ -24,10 +24,10 @@
   "screenshots": [],
   "shortcuts": [
     {
-      "name": "Browse Requests",
+      "name": "Browse Buyer Requests",
       "short_name": "Browse",
-      "url": "/",
-      "description": "See all buyer requests"
+      "url": "/browse",
+      "description": "See what buyers are looking for"
     },
     {
       "name": "Post a Request",
