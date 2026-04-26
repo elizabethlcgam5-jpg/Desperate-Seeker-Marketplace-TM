@@ -19,6 +19,7 @@ import type {
 import type {
   ActivityEvent,
   CategoryCount,
+  Commission,
   CreateInventoryItemBody,
   CreateListingBody,
   CreateRequestBody,
@@ -30,6 +31,7 @@ import type {
   ListListingsParams,
   ListRequestsParams,
   Listing,
+  MarkListingSoldBody,
   Message,
   OverviewStats,
   PricingPlan,
@@ -2755,6 +2757,168 @@ export function useGetListing<
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetListingQueryOptions(listingId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Mark a listing as sold and record a 5% commission
+ */
+export const getMarkListingAsSoldUrl = (listingId: string) => {
+  return `/api/listings/${listingId}/sold`;
+};
+
+export const markListingAsSold = async (
+  listingId: string,
+  markListingSoldBody: MarkListingSoldBody,
+  options?: RequestInit,
+): Promise<Commission> => {
+  return customFetch<Commission>(getMarkListingAsSoldUrl(listingId), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(markListingSoldBody),
+  });
+};
+
+export const getMarkListingAsSoldMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof markListingAsSold>>,
+    TError,
+    { listingId: string; data: BodyType<MarkListingSoldBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof markListingAsSold>>,
+  TError,
+  { listingId: string; data: BodyType<MarkListingSoldBody> },
+  TContext
+> => {
+  const mutationKey = ["markListingAsSold"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof markListingAsSold>>,
+    { listingId: string; data: BodyType<MarkListingSoldBody> }
+  > = (props) => {
+    const { listingId, data } = props ?? {};
+
+    return markListingAsSold(listingId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MarkListingAsSoldMutationResult = NonNullable<
+  Awaited<ReturnType<typeof markListingAsSold>>
+>;
+export type MarkListingAsSoldMutationBody = BodyType<MarkListingSoldBody>;
+export type MarkListingAsSoldMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Mark a listing as sold and record a 5% commission
+ */
+export const useMarkListingAsSold = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof markListingAsSold>>,
+    TError,
+    { listingId: string; data: BodyType<MarkListingSoldBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof markListingAsSold>>,
+  TError,
+  { listingId: string; data: BodyType<MarkListingSoldBody> },
+  TContext
+> => {
+  return useMutation(getMarkListingAsSoldMutationOptions(options));
+};
+
+/**
+ * @summary List all commissions for the current seller
+ */
+export const getListMyCommissionsUrl = () => {
+  return `/api/me/commissions`;
+};
+
+export const listMyCommissions = async (
+  options?: RequestInit,
+): Promise<Commission[]> => {
+  return customFetch<Commission[]>(getListMyCommissionsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListMyCommissionsQueryKey = () => {
+  return [`/api/me/commissions`] as const;
+};
+
+export const getListMyCommissionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listMyCommissions>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listMyCommissions>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListMyCommissionsQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof listMyCommissions>>
+  > = ({ signal }) => listMyCommissions({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listMyCommissions>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListMyCommissionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listMyCommissions>>
+>;
+export type ListMyCommissionsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List all commissions for the current seller
+ */
+
+export function useListMyCommissions<
+  TData = Awaited<ReturnType<typeof listMyCommissions>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listMyCommissions>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListMyCommissionsQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

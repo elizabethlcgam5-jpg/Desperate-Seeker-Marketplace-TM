@@ -22,6 +22,8 @@ tags:
     description: Marketplace stats and feeds
   - name: listings
     description: Marketplace listings posted by sellers
+  - name: commissions
+    description: Sales commissions (5% on completed sales)
 paths:
   /healthz:
     get:
@@ -645,6 +647,46 @@ paths:
               schema:
                 $ref: "#/components/schemas/Listing"
 
+  /listings/{listingId}/sold:
+    patch:
+      operationId: markListingAsSold
+      tags: [listings, commissions]
+      summary: Mark a listing as sold and record a 5% commission
+      parameters:
+        - name: listingId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkListingSoldBody"
+      responses:
+        "200":
+          description: Commission record created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Commission"
+
+  /me/commissions:
+    get:
+      operationId: listMyCommissions
+      tags: [commissions]
+      summary: List all commissions for the current seller
+      responses:
+        "200":
+          description: Commissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Commission"
+
 components:
   schemas:
     HealthStatus:
@@ -1251,3 +1293,45 @@ components:
           type: string
         zipCode:
           type: string
+
+    MarkListingSoldBody:
+      type: object
+      required: [salePrice]
+      properties:
+        salePrice:
+          type: number
+          description: Final sale price (commission will be 5% of this)
+        notes:
+          type: string
+          nullable: true
+
+    Commission:
+      type: object
+      required: [id, sellerId, salePrice, commissionAmount, status, createdAt]
+      properties:
+        id:
+          type: string
+        sellerId:
+          type: string
+        listingId:
+          type: string
+          nullable: true
+        requestId:
+          type: string
+          nullable: true
+        listingTitle:
+          type: string
+          nullable: true
+        salePrice:
+          type: number
+        commissionAmount:
+          type: number
+        status:
+          type: string
+          enum: [pending, paid]
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time

@@ -423,6 +423,33 @@ export interface CreateListingBody {
   zipCode: string;
 }
 
+export interface MarkListingSoldBody {
+  /** Final sale price (commission will be 5% of this) */
+  salePrice: number;
+  notes?: string | null;
+}
+
+export type CommissionStatus =
+  (typeof CommissionStatus)[keyof typeof CommissionStatus];
+
+export const CommissionStatus = {
+  pending: "pending",
+  paid: "paid",
+} as const;
+
+export interface Commission {
+  id: string;
+  sellerId: string;
+  listingId?: string | null;
+  requestId?: string | null;
+  listingTitle?: string | null;
+  salePrice: number;
+  commissionAmount: number;
+  status: CommissionStatus;
+  notes?: string | null;
+  createdAt: string;
+}
+
 export type SubscribeCurrentUserBodyTier =
   (typeof SubscribeCurrentUserBodyTier)[keyof typeof SubscribeCurrentUserBodyTier];
 

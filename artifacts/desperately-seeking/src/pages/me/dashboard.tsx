@@ -17,7 +17,10 @@ import {
   Package,
   Lock,
   Target,
+  Receipt,
+  DollarSign,
 } from "lucide-react";
+import { useListMyCommissions } from "@workspace/api-client-react";
 
 export default function SellerDashboard() {
   const { data: user, isLoading: userLoading } = useGetCurrentUser();
@@ -27,6 +30,9 @@ export default function SellerDashboard() {
     query: { enabled: !!isSeller },
   });
   const { data: feed, isLoading: feedLoading } = useGetProspectingFeed({
+    query: { enabled: !!isSeller },
+  });
+  const { data: commissions } = useListMyCommissions({
     query: { enabled: !!isSeller },
   });
 
@@ -54,7 +60,7 @@ export default function SellerDashboard() {
               </div>
               <h1 className="mb-2 font-serif text-3xl text-[#0B3954]">Seller Dashboard</h1>
               <p className="mx-auto mb-6 max-w-md text-muted-foreground">
-                Unlock the seller dashboard to see live buyer requests, get match alerts, and manage your inventory — starting at $4.99/month.
+                Unlock the seller dashboard to see live buyer requests, get match alerts, and manage your inventory — starting at $7.99/month.
               </p>
               <Link href="/pricing">
                 <Button className="bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 rounded-full gap-2 px-8">
@@ -89,6 +95,52 @@ export default function SellerDashboard() {
             </Link>
           </div>
         </div>
+
+        {/* Commission Summary */}
+        <section className="mb-10">
+          <div className="rounded-2xl border border-[#D4AF37]/30 bg-gradient-to-r from-[#FDF5E6] to-white p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/15">
+                  <Receipt className="h-6 w-6 text-[#D4AF37]" />
+                </div>
+                <div>
+                  <h2 className="font-serif text-lg font-semibold text-[#0B3954]">
+                    Commission Model
+                  </h2>
+                  <p className="mt-0.5 text-sm text-muted-foreground max-w-md">
+                    Desperately Seeking charges a simple{" "}
+                    <span className="font-semibold text-[#0B3954]">5% commission</span>{" "}
+                    on completed sales. Posting is always free. Upgrade to Premium to
+                    respond to buyer requests and match instantly.
+                  </p>
+                </div>
+              </div>
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                {commissions && commissions.length > 0 ? (
+                  <>
+                    <div className="flex items-center gap-1.5 text-2xl font-bold font-serif text-[#0B3954]">
+                      <DollarSign className="h-5 w-5 text-[#D4AF37]" />
+                      {commissions
+                        .reduce((sum, c) => sum + c.commissionAmount, 0)
+                        .toFixed(2)}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      total commission across {commissions.length} sale{commissions.length !== 1 ? "s" : ""}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-sm text-muted-foreground italic">No sales recorded yet</p>
+                )}
+                <Link href="/me/commissions">
+                  <button className="mt-2 text-xs text-[#D4AF37] underline underline-offset-2 hover:text-[#c9a430]">
+                    View commission history →
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Inventory Matches */}
         <section className="mb-10">

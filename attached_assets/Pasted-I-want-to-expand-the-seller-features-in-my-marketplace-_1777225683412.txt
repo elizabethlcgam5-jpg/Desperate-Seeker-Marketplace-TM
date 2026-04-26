@@ -1,0 +1,95 @@
+I want to expand the seller features in my marketplace app. Please implement ALL of the following:
+
+1) MARK AS SOLD BUTTON
+Add a “Mark as Sold” button on each seller’s listing. When tapped:
+- Mark the item as sold.
+- Trigger the 5% commission calculation.
+- Create a commission record in the “commissions” collection.
+- Remove the item from active Browse results.
+
+2) SELLER DASHBOARD
+Create a Seller Dashboard page that includes:
+- Active listings
+- Sold listings
+- Commission summary
+- Subscription status (Free, Premium Monthly, Premium Yearly)
+- Button to upgrade subscription
+- Button to create a new listing
+
+3) COMMISSION HISTORY PAGE
+Inside the Seller Dashboard, add a “Commission History” section showing:
+- Item name
+- Sale price
+- 5% commission amount
+- Date of sale
+- Total commissions paid
+
+4) BUYER REQUEST INBOX
+Create a “Buyer Request Inbox” for sellers. This should show:
+- All buyer requests
+- Category filters
+- Keyword filters
+- For Free sellers: requests are visible but locked (cannot respond)
+- For Premium sellers: requests are fully interactive
+
+If a Free seller taps “Respond,” show the subscription paywall.
+
+5) MESSAGING SYSTEM
+Add a simple messaging system:
+- Buyers and Premium sellers can exchange messages.
+- Free sellers cannot send messages.
+- Store messages in a new “messages” collection.
+- Show message threads in the Seller Dashboard and Buyer Dashboard.
+
+6) NOTIFICATIONS
+Add basic notification logic:
+- When a buyer posts a request, notify Premium sellers whose listings match the category or keywords.
+- When a seller responds to a buyer request, notify the buyer.
+- When an item is marked as sold, notify the seller with the commission summary.
+
+7) FEATURED LISTINGS FOR PREMIUM SELLERS
+Premium sellers should have:
+- A “Featured” badge on their listings.
+- Higher placement in Browse results.
+- Highlighted card styling.
+
+8) SUBSCRIPTION TIERS (FINAL)
+Implement the following subscription structure:
+
+FREE SELLER:
+- Can post items
+- Can see buyer requests
+- Cannot respond to buyer requests
+- Cannot message buyers
+- Pays 5% commission on completed sales
+
+PREMIUM MONTHLY ($7.99/month):
+- Respond to buyer requests
+- Unlimited matches
+- Messaging unlocked
+- Priority visibility
+- Featured listings
+- Instant notifications
+- Still pays 5% commission
+
+PREMIUM YEARLY ($49.99/year):
+- Same benefits as monthly
+- Mark as “Best Value”
+- Show savings compared to monthly
+
+9) SUBSCRIPTION PAYWALL SCREEN
+Create a clean paywall screen that appears when a Free seller tries to:
+- Respond to a buyer request
+- Message a buyer
+- Access premium features
+
+The paywall should show:
+- Free tier limitations
+- $7.99/month Premium
+- $49.99/year Premium (Best Value)
+- Upgrade buttons
+
+10) INTEGRATION
+Make sure all pages (Browse, Buyer Requests, Messaging, Dashboard) respect the seller’s subscription tier and commission rules.
+
+After implementing all of these features, republish the app so I can test everything on my phone.

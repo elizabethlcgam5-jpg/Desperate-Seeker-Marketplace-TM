@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { UserSwitcher } from "./user-switcher";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Search, Sparkles, BarChart3, Package } from "lucide-react";
+import { MessageSquare, Search, Sparkles, BarChart3, Package, Receipt } from "lucide-react";
 import { useGetCurrentUser } from "@workspace/api-client-react";
 
 export function Header() {
@@ -54,6 +54,13 @@ export function Header() {
             <Link href="/me/inventory">
               <Button variant="ghost" size="icon" title="My Inventory" className="text-white/80 hover:text-white hover:bg-white/10">
                 <Package className="h-5 w-5" />
+              </Button>
+            </Link>
+          )}
+          {isSubscribed && (
+            <Link href="/me/commissions">
+              <Button variant="ghost" size="icon" title="Commissions" className="text-white/80 hover:text-white hover:bg-white/10">
+                <Receipt className="h-5 w-5" />
               </Button>
             </Link>
           )}

@@ -14,6 +14,7 @@ import MyRequests from "@/pages/me/requests";
 import Analytics from "@/pages/me/analytics";
 import Inventory from "@/pages/me/inventory";
 import SellerDashboard from "@/pages/me/dashboard";
+import CommissionsPage from "@/pages/me/commissions";
 import Pricing from "@/pages/pricing";
 import CheckoutSuccess from "@/pages/checkout/success";
 import Browse from "@/pages/browse";
@@ -42,6 +43,7 @@ function Router() {
       <Route path="/me/analytics" component={Analytics} />
       <Route path="/me/inventory" component={Inventory} />
       <Route path="/me/dashboard" component={SellerDashboard} />
+      <Route path="/me/commissions" component={CommissionsPage} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/checkout/success" component={CheckoutSuccess} />
       <Route component={NotFound} />

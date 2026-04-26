@@ -41,18 +41,25 @@ Buyer-first reverse marketplace. Buyers post ISO requests; subscribed sellers br
 ### Subscription Tiers
 | Tier | Price | Key Feature |
 |------|-------|-------------|
-| `free` (Buyer) | $0 | Unlimited requests |
-| `seller_basic` | $4.99/mo | Browse + message buyers |
-| `seller_pro` | $12.99/6 months | + Analytics dashboard |
-| `seller_annual` | $19.99/year | + Inventory Quick-List |
+| `free` (Buyer) | $0 | Unlimited requests, no responding |
+| `seller_basic` (Premium Monthly) | $7.99/mo | Respond + message buyers + commissions |
+| `seller_annual` (Premium Annual) | $49.99/year | Everything + analytics + ~47% savings |
+
+### Commission System
+- Flat **5% commission** on completed sales (recorded via PATCH /listings/:id/sold)
+- `commissions` DB table tracks: sellerId, listingId, salePrice, commissionAmount, status (pending/paid)
+- Commission rate constant: `COMMISSION_RATE = 0.05` in `routes/commissions.ts`
+- Sellers can view commission history at `/me/commissions`
 
 ### Key Frontend Pages
 - `/` — Hero (rotating categories, stats, lead teaser cards, "how it works")
+- `/browse` — Marketplace listings (ZIP-code + category filters)
 - `/requests/new` — Create request (title, description, category, style, dimensions, budget, location, urgency, tags, private toggle)
 - `/requests/:id` — Request detail + offer responses
-- `/pricing` — Navy hero + 4-tier pricing cards
+- `/pricing` — Navy hero + 3-tier pricing cards (Free / Premium Monthly / Premium Annual)
 - `/me/inventory` — Seller Quick-List inventory (seller-gated)
-- `/me/dashboard` — Seller dashboard (inventory matches + live buyer feed)
+- `/me/dashboard` — Seller dashboard (commission summary + inventory matches + live buyer feed)
+- `/me/commissions` — Commission history for sellers
 - `/me/analytics` — Pro seller analytics (seller_pro/seller_annual only)
 - `/me/requests` — Buyer's own requests
 - `/messages` — Message threads

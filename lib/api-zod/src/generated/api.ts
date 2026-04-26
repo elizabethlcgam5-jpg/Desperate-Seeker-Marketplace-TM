@@ -1054,3 +1054,49 @@ export const GetListingResponse = zod.object({
   sellerId: zod.string().nullish(),
   createdAt: zod.coerce.date(),
 });
+
+/**
+ * @summary Mark a listing as sold and record a 5% commission
+ */
+export const MarkListingAsSoldParams = zod.object({
+  listingId: zod.coerce.string(),
+});
+
+export const MarkListingAsSoldBody = zod.object({
+  salePrice: zod
+    .number()
+    .describe("Final sale price (commission will be 5% of this)"),
+  notes: zod.string().nullish(),
+});
+
+export const MarkListingAsSoldResponse = zod.object({
+  id: zod.string(),
+  sellerId: zod.string(),
+  listingId: zod.string().nullish(),
+  requestId: zod.string().nullish(),
+  listingTitle: zod.string().nullish(),
+  salePrice: zod.number(),
+  commissionAmount: zod.number(),
+  status: zod.enum(["pending", "paid"]),
+  notes: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+});
+
+/**
+ * @summary List all commissions for the current seller
+ */
+export const ListMyCommissionsResponseItem = zod.object({
+  id: zod.string(),
+  sellerId: zod.string(),
+  listingId: zod.string().nullish(),
+  requestId: zod.string().nullish(),
+  listingTitle: zod.string().nullish(),
+  salePrice: zod.number(),
+  commissionAmount: zod.number(),
+  status: zod.enum(["pending", "paid"]),
+  notes: zod.string().nullish(),
+  createdAt: zod.coerce.date(),
+});
+export const ListMyCommissionsResponse = zod.array(
+  ListMyCommissionsResponseItem,
+);

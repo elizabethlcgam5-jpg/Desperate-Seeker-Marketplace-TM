@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -12,12 +12,12 @@ import { Check, Sparkles, BadgeCheck, Crown, Wallet, ExternalLink } from "lucide
 import { toast } from "sonner";
 import { getApiUrl } from "@/lib/api";
 
-const ICONS = {
+const ICONS: Record<string, React.ElementType> = {
   free: Wallet,
   seller_basic: BadgeCheck,
   seller_pro: Sparkles,
   seller_annual: Crown,
-} as const;
+};
 
 function formatPrice(cents: number, interval: "month" | "semi" | "year" | "none") {
   if (cents === 0) return { dollars: "Free", suffix: "forever" };
@@ -131,7 +131,7 @@ export default function Pricing() {
       </div>
 
       <div className="container mx-auto px-4 py-14 md:px-8">
-        <div className="mx-auto mt-0 grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto mt-0 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3">
           {isLoading || !plans
             ? Array.from({ length: 4 }).map((_, i) => (
                 <Card key={i} className="h-96 animate-pulse rounded-2xl" />
@@ -241,12 +241,12 @@ export default function Pricing() {
         {/* Trust bar */}
         <div className="mt-14 mx-auto max-w-2xl grid sm:grid-cols-3 gap-6 text-center">
           {[
-            { icon: "🔒", title: "No transaction fees", desc: "Keep 100% of every deal you close with buyers." },
-            { icon: "⚡", title: "Cancel anytime", desc: "No lock-in. Cancel or downgrade whenever you like." },
-            { icon: "🎁", title: "Buyers always free", desc: "Post as many requests as you want, forever, for free." },
+            { icon: "5%", title: "Simple commission", desc: "We charge a flat 5% only when you complete a sale. No hidden fees, ever." },
+            { icon: "⚡", title: "Cancel anytime", desc: "No lock-in. Cancel or downgrade your subscription whenever you like." },
+            { icon: "🎁", title: "Buyers always free", desc: "Post as many requests as you want, forever, at no cost." },
           ].map((item) => (
             <div key={item.title} className="rounded-2xl bg-white border border-border/60 p-6 shadow-sm">
-              <div className="text-3xl mb-3">{item.icon}</div>
+              <div className="text-3xl mb-3 font-bold text-[#D4AF37]">{item.icon}</div>
               <p className="font-semibold text-[#0B3954] mb-1">{item.title}</p>
               <p className="text-sm text-muted-foreground">{item.desc}</p>
             </div>
