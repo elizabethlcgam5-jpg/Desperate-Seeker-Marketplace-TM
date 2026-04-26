@@ -71,14 +71,17 @@ export default function Home() {
       {/* ─── Hero ──────────────────────────────────────────────────────── */}
       <section className="bg-[#0B3954] py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-8 max-w-4xl text-center space-y-6">
-          <Badge className="mb-2 border-[#D4AF37]/30 bg-[#D4AF37]/15 text-[#D4AF37] text-sm px-4 py-1.5">
-            Post what you need. Help comes to you.
-          </Badge>
-          <h1 className="text-5xl md:text-7xl font-serif font-bold text-white leading-tight text-balance">
-            You say what you want.
-            <br />
-            <span className="text-[#D4AF37]">Sellers come to you.</span>
+          <h1 className="font-serif font-bold tracking-tight leading-none">
+            <span className="block text-[#D4AF37] text-6xl md:text-8xl italic drop-shadow-lg">
+              Desperately
+            </span>
+            <span className="block text-white text-5xl md:text-7xl mt-1">
+              Seeking
+            </span>
           </h1>
+          <p className="text-[#D4AF37]/90 text-base md:text-lg font-medium tracking-widest uppercase">
+            Post what you need. Help comes to you.
+          </p>
           <p className="text-lg md:text-xl text-white/70 max-w-xl mx-auto leading-relaxed">
             This is the <em>opposite</em> of a regular marketplace. Buyers post exactly what they need — <RotatingCategory /> — and sellers compete to win your business.
           </p>
