@@ -14,21 +14,20 @@ interface PaywallModalProps {
 }
 
 const MONTHLY_FEATURES = [
-  "Respond to any buyer request",
-  "Direct messaging with buyers",
-  "Instant local match notifications",
-  "Post listings to the marketplace",
+  "Unlimited responses",
+  "Unlimited messaging",
+  "Automatic Match Alerts",
+  "Priority matching",
   "Verified Seller badge",
-  "5% commission on sales only",
+  "5% platform fee on successful sales",
+  "No shipping fees, ever",
 ];
 
 const ANNUAL_FEATURES = [
-  "Everything in Premium Monthly",
-  "Full year — ~$4.17/month",
-  "Response analytics & view counts",
-  "Seller prospecting live feed",
-  "Inventory Quick-List tool",
-  "Featured placement in Browse",
+  "Everything in Premium",
+  "Best value for frequent sellers",
+  "Priority support",
+  "Early access to new features",
 ];
 
 export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) {
@@ -86,9 +85,9 @@ export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) 
             </div>
             <div className="flex items-center gap-2 mb-1 mt-1">
               <Sparkles className="h-4 w-4 text-[#D4AF37]" />
-              <p className="font-semibold font-serif">Premium Monthly</p>
+              <p className="font-semibold font-serif">Premium</p>
             </div>
-            <p className="font-serif text-3xl font-bold text-[#D4AF37] mb-1">$7.99</p>
+            <p className="font-serif text-3xl font-bold text-[#D4AF37] mb-1">$1.99</p>
             <p className="text-white/60 text-xs mb-4">per month</p>
             <ul className="space-y-1.5 mb-5">
               {MONTHLY_FEATURES.map((f) => (
@@ -103,7 +102,7 @@ export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) 
               onClick={() => handleCheckout("seller_basic")}
               disabled={!!loading}
             >
-              {loading === "monthly" ? "Redirecting…" : "Get Premium Monthly"}
+              {loading === "monthly" ? "Redirecting…" : "Get Premium"}
             </Button>
           </div>
 
@@ -116,10 +115,10 @@ export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) 
             </div>
             <div className="flex items-center gap-2 mb-1 mt-1">
               <Crown className="h-4 w-4 text-emerald-600" />
-              <p className="font-semibold font-serif text-[#0B3954]">Premium Annual</p>
+              <p className="font-semibold font-serif text-[#0B3954]">Premium Yearly</p>
             </div>
-            <p className="font-serif text-3xl font-bold text-[#0B3954] mb-1">$49.99</p>
-            <p className="text-muted-foreground text-xs mb-4">per year · save 47%</p>
+            <p className="font-serif text-3xl font-bold text-[#0B3954] mb-1">$29.99</p>
+            <p className="text-muted-foreground text-xs mb-4">per year · save 60%</p>
             <ul className="space-y-1.5 mb-5">
               {ANNUAL_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-1.5 text-xs text-foreground/70">
@@ -133,7 +132,7 @@ export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) 
               onClick={() => handleCheckout("seller_annual")}
               disabled={!!loading}
             >
-              {loading === "annual" ? "Redirecting…" : "Get Premium Annual"}
+              {loading === "annual" ? "Redirecting…" : "Get Premium Yearly"}
             </Button>
           </div>
         </div>
