@@ -11,6 +11,7 @@ import feedbackRouter from "./feedback";
 import stripeRouter from "./stripe";
 import listingsRouter from "./listings";
 import commissionsRouter from "./commissions";
+import aiSearchRouter from "./openai/search";
 
 const router: IRouter = Router();
 
@@ -26,5 +27,6 @@ router.use(feedbackRouter);
 router.use(stripeRouter);
 router.use(listingsRouter);
 router.use(commissionsRouter);
+router.use(aiSearchRouter);
 
 export default router;

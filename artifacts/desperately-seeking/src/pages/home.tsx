@@ -1,6 +1,7 @@
 import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AISearch } from "@/components/ai-search";
 import {
   useListRequests,
   useGetOverviewStats,
@@ -89,6 +90,11 @@ export default function Home() {
           <p className="text-white/75 text-lg md:text-xl mt-6 mb-10 max-w-xl mx-auto leading-relaxed">
             Post what you need. Help comes to you.
           </p>
+          {/* AI Search */}
+          <div className="w-full max-w-2xl mx-auto">
+            <AISearch />
+          </div>
+
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/requests/new">
               <Button
