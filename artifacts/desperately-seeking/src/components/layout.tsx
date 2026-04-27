@@ -9,15 +9,24 @@ export function Layout({ children }: { children: ReactNode }) {
       <Header />
       <main className="flex-1 flex flex-col">{children}</main>
       <footer className="border-t bg-[#0B3954] text-white/60">
-        <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 md:flex-row md:py-0 md:h-16">
-          <p className="text-center text-sm leading-loose md:text-left">
-            <span className="font-serif font-medium text-white/80">Desperately Seeking</span>{" "}
-            &copy; {new Date().getFullYear()}. Post what you need. Help comes to you.
-          </p>
-          <nav className="flex gap-5 text-sm">
-            <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
-            <Link href="/requests/new" className="hover:text-white transition-colors">Post a Request</Link>
-          </nav>
+        <div className="container mx-auto px-4 py-10 md:py-12">
+          <div className="flex flex-col md:flex-row items-start justify-between gap-8">
+            <div className="max-w-xs">
+              <p className="font-serif text-lg font-semibold text-white mb-2">Desperately Seeking</p>
+              <p className="text-sm leading-relaxed">
+                Post what you need. Help comes to you. The buyer-first local marketplace.
+              </p>
+              <p className="text-xs mt-4">&copy; {new Date().getFullYear()} Desperately Seeking. All rights reserved.</p>
+            </div>
+            <nav className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
+              <Link href="/about" className="hover:text-white transition-colors">About</Link>
+              <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
+              <Link href="/faq" className="hover:text-white transition-colors">FAQ</Link>
+              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+              <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            </nav>
+          </div>
         </div>
       </footer>
       <FeedbackWidget />
