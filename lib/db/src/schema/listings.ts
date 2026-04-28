@@ -9,6 +9,10 @@ export const listingsTable = pgTable("listings", {
   imageUrl: text("image_url").notNull().default(""),
   category: text("category").notNull(),
   zipCode: text("zip_code").notNull().default(""),
+  brandName: text("brand_name").default(""),
+  condition: text("condition").notNull().default("good"),
+  availability: text("availability").notNull().default("local_pickup"),
+  shippingPrice: numeric("shipping_price"),
   sellerId: text("seller_id").references(() => usersTable.id, {
     onDelete: "set null",
   }),

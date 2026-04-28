@@ -13,4 +13,8 @@ export interface CreateListingBody {
   imageUrl: string;
   category: string;
   zipCode: string;
+  brandName?: string;
+  condition: string;
+  availability: string;
+  shippingPrice?: number | null;
 }
