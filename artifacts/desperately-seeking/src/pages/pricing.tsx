@@ -351,33 +351,33 @@ export default function Pricing() {
             <FileText className="h-5 w-5 text-[#D4AF37]" />
             <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">Terms of Use</h2>
           </div>
-          <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm space-y-4 text-sm text-[#0B3954]/75 leading-relaxed">
-            <p>By using Desperately Seeking, you agree to the following:</p>
-            <ul className="space-y-2 list-none">
-              {[
-                "You must be at least 18 years old to use this platform.",
-                "Desperately Seeking is a marketplace platform that connects buyers and sellers. We are not a party to any transaction between users.",
-                "Buyers and sellers are responsible for verifying item quality, condition, and authenticity.",
-                "Desperately Seeking is not responsible for delivery, shipping issues, item condition, or disputes between users.",
-                "You agree not to list or request illegal, prohibited, or dangerous items.",
-                "Harassment, fraud, scams, or abusive behavior may result in account suspension or removal.",
-              ].map((term, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <Check className="h-3.5 w-3.5 text-[#D4AF37] mt-0.5 shrink-0" />
-                  <span>{term}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="pt-2 border-t border-border/50 space-y-3">
-              <div>
-                <p className="font-semibold text-[#0B3954] mb-1">Fees</p>
-                <p>We charge a 5% fee on the item price only. We do not charge any fee on shipping.</p>
+          <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm space-y-5 text-sm text-[#0B3954]/75 leading-relaxed">
+            <p>Welcome to Desperately Seeking. By using our platform, you agree to the following terms:</p>
+            {[
+              { n: "1", title: "Marketplace Use", body: "Desperately Seeking connects buyers and sellers. We do not own or inspect items listed on the platform." },
+              { n: "2", title: "User Accounts", body: "Users must provide accurate information and are responsible for maintaining the security of their account." },
+              { n: "3", title: "Listings and Requests", body: "Buyers may post requests for items. Sellers may respond with offers. All communication must remain respectful and lawful." },
+              { n: "4", title: "Payments", body: "Payments are processed securely through third-party providers. A 5% platform fee applies to completed sales." },
+              { n: "5", title: "Shipping", body: "Sellers may offer local pickup or shipping. Shipping costs are based on real carrier rates." },
+              { n: "6", title: "Prohibited Items", body: "Illegal, dangerous, counterfeit, or restricted items are not allowed." },
+              { n: "7", title: "Liability", body: "Desperately Seeking is not responsible for item quality, delivery issues, or disputes between users." },
+              { n: "8", title: "Account Suspension", body: "We may suspend or remove accounts that violate our policies." },
+              { n: "9", title: "Changes to Terms", body: "We may update these terms at any time. Continued use of the platform means you accept the updated terms." },
+            ].map((item) => (
+              <div key={item.n} className="flex gap-3">
+                <span className="flex-shrink-0 font-bold text-[#D4AF37]">{item.n}.</span>
+                <div>
+                  <span className="font-semibold text-[#0B3954]">{item.title} — </span>
+                  {item.body}
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-[#0B3954] mb-1">Refunds</p>
-                <p>Membership fees are non-refundable. We do not provide refunds based on lack of matches, lack of responses, or unsuccessful searches. All transactions are between buyers and sellers. Any refunds or returns must be handled directly between the parties involved.</p>
-              </div>
-            </div>
+            ))}
+            <p className="pt-3 border-t border-border/50 text-[#0B3954]/60">
+              If you have questions, contact us at{" "}
+              <a href="mailto:support@desperatelyseeking.app" className="text-[#0B3954] underline underline-offset-2 hover:text-[#D4AF37] transition-colors">
+                support@desperatelyseeking.app
+              </a>
+            </p>
           </div>
         </div>
 
