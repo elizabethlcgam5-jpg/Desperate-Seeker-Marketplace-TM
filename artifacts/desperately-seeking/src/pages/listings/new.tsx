@@ -17,13 +17,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { PackagePlus, Truck } from "lucide-react";
+import { PackagePlus, Truck, Lock } from "lucide-react";
 import { useRef, useState } from "react";
+
+const FREE_LISTING_LIMIT = 2;
+const freeListingsUsed = 2;
 
 const CATEGORIES = [
   "Furniture",
@@ -65,6 +75,7 @@ type FormData = z.infer<typeof formSchema>;
 export default function NewListing() {
   const [_, setLocation] = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [limitOpen, setLimitOpen] = useState(freeListingsUsed >= FREE_LISTING_LIMIT);
 
   const [shippingWeight, setShippingWeight] = useState("");
   const [packageSize, setPackageSize] = useState("Small");
@@ -106,6 +117,47 @@ export default function NewListing() {
 
   return (
     <Layout>
+      {/* Free listing limit popup */}
+      <Dialog open={limitOpen} onOpenChange={setLimitOpen}>
+        <DialogContent className="max-w-sm rounded-2xl text-center px-6 py-8">
+          <div className="flex justify-center mb-3">
+            <div className="h-14 w-14 rounded-full bg-[#0B3954]/8 flex items-center justify-center">
+              <Lock className="h-7 w-7 text-[#0B3954]" />
+            </div>
+          </div>
+          <DialogHeader className="space-y-2">
+            <DialogTitle className="text-xl font-bold text-[#0B3954] leading-snug">
+              You've Reached Your Free Posting Limit
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              You've posted {FREE_LISTING_LIMIT} free items. To continue selling, choose a plan below.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-6 space-y-3">
+            <Button
+              className="w-full rounded-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 h-11"
+              onClick={() => setLocation("/pricing")}
+            >
+              Monthly Plan — $1.99 / month
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full rounded-full border-[#0B3954]/25 text-[#0B3954] hover:bg-[#0B3954]/5 h-11"
+              onClick={() => setLocation("/pricing")}
+            >
+              Yearly Plan — $29.99
+              <span className="ml-1.5 text-xs text-[#D4AF37] font-semibold">Save 60%</span>
+            </Button>
+            <button
+              className="w-full text-xs text-muted-foreground hover:text-[#0B3954] transition-colors pt-1"
+              onClick={() => { setLimitOpen(false); setLocation("/me/listings"); }}
+            >
+              Maybe later — view my listings
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="container max-w-3xl mx-auto px-4 py-8 md:py-12">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-[#0B3954] mb-4">
