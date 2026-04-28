@@ -18,12 +18,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { PackagePlus } from "lucide-react";
-import { useRef } from "react";
+import { PackagePlus, Truck } from "lucide-react";
+import { useRef, useState } from "react";
 
 const CATEGORIES = [
   "Furniture",
@@ -37,6 +37,16 @@ const CATEGORIES = [
 const CONDITIONS = ["New", "Like New", "Good", "Fair"];
 
 const DELIVERY_OPTIONS = ["Local Pickup", "Meet-Up", "Shipping Available"];
+
+const PACKAGE_SIZES = ["Small", "Medium", "Large"];
+
+const CARRIERS = ["USPS", "UPS", "FedEx"];
+
+const SHIPPING_RATES: Record<string, Record<string, number>> = {
+  USPS: { Small: 5.99, Medium: 10.49, Large: 16.99 },
+  UPS:  { Small: 7.49, Medium: 12.99, Large: 19.99 },
+  FedEx: { Small: 6.99, Medium: 11.99, Large: 18.49 },
+};
 
 const formSchema = z.object({
   itemName: z.string().min(2, "Item name must be at least 2 characters"),
@@ -56,6 +66,11 @@ export default function NewListing() {
   const [_, setLocation] = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [shippingWeight, setShippingWeight] = useState("");
+  const [packageSize, setPackageSize] = useState("Small");
+  const [carrier, setCarrier] = useState("USPS");
+  const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,6 +85,19 @@ export default function NewListing() {
       deliveryOption: "",
     },
   });
+
+  const deliveryOption = useWatch({ control: form.control, name: "deliveryOption" });
+  const showShipping = deliveryOption === "Shipping Available";
+
+  function calculateShipping() {
+    if (!shippingWeight || Number(shippingWeight) <= 0) {
+      toast.error("Please enter a valid package weight.");
+      return;
+    }
+    const base = SHIPPING_RATES[carrier]?.[packageSize] ?? 0;
+    const weightSurcharge = Math.max(0, (Number(shippingWeight) - 1) * 0.75);
+    setEstimatedShipping(parseFloat((base + weightSurcharge).toFixed(2)));
+  }
 
   function onSubmit(_values: FormData) {
     toast.success("Item submitted successfully!");
@@ -188,7 +216,9 @@ export default function NewListing() {
                   name="brand"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#0B3954]">Brand <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
+                      <FormLabel className="text-[#0B3954]">
+                        Brand <span className="text-muted-foreground font-normal">(optional)</span>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="e.g. IKEA, Levi's"
@@ -286,6 +316,106 @@ export default function NewListing() {
                   </FormItem>
                 )}
               />
+
+              {/* Shipping Details — shown only when Shipping Available is selected */}
+              {showShipping && (
+                <div className="rounded-xl border border-[#0B3954]/15 bg-[#f8fafc] p-5 space-y-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Truck className="h-4 w-4 text-[#0B3954]" />
+                    <h3 className="text-sm font-semibold text-[#0B3954]">Shipping Details</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Weight */}
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-[#0B3954]">
+                        Package Weight (lbs)
+                      </label>
+                      <Input
+                        type="number"
+                        min={0}
+                        step={0.1}
+                        placeholder="Weight"
+                        value={shippingWeight}
+                        onChange={(e) => {
+                          setShippingWeight(e.target.value);
+                          setEstimatedShipping(null);
+                        }}
+                        className="rounded-xl border-[#0B3954]/20 h-10"
+                      />
+                    </div>
+
+                    {/* Package Size */}
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-[#0B3954]">
+                        Package Size
+                      </label>
+                      <Select
+                        value={packageSize}
+                        onValueChange={(v) => {
+                          setPackageSize(v);
+                          setEstimatedShipping(null);
+                        }}
+                      >
+                        <SelectTrigger className="rounded-xl border-[#0B3954]/20 h-10">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {PACKAGE_SIZES.map((s) => (
+                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Carrier */}
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-medium text-[#0B3954]">
+                        Shipping Carrier
+                      </label>
+                      <Select
+                        value={carrier}
+                        onValueChange={(v) => {
+                          setCarrier(v);
+                          setEstimatedShipping(null);
+                        }}
+                      >
+                        <SelectTrigger className="rounded-xl border-[#0B3954]/20 h-10">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CARRIERS.map((c) => (
+                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 pt-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="rounded-full border-[#0B3954]/30 text-[#0B3954] hover:bg-[#0B3954]/5"
+                      onClick={calculateShipping}
+                    >
+                      <Truck className="mr-2 h-4 w-4" />
+                      Calculate Shipping
+                    </Button>
+                    {estimatedShipping !== null && (
+                      <p className="text-sm font-semibold text-[#0B3954]">
+                        Estimated Shipping:{" "}
+                        <span className="text-[#D4AF37]">${estimatedShipping.toFixed(2)}</span>
+                      </p>
+                    )}
+                    {estimatedShipping === null && shippingWeight === "" && (
+                      <p className="text-sm text-muted-foreground">
+                        Estimated Shipping: $0.00
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Upload Photos */}
               <div className="space-y-2">
