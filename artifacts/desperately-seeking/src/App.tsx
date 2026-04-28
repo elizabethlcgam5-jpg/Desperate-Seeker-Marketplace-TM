@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 
 import Home from "@/pages/home";
 import NewRequest from "@/pages/requests/new";
+import Post from "@/pages/post";
 import RequestDetail from "@/pages/requests/[id]";
 import Messages from "@/pages/messages/index";
 import ThreadDetail from "@/pages/messages/[id]";
@@ -52,6 +53,7 @@ function Router() {
       <Route path="/buyer-requests" component={BuyerRequests} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/checkout/success" component={CheckoutSuccess} />
+      <Route path="/post" component={Post} />
       <Route path="/login" component={Login} />
       <Route path="/seller" component={Seller} />
       <Route component={NotFound} />
