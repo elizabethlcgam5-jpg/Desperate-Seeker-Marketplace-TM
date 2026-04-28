@@ -243,6 +243,11 @@ export default function Pricing() {
                           </li>
                         ))}
                       </ul>
+                      {isCurrent && plan.tier === "free" && (
+                        <p className="mt-5 text-center text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full py-1.5 px-3">
+                          ✓ This is your current plan.
+                        </p>
+                      )}
                       <Button
                         className={`mt-6 w-full rounded-full font-semibold transition-transform hover:-translate-y-0.5 ${
                           isHighlighted
