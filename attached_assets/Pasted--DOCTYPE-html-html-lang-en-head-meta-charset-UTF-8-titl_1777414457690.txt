@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Become a Seller | Desperately Seeking Marketplace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --primary: #1f6feb;
+      --primary-dark: #164ea8;
+      --accent: #ffb347;
+      --bg: #f5f7fb;
+      --text: #1f2933;
+      --muted: #6b7280;
+      --card-bg: #ffffff;
+      --border: #e5e7eb;
+      --radius: 10px;
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #e0ebff 0, #f5f7fb 45%, #f5f5f5 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.03em;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #1f6feb, #ffb347);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.9rem;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
+    }
+
+    .nav {
+      display: flex;
+      gap: 18px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .nav a.cta-link {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Hero */
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .hero-text h1 {
+      font-size: 2.2rem;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .hero-text h1 span {
+      color: var(--primary);
+    }
+
+    .hero-subtitle {
+      color: var(--muted);
+      font-size: 0.98rem;
+      margin-bottom: 18px;
+      max-width: 480px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(31, 111, 235, 0.06);
+      color: var(--primary-dark);
+      border: 1px solid rgba(31, 111, 235, 0.15);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(31, 111, 235, 0.35);
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(31, 111, 235, 0.4);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-ghost:hover {
+      background: #ffffff;
+      border-color: #d1d5db;
+    }
+
+    .hero-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hero-note span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .hero-card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.85rem;
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .hero-card-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .hero-chip {
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.08);
+      color: #15803d;
+      border: 1px solid rgba(22, 163, 74, 0.25);
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .metric {
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .metric-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .metric-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .hero-card-footer {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .hero-tagline {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Sections */
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    h2.section-title {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 18px;
+    }
+
+    /* Why sell */
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .why-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+      font-size: 0.85rem;
+    }
+
+    .why-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .why-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .why-text {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* How it works */
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .step {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    .step-number {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: rgba(31, 111, 235, 0.08);
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .step-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .step-text {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* Pricing */
+
+    .pricing-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 16px 16px 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr);
+      gap: 18px;
+      align-items: center;
+      font-size: 0.88rem;
+    }
+
+    .pricing-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(31, 111, 235, 0.06);
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .pricing-main {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .pricing-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .pricing-list {
+      list-style: none;
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .pricing-list li::before {
+      content: "• ";
+      color: var(--primary);
+    }
+
+    .pricing-highlight {
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    .pricing-number {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .pricing-caption {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* FAQ */
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      font-size: 0.85rem;
+    }
+
+    .faq-item {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 10px 12px 9px;
+      border: 1px solid var(--border);
+    }
+
+    .faq-q {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .faq-a {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* CTA */
+
+    .cta {
+      margin-top: 10px;
+      padding: 16px 16px 14px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(31, 111, 235, 0.06), rgba(255, 179, 71, 0.08));
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.9rem;
+    }
+
+    .cta-text {
+      max-width: 520px;
+    }
+
+    .cta-text strong {
+      font-weight: 600;
+    }
+
+    .cta-small {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-card {
+        order: -1;
+      }
+      .pricing-card {
+        grid-template-columns: minmax(0, 1fr);
+        text-align: left;
+      }
+      .pricing-highlight {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .why-grid,
+      .steps,
+      .faq-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="logo">
+        <div class="logo-mark">DS</div>
+        <div>Desperately Seeking Marketplace</div>
+      </div>
+      <nav class="nav">
+        <a href="#">Home</a>
+        <a href="#">Browse Requests</a>
+        <a href="#">How It Works</a>
+        <a href="#" class="cta-link">Buyer Login</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-text">
+          <h1>
+            Turn <span>buyer requests</span> into sales — without shouting into the void.
+          </h1>
+          <p class="hero-subtitle">
+            On Desperately Seeking Marketplace, buyers tell you exactly what they’re looking for.
+            You only raise your hand when you can truly deliver.
+          </p>
+
+          <div class="hero-badges">
+            <div class="badge">Buyer‑first, not algorithm‑first</div>
+            <div class="badge">No listing overwhelm</div>
+            <div class="badge">You respond when it’s a fit</div>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn-primary">
+              Get started as a seller
+            </button>
+            <button class="btn-ghost">
+              Preview a real buyer request
+            </button>
+          </div>
+
+          <p class="hero-note">
+            <span>No obligation:</span> You only respond to requests that match what you actually have or can source.
+          </p>
+        </div>
+
+        <aside class="hero-card">
+          <div class="hero-card-header">
+            <div class="hero-card-title">Sample buyer request</div>
+            <div class="hero-chip">You could respond</div>
+          </div>
+          <div class="hero-tagline">
+            “I’m desperately seeking…”
+          </div>
+          <p style="margin: 6px 0 10px; font-size: 0.82rem;">
+            A gently used, neutral‑colored glider chair for a small nursery. Must be clean, non‑smoking home,
+            and within 25 miles of 60545. Budget under $175.
+          </p>
+          <div class="hero-metrics">
+            <div class="metric">
+              <div class="metric-label">Location</div>
+              <div class="metric-value">60545 + 25 mi</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Category</div>
+              <div class="metric-value">Baby & Nursery</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Budget</div>
+              <div class="metric-value">&lt; $175</div>
+            </div>
+          </div>
+          <div class="hero-card-footer">
+            <span>Have this (or better)? Send your offer, photos, and price in one reply.</span>
+            <span style="white-space: nowrap;">You see the need first.</span>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Why sell here -->
+      <section>
+        <h2 class="section-title">Why sell on Desperately Seeking Marketplace?</h2>
+        <p class="section-subtitle">
+          Instead of guessing what might sell, you respond to real, specific needs. Less noise, more “yes.”
+        </p>
+
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="why-label">Signal, not noise</div>
+            <div class="why-title">Buyers tell you exactly what they want</div>
+            <p class="why-text">
+              Every request includes details like size, color, condition, budget, and ZIP code. You’re not throwing
+              listings into a void — you’re matching to a clear ask.
+            </p>
+          </div>
+          <div class="why-card">
+            <div class="why-label">Respect for your time</div>
+            <div class="why-title">Only respond when it’s a true fit</div>
+            <p class="why-text">
+              No pressure to maintain a giant storefront. You can be a casual declutterer, a side‑hustler, or a full‑time
+              seller — and only engage when a request matches what you have.
+            </p>
+          </div>
+          <div class="why-card">
+            <div class="why-label">Buyer‑first trust</div>
+            <div class="why-title">You stand out by being honest and specific</div>
+            <p class="why-text">
+              Clear photos, accurate descriptions, and realistic pricing build trust quickly. Buyers see your offer
+              alongside others and choose what truly fits their need.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section>
+        <h2 class="section-title">How selling works</h2>
+        <p class="section-subtitle">
+          Simple, structured, and built around real buyer requests — not endless scrolling and guessing.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-title">Browse buyer requests</div>
+            <p class="step-text">
+              Filter by category, ZIP code radius, budget, and condition. When you see a request you can genuinely
+              fulfill, click into it to view all the details.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-title">Submit your offer</div>
+            <p class="step-text">
+              Share photos, your price, condition notes, pickup/shipping options, and timing. The buyer sees your offer
+              alongside others and can ask follow‑up questions if needed.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-title">Confirm the match & complete the sale</div>
+            <p class="step-text">
+              Once the buyer chooses your offer, you coordinate payment and delivery based on the options you’ve
+              provided. Clear expectations up front mean fewer surprises for both sides.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing / fees -->
+      <section>
+        <h2 class="section-title">Seller pricing & fees</h2>
+        <p class="section-subtitle">
+          Keep it simple, transparent, and sustainable. You’ll always know what you keep from each sale.
+        </p>
+
+        <div class="pricing-card">
+          <div>
+            <div class="pricing-pill">
+              Seller‑friendly • No surprise charges
+            </div>
+            <div class="pricing-main">
+              You keep the majority of every sale. Platform fees stay small and predictable.
+            </div>
+            <p class="pricing-note">
+              Exact fee structure can be adjusted as the marketplace grows, but the philosophy stays the same:
+              buyer‑first, seller‑respecting, and clear.
+            </p>
+            <ul class="pricing-list">
+              <li>Flat platform fee or small percentage per completed sale</li>
+              <li>No fee just to browse or respond to requests</li>
+              <li>Optional add‑ons later (boosted visibility, featured responses, etc.)</li>
+            </ul>
+          </div>
+          <div class="pricing-highlight">
+            <div class="pricing-number">
+              Example: 8–12%
+            </div>
+            <div class="pricing-caption">
+              of the final sale price as a platform fee  
+              (exact numbers can be finalized with your business plan).
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section>
+        <h2 class="section-title">Seller FAQ</h2>
+        <p class="section-subtitle">
+          A few of the questions thoughtful sellers usually ask before they jump in.
+        </p>
+
+        <div class="faq-grid">
+          <div class="faq-item">
+            <div class="faq-q">Do I have to list everything I own?</div>
+            <div class="faq-a">
+              No. You don’t maintain a giant storefront here. You simply respond when a buyer’s request matches something
+              you already have or can reasonably source.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">How do buyers find me?</div>
+            <div class="faq-a">
+              Buyers don’t search for you by name — they post what they’re “desperately seeking.” You show up when your
+              offer fits their request, not because you gamed an algorithm.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">What about safety and meet‑ups?</div>
+            <div class="faq-a">
+              You can specify local pickup, public meet‑up, or shipping only. Clear expectations in your offer help
+              buyers choose what feels safe and realistic for them.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Can I be both a buyer and a seller?</div>
+            <div class="faq-a">
+              Absolutely. Many people will declutter one day and be “desperately seeking” the next. You can switch roles
+              as your life and needs change.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final CTA -->
+      <section class="cta">
+        <div class="cta-text">
+          <strong>Ready to respond instead of guess?</strong>
+          <div>
+            Create your seller profile once, then simply watch for buyer requests that feel like a “yes” for you.
+            No pressure to be everywhere, all the time.
+          </div>
+          <div class="cta-small">
+            You’ve already done the hard part: having good items and integrity. This just gives buyers a clear way to
+            find you when they need exactly what you have.
+          </div>
+        </div>
+        <div>
+          <button class="btn-primary">
+            Start my seller profile
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
