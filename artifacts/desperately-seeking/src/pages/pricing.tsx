@@ -14,7 +14,7 @@ import {
   useListPricingPlans,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, Sparkles, BadgeCheck, Crown, Wallet, ExternalLink, HelpCircle, FileText, ShieldCheck } from "lucide-react";
+import { Check, Sparkles, BadgeCheck, Crown, Wallet, ExternalLink, HelpCircle, FileText, ShieldCheck, Truck, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { getApiUrl } from "@/lib/api";
 
@@ -36,28 +36,40 @@ function formatPrice(cents: number, interval: "month" | "semi" | "year" | "none"
 
 const FAQ = [
   {
-    q: "Do you guarantee I'll find what I'm looking for?",
-    a: "No. Matches depend on local sellers and availability. We provide tools to help you connect, but outcomes are user-driven.",
+    q: "What is Desperately Seeking?",
+    a: "A buyer-first marketplace where buyers post what they need and sellers respond with offers.",
   },
   {
-    q: "Do I have to pay to list items?",
-    a: "No. You can list 1 item for free. Premium members get unlimited listings and responses.",
+    q: "How do I post a request?",
+    a: "Tap \"Post What You Need,\" describe the item, add photos (optional), and submit.",
   },
   {
-    q: "Who pays for shipping?",
-    a: "The buyer pays for shipping. Sellers set their own shipping price when they choose to offer shipping.",
+    q: "How do sellers get notified?",
+    a: "Sellers receive instant Match Alerts when a buyer posts something they offer.",
   },
   {
-    q: "Do you charge a fee?",
-    a: "Yes. We charge a small 5% fee on the item price only. We do not charge any fee on shipping.",
+    q: "Is it free to use?",
+    a: "Yes. Everyone can join for free. Sellers get 2 free listings before choosing a subscription.",
   },
   {
-    q: "Can I use Desperately Seeking without downloading an app?",
-    a: "Yes. Desperately Seeking works as a Progressive Web App (PWA), so you can use it in your browser and add it to your home screen without going through an app store.",
+    q: "Why is there a 5% platform fee?",
+    a: "This small fee keeps the marketplace running, supports safety features, and helps us build new tools.",
   },
   {
-    q: "Is my information safe?",
-    a: "Yes. We do not sell your personal data. We only use your information to operate and improve the platform. See our Privacy Policy below for more details.",
+    q: "How does shipping work?",
+    a: "Sellers can offer local pickup or shipping. Shipping uses real carrier rates based on weight and distance.",
+  },
+  {
+    q: "Do I need an account?",
+    a: "Yes. A simple email sign-in helps you track your listings, messages, and subscription.",
+  },
+  {
+    q: "What's the difference between monthly and yearly Premium?",
+    a: "Monthly is great for casual sellers. Yearly saves over 60% and includes priority support and early access to new features.",
+  },
+  {
+    q: "Is Desperately Seeking safe?",
+    a: "We use secure messaging, email verification, and community guidelines to keep buyers and sellers safe.",
   },
 ];
 
@@ -135,7 +147,7 @@ export default function Pricing() {
             <span className="italic text-[#D4AF37]">affordable.</span>
           </h1>
           <p className="mt-4 text-white/65 text-lg max-w-xl mx-auto">
-            Built for everyday buyers and sellers. No surprises, no lock-in.
+            Desperately Seeking is free to join. Every seller gets 2 free listings. After that, choose the plan that fits your needs.
           </p>
           {isSubscribed && (
             <Button
@@ -289,6 +301,26 @@ export default function Pricing() {
           </p>
         </div>
 
+        {/* Shipping */}
+        <div className="mx-auto mt-10 max-w-3xl">
+          <div className="flex items-center gap-2 mb-6">
+            <Truck className="h-5 w-5 text-[#D4AF37]" />
+            <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">Shipping</h2>
+          </div>
+          <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm space-y-3 text-sm text-[#0B3954]/75 leading-relaxed">
+            {[
+              "Sellers can offer local pickup, shipping, or both.",
+              "Shipping uses real carrier rates based on weight and distance.",
+              "No inflated fees or hidden markups.",
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <Check className="h-4 w-4 text-[#D4AF37] mt-0.5 shrink-0" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* FAQ */}
         <div className="mx-auto mt-10 max-w-3xl">
           <div className="flex items-center gap-2 mb-6">
@@ -346,6 +378,43 @@ export default function Pricing() {
                 <p>Membership fees are non-refundable. We do not provide refunds based on lack of matches, lack of responses, or unsuccessful searches. All transactions are between buyers and sellers. Any refunds or returns must be handled directly between the parties involved.</p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* About */}
+        <div className="mx-auto mt-10 max-w-3xl">
+          <div className="flex items-center gap-2 mb-6">
+            <Heart className="h-5 w-5 text-[#D4AF37]" />
+            <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">About Desperately Seeking</h2>
+          </div>
+          <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm space-y-5 text-sm text-[#0B3954]/75 leading-relaxed">
+            <p>
+              Desperately Seeking was built for real people with real needs. Instead of scrolling through endless listings, buyers simply post what they're looking for — and sellers come to them. It's faster, simpler, and built for local communities.
+            </p>
+            <p>
+              Our mission is to make buying and selling easier, safer, and more efficient. Whether you're decluttering, searching for something specific, or supporting small sellers, Desperately Seeking gives you a smarter way to connect.
+            </p>
+            <div>
+              <p className="font-semibold text-[#0B3954] mb-3">We believe in:</p>
+              <ul className="space-y-2">
+                {[
+                  "Buyer-first design",
+                  "Local community support",
+                  "Fair pricing for sellers",
+                  "No boosted posts or ads",
+                  "Real shipping rates with no markups",
+                  "Tools built for everyday people, not big box stores",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-[#D4AF37] mt-0.5 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <p className="pt-2 border-t border-border/50 italic text-[#0B3954]/60">
+              Thank you for being part of our growing marketplace.
+            </p>
           </div>
         </div>
 
