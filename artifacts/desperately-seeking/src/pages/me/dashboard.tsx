@@ -68,8 +68,8 @@ export default function SellerDashboard() {
               Welcome, Seller!
             </h1>
             <p className="mt-3 max-w-2xl text-white/70 text-base leading-relaxed">
-              Desperately Seeking gives each seller <span className="text-[#D4AF37] font-semibold">2 free active listings</span> to get started.
-              After that, upgrade to Premium for unlimited listings and full marketplace tools.
+              You can post up to <span className="text-[#D4AF37] font-semibold">2 active listings</span> for free.
+              After that, upgrade to Premium to unlock unlimited listings and full marketplace access.
             </p>
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function SellerDashboard() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-[#D4AF37] shrink-0" />
-                  Free responses to buyer requests: Unlimited for your first 2 items
+                  Free responses remaining: Unlimited for your first 2 items
                 </div>
               </div>
             </div>
@@ -97,29 +97,6 @@ export default function SellerDashboard() {
                 Add a New Listing
               </Button>
             </Link>
-          </div>
-
-          {/* How it works */}
-          <div>
-            <h2 className="font-serif text-xl font-semibold text-[#0B3954] mb-5">How It Works for Sellers</h2>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {[
-                { n: "1", icon: ShoppingBag, text: "Buyers post requests for what they need." },
-                { n: "2", icon: Bell, text: "You receive instant Match Alerts when a buyer's request matches what you're selling." },
-                { n: "3", icon: MessageCircle, text: "Respond with your offer and message the buyer." },
-                { n: "4", icon: Truck, text: "Complete the sale locally or ship using real carrier rates." },
-              ].map((step) => (
-                <div key={step.n} className="flex items-start gap-4 rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0B3954] text-white text-sm font-bold">
-                    {step.n}
-                  </div>
-                  <div className="flex items-start gap-2 pt-1">
-                    <step.icon className="h-4 w-4 text-[#D4AF37] shrink-0 mt-0.5" />
-                    <p className="text-sm text-[#0B3954]/80">{step.text}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Premium upgrade */}
@@ -133,7 +110,7 @@ export default function SellerDashboard() {
                 "Unlimited listings",
                 "Unlimited responses to buyer requests",
                 "Unlimited messaging",
-                "Automatic Match Alerts",
+                "Match Alerts when buyers need what you offer",
                 "Priority matching",
                 "Verified Seller badge",
                 "Access to shipping tools",
