@@ -67,6 +67,9 @@ export function Header() {
           <Link href="/requests/new" className="text-white/80 transition-colors hover:text-white hidden md:block">
             Post Request
           </Link>
+          <Link href="/seller" className="text-white/80 transition-colors hover:text-white hidden md:block">
+            Sell
+          </Link>
           <Link href="/pricing" className="text-white/80 transition-colors hover:text-white hidden md:block">
             Pricing
           </Link>
