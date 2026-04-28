@@ -80,15 +80,6 @@ export function Header() {
           )}
         </nav>
         <div className="flex items-center space-x-1">
-          <Link href="/requests/new" className="hidden sm:block mr-1">
-            <Button
-              size="sm"
-              className="gap-1.5 bg-[#D4AF37] text-[#0B3954] font-semibold hover:bg-[#c9a430] border-0 rounded-full"
-            >
-              <PenSquare className="h-3.5 w-3.5" />
-              Post What You Need
-            </Button>
-          </Link>
           {user && !isSubscribed && (
             <Link href="/pricing" className="hidden lg:block mr-1">
               <Button
