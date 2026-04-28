@@ -21,6 +21,7 @@ import Pricing from "@/pages/pricing";
 import CheckoutSuccess from "@/pages/checkout/success";
 import Browse from "@/pages/browse";
 import Login from "@/pages/login";
+import Seller from "@/pages/seller";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +53,7 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/checkout/success" component={CheckoutSuccess} />
       <Route path="/login" component={Login} />
+      <Route path="/seller" component={Seller} />
       <Route component={NotFound} />
     </Switch>
   );
