@@ -1,0 +1,346 @@
+import { Layout } from "@/components/layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { useLocation } from "wouter";
+import { toast } from "sonner";
+import { PackagePlus } from "lucide-react";
+import { useRef } from "react";
+
+const CATEGORIES = [
+  "Furniture",
+  "Clothing",
+  "Electronics",
+  "Baby & Kids",
+  "Home Goods",
+  "Other",
+];
+
+const CONDITIONS = ["New", "Like New", "Good", "Fair"];
+
+const DELIVERY_OPTIONS = ["Local Pickup", "Meet-Up", "Shipping Available"];
+
+const formSchema = z.object({
+  itemName: z.string().min(2, "Item name must be at least 2 characters"),
+  category: z.string().min(1, "Please select a category"),
+  condition: z.string().min(1, "Please select a condition"),
+  color: z.string().min(1, "Please enter a color"),
+  brand: z.string().optional(),
+  description: z.string().min(10, "Please provide at least 10 characters"),
+  price: z.coerce.number().min(0, "Price must be 0 or more"),
+  zipCode: z.string().min(5, "Please enter a valid ZIP code"),
+  deliveryOption: z.string().min(1, "Please select a delivery option"),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
+export default function NewListing() {
+  const [_, setLocation] = useLocation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      itemName: "",
+      category: "",
+      condition: "",
+      color: "",
+      brand: "",
+      description: "",
+      price: 0,
+      zipCode: "",
+      deliveryOption: "",
+    },
+  });
+
+  function onSubmit(_values: FormData) {
+    toast.success("Item submitted successfully!");
+    setLocation("/me/listings");
+  }
+
+  return (
+    <Layout>
+      <div className="container max-w-3xl mx-auto px-4 py-8 md:py-12">
+        <div className="mb-8 text-center">
+          <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-[#0B3954] mb-4">
+            <PackagePlus className="h-7 w-7 text-[#D4AF37]" />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#0B3954] mb-2">
+            I'm Selling
+          </h1>
+          <p className="text-muted-foreground text-base max-w-md mx-auto">
+            List what you have. Buyers who need it will find you.
+          </p>
+        </div>
+
+        <div className="bg-white border border-[#0B3954]/10 rounded-2xl p-6 md:p-8 shadow-md">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+              {/* Item Name */}
+              <FormField
+                control={form.control}
+                name="itemName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base font-semibold text-[#0B3954]">
+                      Item Name *
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="What are you selling?"
+                        className="rounded-xl border-[#0B3954]/20 h-11"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Category + Condition */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[#0B3954]">Category *</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-[#0B3954]/20">
+                            <SelectValue placeholder="Select a category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {CATEGORIES.map((c) => (
+                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="condition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[#0B3954]">Condition *</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="rounded-xl border-[#0B3954]/20">
+                            <SelectValue placeholder="Select condition" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {CONDITIONS.map((c) => (
+                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Color + Brand */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <FormField
+                  control={form.control}
+                  name="color"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[#0B3954]">Color *</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. Walnut Brown"
+                          className="rounded-xl border-[#0B3954]/20 h-11"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="brand"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[#0B3954]">Brand <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. IKEA, Levi's"
+                          className="rounded-xl border-[#0B3954]/20 h-11"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Description */}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base font-semibold text-[#0B3954]">
+                      Description *
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe the item — condition details, dimensions, any flaws, reason for selling..."
+                        className="min-h-[120px] resize-y rounded-xl border-[#0B3954]/20"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Price + ZIP */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[#0B3954]">Price ($) *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min={0}
+                          placeholder="0"
+                          className="rounded-xl border-[#0B3954]/20 h-11"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="zipCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[#0B3954]">ZIP Code *</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Your ZIP code"
+                          maxLength={10}
+                          className="rounded-xl border-[#0B3954]/20 h-11"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Delivery Options */}
+              <FormField
+                control={form.control}
+                name="deliveryOption"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[#0B3954]">Delivery Options *</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="rounded-xl border-[#0B3954]/20">
+                          <SelectValue placeholder="How can buyers get it?" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {DELIVERY_OPTIONS.map((o) => (
+                          <SelectItem key={o} value={o}>{o}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Upload Photos */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#0B3954]">
+                  Upload Photos
+                </label>
+                <div
+                  className="border-2 border-dashed border-[#0B3954]/20 rounded-xl p-6 text-center cursor-pointer hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/5 transition-colors"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <p className="text-sm text-muted-foreground">
+                    Click to upload photos — multiple allowed
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    JPG, PNG, WEBP up to 10MB each
+                  </p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      const count = e.target.files?.length ?? 0;
+                      if (count > 0) {
+                        toast.success(`${count} photo${count > 1 ? "s" : ""} selected`);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-[#0B3954]/10 flex justify-end gap-3">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="rounded-full text-[#0B3954]"
+                  onClick={() => setLocation("/seller")}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="rounded-full px-8 bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 transition-transform hover:-translate-y-0.5"
+                >
+                  <PackagePlus className="mr-2 h-4 w-4" />
+                  Submit Item
+                </Button>
+              </div>
+
+            </form>
+          </Form>
+        </div>
+      </div>
+    </Layout>
+  );
+}

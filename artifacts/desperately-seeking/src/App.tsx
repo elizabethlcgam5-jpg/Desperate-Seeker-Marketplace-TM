@@ -23,6 +23,7 @@ import CheckoutSuccess from "@/pages/checkout/success";
 import Browse from "@/pages/browse";
 import Login from "@/pages/login";
 import Seller from "@/pages/seller";
+import NewListing from "@/pages/listings/new";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,6 +57,7 @@ function Router() {
       <Route path="/post" component={Post} />
       <Route path="/login" component={Login} />
       <Route path="/seller" component={Seller} />
+      <Route path="/listings/new" component={NewListing} />
       <Route component={NotFound} />
     </Switch>
   );
