@@ -117,7 +117,7 @@ export default function NewListing() {
 
   return (
     <Layout>
-      {/* Free listing limit popup */}
+      {/* Subscription popup */}
       <Dialog open={limitOpen} onOpenChange={setLimitOpen}>
         <DialogContent className="max-w-sm rounded-2xl text-center px-6 py-8">
           <div className="flex justify-center mb-3">
@@ -127,25 +127,38 @@ export default function NewListing() {
           </div>
           <DialogHeader className="space-y-2">
             <DialogTitle className="text-xl font-bold text-[#0B3954] leading-snug">
-              You've Reached Your Free Posting Limit
+              Unlock Unlimited Selling
             </DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">
-              You've posted {FREE_LISTING_LIMIT} free items. To continue selling, choose a plan below.
+              Choose a plan to continue posting items:
             </DialogDescription>
           </DialogHeader>
+          <ul className="mt-4 space-y-2 text-left">
+            {[
+              "Unlimited item posts",
+              "Unlimited responses",
+              "Priority matching",
+              "Verified Seller badge",
+            ].map((feature) => (
+              <li key={feature} className="flex items-center gap-2 text-sm text-[#0B3954]">
+                <span className="h-5 w-5 rounded-full bg-[#D4AF37]/15 flex items-center justify-center shrink-0 text-[#D4AF37] text-xs font-bold">✓</span>
+                {feature}
+              </li>
+            ))}
+          </ul>
           <div className="mt-6 space-y-3">
             <Button
               className="w-full rounded-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 h-11"
               onClick={() => setLocation("/pricing")}
             >
-              Monthly Plan — $1.99 / month
+              Monthly — $1.99
             </Button>
             <Button
               variant="outline"
               className="w-full rounded-full border-[#0B3954]/25 text-[#0B3954] hover:bg-[#0B3954]/5 h-11"
               onClick={() => setLocation("/pricing")}
             >
-              Yearly Plan — $29.99
+              Yearly — $29.99
               <span className="ml-1.5 text-xs text-[#D4AF37] font-semibold">Save 60%</span>
             </Button>
             <button
