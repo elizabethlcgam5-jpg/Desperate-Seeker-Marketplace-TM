@@ -68,8 +68,8 @@ export default function SellerDashboard() {
               Welcome, Seller!
             </h1>
             <p className="mt-3 max-w-2xl text-white/70 text-base leading-relaxed">
-              Desperately Seeking gives every seller <span className="text-[#D4AF37] font-semibold">2 free active listings</span> to get started.
-              After that, upgrade to Premium to unlock unlimited listings and full marketplace tools.
+              Desperately Seeking gives each seller <span className="text-[#D4AF37] font-semibold">2 free active listings</span> to get started.
+              After that, upgrade to Premium for unlimited listings and full marketplace tools.
             </p>
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function SellerDashboard() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-[#D4AF37] shrink-0" />
-                  Free responses: Unlimited for your first 2 items
+                  Free responses to buyer requests: Unlimited for your first 2 items
                 </div>
               </div>
             </div>
@@ -104,10 +104,10 @@ export default function SellerDashboard() {
             <h2 className="font-serif text-xl font-semibold text-[#0B3954] mb-5">How It Works for Sellers</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {[
-                { n: "1", icon: ShoppingBag, text: "Buyers post exactly what they need." },
-                { n: "2", icon: Bell, text: "You receive instant Match Alerts when their request matches your item." },
-                { n: "3", icon: MessageCircle, text: "You respond with your offer." },
-                { n: "4", icon: Truck, text: "Chat, negotiate, and complete the sale locally or with shipping." },
+                { n: "1", icon: ShoppingBag, text: "Buyers post requests for what they need." },
+                { n: "2", icon: Bell, text: "You receive instant Match Alerts when a buyer's request matches what you're selling." },
+                { n: "3", icon: MessageCircle, text: "Respond with your offer and message the buyer." },
+                { n: "4", icon: Truck, text: "Complete the sale locally or ship using real carrier rates." },
               ].map((step) => (
                 <div key={step.n} className="flex items-start gap-4 rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0B3954] text-white text-sm font-bold">
@@ -120,25 +120,6 @@ export default function SellerDashboard() {
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Why sellers love it */}
-          <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm">
-            <h2 className="font-serif text-xl font-semibold text-[#0B3954] mb-4">Why Sellers Love It</h2>
-            <ul className="space-y-2.5">
-              {[
-                "Buyers tell you exactly what they want",
-                "No guessing, no scrolling",
-                "Low subscription cost",
-                "Real shipping rates (no inflated fees)",
-                "Tools built for small, independent sellers",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-[#0B3954]/75">
-                  <CheckCircle2 className="h-4 w-4 text-[#D4AF37] shrink-0 mt-0.5" />
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* Premium upgrade */}
