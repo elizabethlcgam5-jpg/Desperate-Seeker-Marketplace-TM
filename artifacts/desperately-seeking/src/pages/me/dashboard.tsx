@@ -15,13 +15,19 @@ import {
   Zap,
   TrendingUp,
   Package,
-  Lock,
   Target,
   Receipt,
   DollarSign,
   ShoppingBag,
   Inbox,
   PlusCircle,
+  CheckCircle2,
+  Bell,
+  MessageCircle,
+  BadgeCheck,
+  Crown,
+  Truck,
+  ArrowRight,
 } from "lucide-react";
 import { useListMyCommissions } from "@workspace/api-client-react";
 
@@ -55,24 +61,126 @@ export default function SellerDashboard() {
   if (!isSeller) {
     return (
       <Layout>
-        <div className="container mx-auto max-w-3xl px-4 py-16">
-          <Card className="border-[#D4AF37]/30 bg-gradient-to-br from-[#FDF5E6] to-white rounded-2xl">
-            <CardContent className="p-10 text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#D4AF37]/15">
-                <Lock className="h-7 w-7 text-[#D4AF37]" />
+        {/* Welcome hero */}
+        <div className="bg-[#0B3954] py-12">
+          <div className="container mx-auto max-w-4xl px-4 md:px-8">
+            <h1 className="font-serif text-3xl font-bold text-white md:text-4xl">
+              Welcome, Seller!
+            </h1>
+            <p className="mt-3 max-w-2xl text-white/70 text-base leading-relaxed">
+              Desperately Seeking gives every seller <span className="text-[#D4AF37] font-semibold">2 free active listings</span> to get started.
+              After that, upgrade to Premium to unlock unlimited listings and full marketplace tools.
+            </p>
+          </div>
+        </div>
+
+        <div className="container mx-auto max-w-4xl px-4 py-10 md:px-8 space-y-10">
+
+          {/* Free listings counter */}
+          <div className="rounded-2xl border border-[#D4AF37]/30 bg-gradient-to-r from-[#FDF5E6] to-white p-6 shadow-sm flex flex-col sm:flex-row sm:items-center gap-6">
+            <div className="flex-1">
+              <h2 className="font-serif text-xl font-semibold text-[#0B3954] mb-1">Your Free Listings</h2>
+              <div className="flex flex-col gap-1 text-sm text-[#0B3954]/70">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-[#D4AF37] shrink-0" />
+                  Free listings remaining: <span className="font-bold text-[#0B3954]">2</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-[#D4AF37] shrink-0" />
+                  Free responses: Unlimited for your first 2 items
+                </div>
               </div>
-              <h1 className="mb-2 font-serif text-3xl text-[#0B3954]">Seller Dashboard</h1>
-              <p className="mx-auto mb-6 max-w-md text-muted-foreground">
-                Unlock the seller dashboard to see live buyer requests, get match alerts, and manage your inventory — starting at $7.99/month.
-              </p>
-              <Link href="/pricing">
-                <Button className="bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 rounded-full gap-2 px-8">
+            </div>
+            <Link href="/listings/new">
+              <Button className="rounded-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 gap-2 px-6">
+                <PlusCircle className="h-4 w-4" />
+                Add a New Listing
+              </Button>
+            </Link>
+          </div>
+
+          {/* How it works */}
+          <div>
+            <h2 className="font-serif text-xl font-semibold text-[#0B3954] mb-5">How It Works for Sellers</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { n: "1", icon: ShoppingBag, text: "Buyers post exactly what they need." },
+                { n: "2", icon: Bell, text: "You receive instant Match Alerts when their request matches your item." },
+                { n: "3", icon: MessageCircle, text: "You respond with your offer." },
+                { n: "4", icon: Truck, text: "Chat, negotiate, and complete the sale locally or with shipping." },
+              ].map((step) => (
+                <div key={step.n} className="flex items-start gap-4 rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0B3954] text-white text-sm font-bold">
+                    {step.n}
+                  </div>
+                  <div className="flex items-start gap-2 pt-1">
+                    <step.icon className="h-4 w-4 text-[#D4AF37] shrink-0 mt-0.5" />
+                    <p className="text-sm text-[#0B3954]/80">{step.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Why sellers love it */}
+          <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm">
+            <h2 className="font-serif text-xl font-semibold text-[#0B3954] mb-4">Why Sellers Love It</h2>
+            <ul className="space-y-2.5">
+              {[
+                "Buyers tell you exactly what they want",
+                "No guessing, no scrolling",
+                "Low subscription cost",
+                "Real shipping rates (no inflated fees)",
+                "Tools built for small, independent sellers",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-[#0B3954]/75">
+                  <CheckCircle2 className="h-4 w-4 text-[#D4AF37] shrink-0 mt-0.5" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Premium upgrade */}
+          <div className="rounded-2xl border-2 border-[#D4AF37] bg-[#0B3954] text-white p-6 md:p-8 shadow-xl">
+            <div className="flex items-center gap-2 mb-4">
+              <Crown className="h-5 w-5 text-[#D4AF37]" />
+              <h2 className="font-serif text-xl font-semibold">Premium Benefits</h2>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5 mb-6">
+              {[
+                "Unlimited listings",
+                "Unlimited responses to buyer requests",
+                "Unlimited messaging",
+                "Automatic Match Alerts",
+                "Priority matching",
+                "Verified Seller badge",
+                "Access to shipping tools",
+                "Only 5% platform fee",
+              ].map((f) => (
+                <div key={f} className="flex items-start gap-2 text-sm text-white/85">
+                  <BadgeCheck className="h-4 w-4 text-[#D4AF37] shrink-0 mt-0.5" />
+                  {f}
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-white/15">
+              <Link href="/pricing" className="flex-1">
+                <Button className="w-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 rounded-full gap-2">
                   <Sparkles className="h-4 w-4" />
-                  Unlock Seller Dashboard
+                  $1.99/month
+                  <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-            </CardContent>
-          </Card>
+              <Link href="/pricing" className="flex-1">
+                <Button variant="outline" className="w-full border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-full gap-2">
+                  $29.99/year
+                  <span className="text-xs opacity-75">(Save 60%)</span>
+                </Button>
+              </Link>
+            </div>
+          </div>
+
         </div>
       </Layout>
     );
