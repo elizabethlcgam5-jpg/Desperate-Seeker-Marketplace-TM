@@ -425,45 +425,66 @@ export default function Pricing() {
             <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">Privacy Policy</h2>
           </div>
           <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm space-y-5 text-sm text-[#0B3954]/75 leading-relaxed">
-            <div>
-              <p className="font-semibold text-[#0B3954] mb-2">Information We Collect</p>
-              <p className="mb-2">We may collect:</p>
-              <ul className="space-y-1 list-none">
-                {["Name and email address", "Phone number", "ZIP code or general location", "Listings you create", "Messages you send through the platform", "Basic device and usage information"].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37] shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <p>Your privacy matters to us. This policy explains how Desperately Seeking collects and uses your information.</p>
+            {[
+              {
+                n: "1", title: "Information We Collect",
+                items: [
+                  "Email address for account login",
+                  "Listings, requests, and messages you create",
+                  "Basic device and usage data to improve the platform",
+                ],
+              },
+              {
+                n: "2", title: "How We Use Your Information",
+                items: [
+                  "To create and manage your account",
+                  "To match buyers and sellers",
+                  "To send notifications and updates",
+                  "To improve marketplace safety and performance",
+                ],
+              },
+              {
+                n: "3", title: "Sharing Your Information",
+                intro: "We do not sell your data. We only share information with:",
+                items: [
+                  "Payment processors (for subscriptions and sales)",
+                  "Shipping carriers (when shipping is used)",
+                ],
+              },
+            ].map((section) => (
+              <div key={section.n}>
+                <p className="font-semibold text-[#0B3954] mb-2">
+                  {section.n}. {section.title}
+                </p>
+                {section.intro && <p className="mb-2 text-[#0B3954]/70">{section.intro}</p>}
+                <ul className="space-y-1.5">
+                  {section.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#D4AF37] shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            <div className="space-y-3 pt-1">
+              {[
+                { n: "4", title: "Data Security", body: "We use secure systems to protect your information. No system is 100% secure, but we take reasonable steps to safeguard your data." },
+                { n: "5", title: "Your Choices", body: "You may update or delete your account at any time." },
+              ].map((item) => (
+                <div key={item.n}>
+                  <span className="font-semibold text-[#0B3954]">{item.n}. {item.title} — </span>
+                  {item.body}
+                </div>
+              ))}
             </div>
-            <div>
-              <p className="font-semibold text-[#0B3954] mb-2">What We Do Not Collect</p>
-              <ul className="space-y-1 list-none">
-                {["Social Security numbers", "Bank account numbers", "Credit card numbers (payments are handled by third-party processors such as Stripe)"].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/50 shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="font-semibold text-[#0B3954] mb-2">How We Use Your Information</p>
-              <p className="mb-2">We use your information to:</p>
-              <ul className="space-y-1 list-none">
-                {["Operate and improve the Desperately Seeking platform", "Match buyers and sellers", "Prevent fraud and abuse", "Communicate important updates about your account or listings"].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2">
-                    <Check className="h-3 w-3 text-[#D4AF37] shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="pt-2 border-t border-border/50 space-y-2">
-              <p><span className="font-semibold text-[#0B3954]">What We Do Not Do: </span>We do not sell your personal data. We do not share your personal data with advertisers who are not involved in operating the platform.</p>
-              <p><span className="font-semibold text-[#0B3954]">Data Security: </span>We take reasonable steps to protect your information, but no system is 100% secure. By using the platform, you accept this risk.</p>
-            </div>
+            <p className="pt-3 border-t border-border/50 text-[#0B3954]/60">
+              For privacy questions, email{" "}
+              <a href="mailto:privacy@desperatelyseeking.app" className="text-[#0B3954] underline underline-offset-2 hover:text-[#D4AF37] transition-colors">
+                privacy@desperatelyseeking.app
+              </a>
+            </p>
           </div>
         </div>
       </div>
