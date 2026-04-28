@@ -1,6 +1,15 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { UserSwitcher } from "./user-switcher";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   MessageSquare,
   Search,
@@ -11,17 +20,33 @@ import {
   Inbox,
   ShoppingBag,
   PenSquare,
+  LogIn,
+  LogOut,
+  User as UserIcon,
 } from "lucide-react";
 import { useGetCurrentUser } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { getApiUrl } from "@/lib/api";
+import { toast } from "sonner";
 
 export function Header() {
   const { data: user } = useGetCurrentUser();
-  const isSubscribed =
-    user && user.subscriptionTier && user.subscriptionTier !== "free";
-  const isPro =
-    user &&
-    (user.subscriptionTier === "seller_pro" ||
-      user.subscriptionTier === "seller_annual");
+  const [, setLocation] = useLocation();
+  const qc = useQueryClient();
+  const isSubscribed = user && user.subscriptionTier && user.subscriptionTier !== "free";
+  const isPro = user && (user.subscriptionTier === "seller_pro" || user.subscriptionTier === "seller_annual");
+  const isAuthenticated = user && (user as any).email;
+
+  const handleLogout = async () => {
+    try {
+      await fetch(getApiUrl("auth/logout"), { method: "POST", credentials: "include" });
+      await qc.invalidateQueries();
+      toast.success("Signed out successfully.");
+      setLocation("/");
+    } catch {
+      toast.error("Couldn't sign out. Try again.");
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#0B3954] text-white">
@@ -147,7 +172,72 @@ export function Header() {
               </Button>
             </Link>
           )}
-          <UserSwitcher />
+          {/* Auth controls */}
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="ml-1 rounded-full focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50">
+                  <Avatar className="h-8 w-8 border-2 border-[#D4AF37]/30 cursor-pointer hover:border-[#D4AF37] transition-colors">
+                    <AvatarImage src={user?.avatarUrl ?? ""} alt={user?.name ?? ""} />
+                    <AvatarFallback className="bg-[#D4AF37]/20 text-[#D4AF37] text-sm font-bold">
+                      {user?.name?.charAt(0).toUpperCase() ?? "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52 rounded-2xl shadow-xl">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col gap-0.5">
+                    <p className="font-semibold text-[#0B3954]">{user?.name}</p>
+                    <p className="text-xs text-muted-foreground">{(user as any)?.email}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/me/dashboard" className="cursor-pointer">
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    My Account
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/me/listings" className="cursor-pointer">
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    My Listings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="text-red-600 focus:text-red-600 cursor-pointer"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center gap-1.5 ml-1">
+              <Link href="/login">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-white/80 hover:text-white hover:bg-white/10 gap-1.5"
+                >
+                  <LogIn className="h-4 w-4" />
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button
+                  size="sm"
+                  className="bg-[#D4AF37] text-[#0B3954] font-semibold hover:bg-[#c9a430] border-0 rounded-full"
+                  onClick={() => {}}
+                >
+                  Register
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </header>

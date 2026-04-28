@@ -5,6 +5,7 @@ export function serializeUser(u: User) {
     id: u.id,
     name: u.name,
     handle: u.handle,
+    email: u.email ?? null,
     avatarUrl: u.avatarUrl,
     joinedAt: u.joinedAt.toISOString(),
     bio: u.bio,
