@@ -31,13 +31,12 @@ import * as z from "zod";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { PackagePlus, Truck, Lock, Package, Tag, CheckCircle2, MapPin, Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useListMyListings, useGetCurrentUser } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getApiUrl } from "@/lib/api";
 
 const FREE_LISTING_LIMIT = 2;
-const freeListingsUsed = 2;
 
 const CATEGORIES = [
   "Furniture",
@@ -95,7 +94,7 @@ function formatDate(iso: string) {
 export default function NewListing() {
   const [_, setLocation] = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [limitOpen, setLimitOpen] = useState(freeListingsUsed >= FREE_LISTING_LIMIT);
+  const [limitOpen, setLimitOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const qc = useQueryClient();
@@ -105,6 +104,14 @@ export default function NewListing() {
 
   const activeListings = listings?.filter((l: any) => l.status === "active") ?? [];
   const soldListings = listings?.filter((l: any) => l.status === "sold") ?? [];
+  const freeListingsUsed = listings?.length ?? 0;
+
+  // Show the subscription popup once we know the user has hit their free limit
+  useEffect(() => {
+    if (listings !== undefined && freeListingsUsed >= FREE_LISTING_LIMIT) {
+      setLimitOpen(true);
+    }
+  }, [listings]);
 
   const [shippingWeight, setShippingWeight] = useState("");
   const [packageSize, setPackageSize] = useState("Small");
@@ -260,9 +267,9 @@ export default function NewListing() {
             </Button>
             <button
               className="w-full text-xs text-muted-foreground hover:text-[#0B3954] transition-colors pt-1"
-              onClick={() => { setLimitOpen(false); setLocation("/me/listings"); }}
+              onClick={() => setLimitOpen(false)}
             >
-              Maybe later — view my listings
+              Start selling now — use my free listings first
             </button>
           </div>
         </DialogContent>

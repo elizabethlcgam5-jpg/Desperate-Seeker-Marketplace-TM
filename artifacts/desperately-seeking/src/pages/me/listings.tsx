@@ -36,10 +36,9 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   Plus,
-  Sparkles,
   Tag,
   CheckCircle2,
   Star,
@@ -50,7 +49,6 @@ import {
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { PaywallModal } from "@/components/paywall-modal";
 
 const CATEGORIES = [
   "Furniture",
@@ -110,6 +108,7 @@ function availabilityLabel(value: string) {
 }
 
 export default function MyListingsPage() {
+  const [_, setLocation] = useLocation();
   const { data: user, isLoading: userLoading } = useGetCurrentUser();
   const isSeller = user && user.subscriptionTier && user.subscriptionTier !== "free";
   const qc = useQueryClient();
@@ -122,7 +121,6 @@ export default function MyListingsPage() {
   const [salePrice, setSalePrice] = useState("");
   const [soldNotes, setSoldNotes] = useState("");
   const [markingLoading, setMarkingLoading] = useState(false);
-  const [showPaywall, setShowPaywall] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
 
@@ -235,23 +233,13 @@ export default function MyListingsPage() {
               Manage your active listings and track sold items.
             </p>
           </div>
-          {isSeller ? (
-            <Button
-              className="bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 rounded-full gap-1.5"
-              onClick={() => setShowCreateDialog(true)}
-            >
-              <Plus className="h-4 w-4" />
-              New Listing
-            </Button>
-          ) : (
-            <Button
-              className="bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 rounded-full gap-1.5"
-              onClick={() => setShowPaywall(true)}
-            >
-              <Plus className="h-4 w-4" />
-              New Listing
-            </Button>
-          )}
+          <Button
+            className="bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 rounded-full gap-1.5"
+            onClick={() => setLocation("/listings/new")}
+          >
+            <Plus className="h-4 w-4" />
+            New Listing
+          </Button>
         </div>
 
         {listingsLoading ? (
@@ -281,25 +269,14 @@ export default function MyListingsPage() {
                   <p className="text-sm text-muted-foreground mt-1 mb-4">
                     Create your first listing to appear in the marketplace.
                   </p>
-                  {isSeller ? (
-                    <Button
-                      size="sm"
-                      className="rounded-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0"
-                      onClick={() => setShowCreateDialog(true)}
-                    >
-                      <Plus className="h-3.5 w-3.5 mr-1" />
-                      Create First Listing
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      className="rounded-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0"
-                      onClick={() => setShowPaywall(true)}
-                    >
-                      <Sparkles className="h-3.5 w-3.5 mr-1" />
-                      Upgrade to List Items
-                    </Button>
-                  )}
+                  <Button
+                    size="sm"
+                    className="rounded-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0"
+                    onClick={() => setLocation("/listings/new")}
+                  >
+                    <Plus className="h-3.5 w-3.5 mr-1" />
+                    Post a Listing
+                  </Button>
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -696,11 +673,6 @@ export default function MyListingsPage() {
         </DialogContent>
       </Dialog>
 
-      <PaywallModal
-        open={showPaywall}
-        onOpenChange={setShowPaywall}
-        reason="Upgrade to post and manage listings"
-      />
     </Layout>
   );
 }
