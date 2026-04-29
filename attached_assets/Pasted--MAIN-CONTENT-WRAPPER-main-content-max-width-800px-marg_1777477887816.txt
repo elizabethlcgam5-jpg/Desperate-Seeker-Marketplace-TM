@@ -1,0 +1,116 @@
+/* MAIN CONTENT WRAPPER */
+.main-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: system-ui, sans-serif;
+}
+
+/* CONTENT BOX */
+.content-box {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  border: 1px solid #e6e6e6;
+}
+
+/* HEADERS */
+.main-content h2 {
+  color: #003366; /* Deep marketplace blue */
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+/* FORM LABELS */
+#sellerForm label {
+  display: block;
+  margin-top: 14px;
+  font-weight: 600;
+  color: #003366;
+}
+
+/* INPUTS */
+#sellerForm input,
+#sellerForm select,
+#sellerForm textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #bfc9d9;
+  background: #f8faff;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+#sellerForm input:focus,
+#sellerForm select:focus,
+#sellerForm textarea:focus {
+  border-color: #0077cc;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0,119,204,0.15);
+}
+
+/* TEXTAREA */
+#sellerForm textarea {
+  height: 90px;
+  resize: vertical;
+}
+
+/* SUBMIT BUTTON */
+#sellerForm button {
+  margin-top: 22px;
+  width: 100%;
+  padding: 14px;
+  background: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#sellerForm button:hover {
+  background: #005fa3;
+}
+
+/* ITEM LIST */
+#sellerItemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ITEM CARD */
+.item-card {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+  border: 1px solid #e6e6e6;
+}
+
+.item-card h3 {
+  margin: 10px 0 6px;
+  color: #003366;
+  font-weight: 700;
+}
+
+.item-card p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+/* ITEM PHOTO */
+.item-photo {
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  border: 

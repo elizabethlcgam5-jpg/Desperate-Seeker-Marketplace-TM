@@ -268,7 +268,7 @@ export default function NewListing() {
         </DialogContent>
       </Dialog>
 
-      <div className="container max-w-3xl mx-auto px-4 py-8 md:py-12">
+      <div className="container max-w-[800px] mx-auto px-4 py-8 md:py-12">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-[#0B3954] mb-4">
             <PackagePlus className="h-7 w-7 text-[#D4AF37]" />
@@ -660,51 +660,42 @@ export default function NewListing() {
                 {activeListings.length > 0 && (
                   <div>
                     <h3 className="text-sm font-semibold text-[#0B3954]/60 uppercase tracking-wide mb-3">Active</h3>
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-5">
                       {activeListings.map((listing: any) => (
                         <div
                           key={listing.id}
-                          className="rounded-2xl bg-white border border-border/60 p-5 shadow-sm"
+                          className="rounded-[10px] bg-[#fafafa] p-[15px] shadow-[0_2px_5px_rgba(0,0,0,0.05)]"
                         >
                           {listing.imageUrl && (
-                            <div className="mb-3 h-32 w-full overflow-hidden rounded-xl bg-muted">
-                              <img src={listing.imageUrl} alt={listing.title} className="h-full w-full object-cover" />
-                            </div>
+                            <img
+                              src={listing.imageUrl}
+                              alt={listing.title}
+                              className="w-full max-h-[220px] object-cover rounded-xl mb-3"
+                            />
                           )}
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="min-w-0 flex-1">
-                              <p className="font-semibold text-[#0B3954] truncate">{listing.title}</p>
-                              <div className="flex flex-wrap gap-1.5 mt-1">
-                                <Badge variant="secondary" className="text-[10px] capitalize">{listing.category}</Badge>
-                                {listing.condition && (
-                                  <Badge variant="outline" className="text-[10px]">
-                                    {CONDITIONS_MAP[listing.condition] ?? listing.condition}
-                                  </Badge>
-                                )}
-                                {listing.availability && (
-                                  <Badge variant="outline" className="text-[10px] flex items-center gap-0.5">
-                                    {listing.availability === "local_pickup" ? (
-                                      <MapPin className="h-2.5 w-2.5" />
-                                    ) : (
-                                      <Truck className="h-2.5 w-2.5" />
-                                    )}
-                                    {listing.availability === "local_pickup" ? "Local Pickup" : listing.availability === "shipping" ? "Shipping" : "Both"}
-                                  </Badge>
-                                )}
-                              </div>
-                            </div>
-                            <p className="font-serif text-lg font-bold text-[#0B3954] shrink-0">
-                              ${Number(listing.price).toFixed(0)}
-                            </p>
+                          <h3 className="font-semibold text-[#0B3954] text-base mt-2 mb-1">{listing.title}</h3>
+                          <div className="space-y-[4px] text-sm text-gray-700">
+                            <p><span className="font-semibold">Category:</span> {listing.category}</p>
+                            {listing.condition && (
+                              <p><span className="font-semibold">Condition:</span> {CONDITIONS_MAP[listing.condition] ?? listing.condition}</p>
+                            )}
+                            {listing.brandName && (
+                              <p><span className="font-semibold">Brand:</span> {listing.brandName}</p>
+                            )}
+                            <p><span className="font-semibold">Description:</span> {listing.description}</p>
+                            <p><span className="font-semibold">Price:</span> ${Number(listing.price).toFixed(2)}</p>
+                            <p><span className="font-semibold">ZIP:</span> {listing.zipCode}</p>
+                            {listing.availability && (
+                              <p><span className="font-semibold">Delivery:</span> {listing.availability === "local_pickup" ? "Local Pickup" : listing.availability === "shipping" ? "Shipping" : "Local Pickup & Shipping"}</p>
+                            )}
                           </div>
-                          <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{listing.description}</p>
                           <div className="mt-3 flex items-center justify-between">
                             <p className="text-xs text-muted-foreground">Listed {formatDate(listing.createdAt)}</p>
                             <Button
                               size="sm"
                               variant="ghost"
                               disabled={deletingId === listing.id}
-                              className="rounded-full text-red-500 hover:text-red-600 hover:bg-red-50 h-8 px-2.5 text-xs"
+                              className="rounded-md bg-[#cc0000] text-white hover:bg-[#a30000] h-8 px-3 text-xs font-medium"
                               onClick={() => deleteItem(listing.id)}
                             >
                               <Trash2 className="h-3.5 w-3.5 mr-1" />
@@ -723,21 +714,19 @@ export default function NewListing() {
                       <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                       Sold
                     </h3>
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-5">
                       {soldListings.map((listing: any) => (
                         <div
                           key={listing.id}
-                          className="rounded-2xl bg-white border border-border/40 p-5 shadow-sm opacity-70"
+                          className="rounded-[10px] bg-[#fafafa] p-[15px] shadow-[0_2px_5px_rgba(0,0,0,0.05)] opacity-70"
                         >
                           <div className="flex items-start justify-between gap-2">
-                            <div className="min-w-0 flex-1">
-                              <p className="font-semibold text-[#0B3954] truncate">{listing.title}</p>
-                              <Badge variant="secondary" className="text-[10px] capitalize mt-1">{listing.category}</Badge>
-                            </div>
-                            <div className="text-right shrink-0">
-                              <p className="font-serif text-lg font-bold text-[#0B3954]">${Number(listing.price).toFixed(0)}</p>
-                              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 text-[10px] mt-1">Sold</Badge>
-                            </div>
+                            <h3 className="font-semibold text-[#0B3954] text-base">{listing.title}</h3>
+                            <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 text-[10px] shrink-0">Sold</Badge>
+                          </div>
+                          <div className="mt-2 space-y-[4px] text-sm text-gray-700">
+                            <p><span className="font-semibold">Category:</span> {listing.category}</p>
+                            <p><span className="font-semibold">Price:</span> ${Number(listing.price).toFixed(2)}</p>
                           </div>
                           <p className="mt-3 text-xs text-muted-foreground">{formatDate(listing.createdAt)}</p>
                         </div>
