@@ -467,7 +467,7 @@ export default function NewListing() {
                     <FormLabel className="font-semibold text-[#0B3954]">Delivery Options *</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff]">
+                        <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-white">
                           <SelectValue placeholder="How can buyers get it?" />
                         </SelectTrigger>
                       </FormControl>

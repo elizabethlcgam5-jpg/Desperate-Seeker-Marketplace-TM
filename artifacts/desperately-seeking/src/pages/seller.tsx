@@ -1,265 +1,166 @@
 import { Layout } from "@/components/layout";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
+import { Tag, Clock, ShieldCheck, Search, MessageSquare, CheckCircle, DollarSign, HelpCircle } from "lucide-react";
 
 export default function Seller() {
+  const [_, setLocation] = useLocation();
+
   return (
     <Layout>
-      <div
-        className="min-h-screen text-[#1f2933]"
-        style={{
-          background:
-            "radial-gradient(circle at top, #e0ebff 0, #f5f7fb 45%, #f5f5f5 100%)",
-        }}
-      >
-        <div className="max-w-[1100px] mx-auto px-4 py-8 pb-16">
+      {/* Navy header banner — matches buyer pages */}
+      <section className="bg-[#0B3954] py-12">
+        <div className="container mx-auto px-4 max-w-[860px]">
+          <h1 className="font-serif text-3xl md:text-4xl font-bold text-white mb-3">
+            Why sell on Desperately Seeking Marketplace?
+          </h1>
+          <p className="text-white/70 text-base max-w-[540px] mb-7">
+            Instead of guessing what might sell, you respond to real, specific needs. Less noise, more "yes."
+          </p>
+          <button
+            onClick={() => setLocation("/listings/new")}
+            className="rounded-full px-7 py-3 text-[0.95rem] font-semibold bg-[#D4AF37] text-[#0B3954] border-0 cursor-pointer hover:bg-[#c9a430] transition-colors shadow-[0_6px_16px_rgba(212,175,55,0.35)]"
+          >
+            Get started as a seller
+          </button>
+        </div>
+      </section>
 
-          {/* Hero */}
-          <section className="grid gap-8 items-center mb-10 [grid-template-columns:minmax(0,3fr)_minmax(0,2.5fr)] max-[900px]:[grid-template-columns:minmax(0,1fr)]">
-            <div>
-              <h1 className="text-[2.2rem] leading-tight font-bold mb-3">
-                Turn <span className="text-[#1f6feb]">buyer requests</span> into sales — without shouting into the void.
-              </h1>
-              <p className="text-[#6b7280] text-[0.98rem] mb-5 max-w-[480px]">
-                On Desperately Seeking Marketplace, buyers tell you exactly what they're looking for.
-                You only raise your hand when you can truly deliver.
-              </p>
+      {/* Cream content area */}
+      <div className="bg-background flex-1">
+        <div className="container max-w-[860px] mx-auto px-4 py-10 md:py-14 space-y-14">
 
-              <div className="flex flex-wrap gap-2.5 mb-5">
-                {["Buyer‑first, not algorithm‑first", "No listing overwhelm", "You respond when it's a fit"].map((label) => (
-                  <span
-                    key={label}
-                    className="text-xs px-2.5 py-1.5 rounded-full border text-[#164ea8]"
-                    style={{
-                      background: "rgba(31,111,235,0.06)",
-                      borderColor: "rgba(31,111,235,0.15)",
-                    }}
-                  >
-                    {label}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-2.5 items-center mb-2.5">
-                <Link href="/login">
-                  <button
-                    className="rounded-full px-5 py-2.5 text-[0.95rem] font-semibold text-white border-0 cursor-pointer transition-all"
-                    style={{
-                      background: "#1f6feb",
-                      boxShadow: "0 10px 20px rgba(31,111,235,0.35)",
-                    }}
-                  >
-                    Get started as a seller
-                  </button>
-                </Link>
-                <Link href="/browse">
-                  <button
-                    className="rounded-full px-4 py-2 text-[0.9rem] border cursor-pointer transition-all text-[#6b7280] bg-transparent hover:bg-white"
-                    style={{ borderColor: "#e5e7eb" }}
-                  >
-                    Preview a real buyer request
-                  </button>
-                </Link>
-              </div>
-
-              <p className="text-[0.8rem] text-[#6b7280]">
-                <span className="text-[#ffb347] font-semibold">No obligation:</span>{" "}
-                You only respond to requests that match what you actually have or can source.
-              </p>
-            </div>
-
-            {/* Sample buyer request card */}
-            <aside
-              className="bg-white rounded-[18px] p-[18px] text-[0.85rem] border max-[900px]:order-first"
-              style={{
-                boxShadow: "0 10px 25px rgba(15,23,42,0.08)",
-                borderColor: "rgba(148,163,184,0.3)",
-              }}
-            >
-              <div className="flex justify-between items-center mb-3">
-                <div className="font-semibold text-[0.9rem]">Sample buyer request</div>
-                <div
-                  className="text-[0.7rem] px-2 py-1 rounded-full border"
-                  style={{
-                    background: "rgba(22,163,74,0.08)",
-                    color: "#15803d",
-                    borderColor: "rgba(22,163,74,0.25)",
-                  }}
-                >
-                  You could respond
-                </div>
-              </div>
-              <div className="text-[0.75rem] text-[#6b7280] mt-1">"I'm desperately seeking…"</div>
-              <p className="my-2.5 text-[0.82rem]">
-                A gently used, neutral‑colored glider chair for a small nursery. Must be clean, non‑smoking home,
-                and within 25 miles of 60545. Budget under $175.
-              </p>
-              <div className="grid grid-cols-3 gap-2.5 mb-3">
-                {[
-                  { label: "Location", value: "60545 + 25 mi" },
-                  { label: "Category", value: "Baby & Nursery" },
-                  { label: "Budget", value: "< $175" },
-                ].map((m) => (
-                  <div
-                    key={m.label}
-                    className="px-2.5 py-2 rounded-[10px] border"
-                    style={{ background: "#f9fafb", borderColor: "#e5e7eb" }}
-                  >
-                    <div className="text-[0.7rem] text-[#6b7280] mb-0.5">{m.label}</div>
-                    <div className="text-[0.9rem] font-semibold">{m.value}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="flex justify-between items-center gap-2.5 text-[0.75rem] text-[#6b7280] mt-1">
-                <span>Have this (or better)? Send your offer, photos, and price in one reply.</span>
-                <span className="whitespace-nowrap">You see the need first.</span>
-              </div>
-            </aside>
-          </section>
-
-          {/* Why sell here */}
-          <section className="mb-10">
-            <h2 className="text-[1.4rem] font-bold mb-2.5">Why sell on Desperately Seeking Marketplace?</h2>
-            <p className="text-[0.9rem] text-[#6b7280] max-w-[520px] mb-5">
-              Instead of guessing what might sell, you respond to real, specific needs. Less noise, more "yes."
-            </p>
-            <div className="grid grid-cols-3 gap-4 max-[700px]:grid-cols-1">
+          {/* Why sell — 3 benefit cards */}
+          <section>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
                 {
+                  Icon: Tag,
                   label: "Signal, not noise",
                   title: "Buyers tell you exactly what they want",
                   text: "Every request includes details like size, color, condition, budget, and ZIP code. You're not throwing listings into a void — you're matching to a clear ask.",
                 },
                 {
+                  Icon: Clock,
                   label: "Respect for your time",
                   title: "Only respond when it's a true fit",
                   text: "No pressure to maintain a giant storefront. You can be a casual declutterer, a side‑hustler, or a full‑time seller — and only engage when a request matches what you have.",
                 },
                 {
+                  Icon: ShieldCheck,
                   label: "Buyer‑first trust",
                   title: "You stand out by being honest and specific",
                   text: "Clear photos, accurate descriptions, and realistic pricing build trust quickly. Buyers see your offer alongside others and choose what truly fits their need.",
                 },
-              ].map((card) => (
+              ].map(({ Icon, label, title, text }) => (
                 <div
-                  key={card.label}
-                  className="bg-white rounded-[10px] p-3.5 border text-[0.85rem]"
-                  style={{
-                    borderColor: "#e5e7eb",
-                    boxShadow: "0 6px 16px rgba(15,23,42,0.04)",
-                  }}
+                  key={label}
+                  className="bg-white rounded-xl p-5 border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)]"
                 >
-                  <div className="text-[0.75rem] font-semibold text-[#164ea8] mb-1 uppercase tracking-wide">
-                    {card.label}
+                  <div className="h-9 w-9 rounded-full bg-[#0B3954]/8 flex items-center justify-center mb-3">
+                    <Icon className="h-4 w-4 text-[#0B3954]" />
                   </div>
-                  <div className="font-semibold mb-1">{card.title}</div>
-                  <p className="text-[#6b7280] text-[0.82rem]">{card.text}</p>
+                  <div className="text-[0.7rem] font-semibold text-[#D4AF37] uppercase tracking-widest mb-1">
+                    {label}
+                  </div>
+                  <div className="font-semibold text-[#0B3954] mb-1.5">{title}</div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{text}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* How it works */}
-          <section className="mb-10">
-            <h2 className="text-[1.4rem] font-bold mb-2.5">How selling works</h2>
-            <p className="text-[0.9rem] text-[#6b7280] max-w-[520px] mb-5">
+          {/* How selling works */}
+          <section>
+            <h2 className="font-serif text-2xl font-bold text-[#0B3954] mb-1.5">How selling works</h2>
+            <p className="text-sm text-muted-foreground max-w-[480px] mb-6">
               Simple, structured, and built around real buyer requests — not endless scrolling and guessing.
             </p>
-            <div className="grid grid-cols-3 gap-4 max-[700px]:grid-cols-1">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
                 {
                   n: "1",
+                  Icon: Search,
                   title: "Browse buyer requests",
                   text: "Filter by category, ZIP code radius, budget, and condition. When you see a request you can genuinely fulfill, click into it to view all the details.",
                 },
                 {
                   n: "2",
+                  Icon: MessageSquare,
                   title: "Submit your offer",
                   text: "Share photos, your price, condition notes, pickup/shipping options, and timing. The buyer sees your offer alongside others and can ask follow‑up questions if needed.",
                 },
                 {
                   n: "3",
+                  Icon: CheckCircle,
                   title: "Confirm the match & complete the sale",
                   text: "Once the buyer chooses your offer, you coordinate payment and delivery based on the options you've provided. Clear expectations up front mean fewer surprises for both sides.",
                 },
-              ].map((step) => (
+              ].map(({ n, Icon, title, text }) => (
                 <div
-                  key={step.n}
-                  className="bg-white rounded-[10px] p-3.5 border text-[0.85rem]"
-                  style={{ borderColor: "#e5e7eb" }}
+                  key={n}
+                  className="bg-white rounded-xl p-5 border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)]"
                 >
-                  <div
-                    className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.75rem] font-semibold mb-1.5"
-                    style={{
-                      background: "rgba(31,111,235,0.08)",
-                      color: "#164ea8",
-                    }}
-                  >
-                    {step.n}
+                  <div className="h-8 w-8 rounded-full bg-[#D4AF37]/15 flex items-center justify-center mb-3">
+                    <span className="text-sm font-bold text-[#0B3954]">{n}</span>
                   </div>
-                  <div className="font-semibold mb-1">{step.title}</div>
-                  <p className="text-[#6b7280] text-[0.82rem]">{step.text}</p>
+                  <div className="font-semibold text-[#0B3954] mb-1.5">{title}</div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{text}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Pricing */}
-          <section className="mb-10">
-            <h2 className="text-[1.4rem] font-bold mb-2.5">Seller pricing & fees</h2>
-            <p className="text-[0.9rem] text-[#6b7280] max-w-[520px] mb-5">
+          {/* Seller pricing & fees */}
+          <section>
+            <h2 className="font-serif text-2xl font-bold text-[#0B3954] mb-1.5">Seller pricing & fees</h2>
+            <p className="text-sm text-muted-foreground max-w-[480px] mb-6">
               Keep it simple, transparent, and sustainable. You'll always know what you keep from each sale.
             </p>
-            <div
-              className="bg-white rounded-2xl p-4 border grid gap-5 items-center text-[0.88rem] max-[900px]:grid-cols-1"
-              style={{
-                borderColor: "#e5e7eb",
-                boxShadow: "0 8px 20px rgba(15,23,42,0.06)",
-                gridTemplateColumns: "minmax(0,2fr) minmax(0,1.5fr)",
-              }}
-            >
-              <div>
-                <div
-                  className="inline-flex items-center gap-1.5 text-[0.75rem] px-2.5 py-1 rounded-full mb-1.5"
-                  style={{
-                    background: "rgba(31,111,235,0.06)",
-                    color: "#164ea8",
-                  }}
-                >
-                  Seller‑friendly • No surprise charges
+
+            <div className="bg-white rounded-xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8">
+              <div className="flex flex-col md:flex-row md:items-start gap-8">
+                <div className="flex-1">
+                  <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#0B3954]/6 text-[#0B3954] font-semibold mb-3">
+                    <DollarSign className="h-3 w-3" />
+                    Seller‑friendly · No surprise charges
+                  </span>
+                  <p className="font-semibold text-[#0B3954] mb-1">
+                    You keep the majority of every sale. Platform fees stay small and predictable.
+                  </p>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Exact fee structure can be adjusted as the marketplace grows, but the philosophy stays the same:
+                    buyer‑first, seller‑respecting, and clear.
+                  </p>
+                  <ul className="space-y-2">
+                    {[
+                      "Flat platform fee or small percentage per completed sale",
+                      "No fee just to browse or respond to requests",
+                      "Optional add‑ons later (boosted visibility, featured responses, etc.)",
+                    ].map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="h-5 w-5 rounded-full bg-[#D4AF37]/15 flex items-center justify-center shrink-0 text-[#D4AF37] text-xs font-bold mt-0.5">✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="text-base font-semibold mb-1">
-                  You keep the majority of every sale. Platform fees stay small and predictable.
-                </div>
-                <p className="text-[0.8rem] text-[#6b7280]">
-                  Exact fee structure can be adjusted as the marketplace grows, but the philosophy stays the same:
-                  buyer‑first, seller‑respecting, and clear.
-                </p>
-                <ul className="mt-2 text-[0.82rem] text-[#6b7280] space-y-1 list-none">
-                  {[
-                    "Flat platform fee or small percentage per completed sale",
-                    "No fee just to browse or respond to requests",
-                    "Optional add‑ons later (boosted visibility, featured responses, etc.)",
-                  ].map((item) => (
-                    <li key={item} className="before:content-['•_'] before:text-[#1f6feb]">{item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="text-right max-[900px]:text-left">
-                <div className="text-[1.4rem] font-bold text-[#164ea8]">Example: 8–12%</div>
-                <div className="text-[0.75rem] text-[#6b7280]">
-                  of the final sale price as a platform fee (exact numbers can be finalized with your business plan).
+                <div className="md:text-right shrink-0">
+                  <div className="text-3xl font-bold text-[#0B3954]">8–12%</div>
+                  <div className="text-sm text-muted-foreground max-w-[200px] md:ml-auto mt-1">
+                    of the final sale price as a platform fee (exact numbers can be finalized with your business plan).
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* FAQ */}
-          <section className="mb-10">
-            <h2 className="text-[1.4rem] font-bold mb-2.5">Seller FAQ</h2>
-            <p className="text-[0.9rem] text-[#6b7280] max-w-[520px] mb-5">
+          {/* Seller FAQ */}
+          <section>
+            <h2 className="font-serif text-2xl font-bold text-[#0B3954] mb-1.5">Seller FAQ</h2>
+            <p className="text-sm text-muted-foreground max-w-[480px] mb-6">
               A few of the questions thoughtful sellers usually ask before they jump in.
             </p>
-            <div className="grid grid-cols-2 gap-3.5 text-[0.85rem] max-[700px]:grid-cols-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 {
                   q: "Do I have to list everything I own?",
@@ -280,46 +181,39 @@ export default function Seller() {
               ].map((item) => (
                 <div
                   key={item.q}
-                  className="bg-white rounded-[10px] px-3 py-2.5 border"
-                  style={{ borderColor: "#e5e7eb" }}
+                  className="bg-white rounded-xl p-5 border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)]"
                 >
-                  <div className="font-semibold mb-1">{item.q}</div>
-                  <div className="text-[#6b7280] text-[0.82rem]">{item.a}</div>
+                  <div className="flex items-start gap-3">
+                    <HelpCircle className="h-4 w-4 text-[#D4AF37] shrink-0 mt-0.5" />
+                    <div>
+                      <div className="font-semibold text-[#0B3954] mb-1">{item.q}</div>
+                      <div className="text-sm text-muted-foreground leading-relaxed">{item.a}</div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </section>
 
           {/* Final CTA */}
-          <section
-            className="mt-2.5 px-4 py-4 rounded-2xl border flex flex-wrap items-center justify-between gap-3 text-[0.9rem]"
-            style={{
-              background: "linear-gradient(135deg, rgba(31,111,235,0.06), rgba(255,179,71,0.08))",
-              borderColor: "rgba(148,163,184,0.5)",
-            }}
-          >
-            <div className="max-w-[520px]">
-              <strong className="font-semibold">Ready to respond instead of guess?</strong>
-              <div className="mt-1">
-                Create your seller profile once, then simply watch for buyer requests that feel like a "yes" for you.
-                No pressure to be everywhere, all the time.
-              </div>
-              <div className="text-[0.78rem] text-[#6b7280] mt-1">
-                You've already done the hard part: having good items and integrity. This just gives buyers a clear way to
-                find you when they need exactly what you have.
-              </div>
-            </div>
-            <Link href="/login">
-              <button
-                className="rounded-full px-5 py-2.5 text-[0.95rem] font-semibold text-white border-0 cursor-pointer"
-                style={{
-                  background: "#1f6feb",
-                  boxShadow: "0 10px 20px rgba(31,111,235,0.35)",
-                }}
-              >
-                Start my seller profile
-              </button>
-            </Link>
+          <section className="bg-[#0B3954] rounded-2xl p-8 text-center">
+            <h3 className="font-serif text-2xl font-bold text-white mb-2">
+              Ready to respond instead of guess?
+            </h3>
+            <p className="text-white/70 text-sm max-w-[440px] mx-auto mb-2">
+              Create your seller profile once, then simply watch for buyer requests that feel like a "yes" for you.
+              No pressure to be everywhere, all the time.
+            </p>
+            <p className="text-white/50 text-xs max-w-[440px] mx-auto mb-6">
+              You've already done the hard part: having good items and integrity. This just gives buyers a clear way to
+              find you when they need exactly what you have.
+            </p>
+            <button
+              onClick={() => setLocation("/listings/new")}
+              className="rounded-full px-8 py-3 text-[0.95rem] font-semibold bg-[#D4AF37] text-[#0B3954] border-0 cursor-pointer hover:bg-[#c9a430] transition-colors shadow-[0_6px_16px_rgba(212,175,55,0.35)]"
+            >
+              Get started as a seller
+            </button>
           </section>
 
         </div>
