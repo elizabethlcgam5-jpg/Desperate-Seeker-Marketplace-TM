@@ -2,6 +2,7 @@ import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
   Form,
   FormControl,
@@ -29,8 +30,9 @@ import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { PackagePlus, Truck, Lock } from "lucide-react";
+import { PackagePlus, Truck, Lock, Package, Tag, CheckCircle2, MapPin } from "lucide-react";
 import { useRef, useState } from "react";
+import { useListMyListings, useGetCurrentUser } from "@workspace/api-client-react";
 
 const FREE_LISTING_LIMIT = 2;
 const freeListingsUsed = 2;
@@ -72,10 +74,32 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+const CONDITIONS_MAP: Record<string, string> = {
+  new: "New",
+  like_new: "Like New",
+  good: "Good",
+  fair: "Fair",
+  needs_repair: "Needs Repair",
+};
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default function NewListing() {
   const [_, setLocation] = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [limitOpen, setLimitOpen] = useState(freeListingsUsed >= FREE_LISTING_LIMIT);
+
+  const { data: user } = useGetCurrentUser();
+  const { data: listings } = useListMyListings({ query: { enabled: !!user } });
+
+  const activeListings = listings?.filter((l: any) => l.status === "active") ?? [];
+  const soldListings = listings?.filter((l: any) => l.status === "sold") ?? [];
 
   const [shippingWeight, setShippingWeight] = useState("");
   const [packageSize, setPackageSize] = useState("Small");
@@ -535,6 +559,110 @@ export default function NewListing() {
             </form>
           </Form>
         </div>
+
+        {/* Your Posted Items */}
+        {user && (
+          <div className="mt-12">
+            <div className="mb-6 flex items-center gap-2">
+              <Tag className="h-5 w-5 text-[#D4AF37]" />
+              <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">
+                Your Posted Items
+              </h2>
+              {activeListings.length > 0 && (
+                <Badge variant="secondary" className="ml-1">{activeListings.length} active</Badge>
+              )}
+            </div>
+
+            {activeListings.length === 0 && soldListings.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-[#0B3954]/20 bg-white p-10 text-center shadow-sm">
+                <Package className="mx-auto h-9 w-9 text-[#D4AF37]/40 mb-3" />
+                <p className="font-serif text-[#0B3954]">No items posted yet</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Fill in the form above to post your first item.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-8">
+                {activeListings.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-[#0B3954]/60 uppercase tracking-wide mb-3">Active</h3>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {activeListings.map((listing: any) => (
+                        <div
+                          key={listing.id}
+                          className="rounded-2xl bg-white border border-border/60 p-5 shadow-sm"
+                        >
+                          {listing.imageUrl && (
+                            <div className="mb-3 h-32 w-full overflow-hidden rounded-xl bg-muted">
+                              <img src={listing.imageUrl} alt={listing.title} className="h-full w-full object-cover" />
+                            </div>
+                          )}
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-semibold text-[#0B3954] truncate">{listing.title}</p>
+                              <div className="flex flex-wrap gap-1.5 mt-1">
+                                <Badge variant="secondary" className="text-[10px] capitalize">{listing.category}</Badge>
+                                {listing.condition && (
+                                  <Badge variant="outline" className="text-[10px]">
+                                    {CONDITIONS_MAP[listing.condition] ?? listing.condition}
+                                  </Badge>
+                                )}
+                                {listing.availability && (
+                                  <Badge variant="outline" className="text-[10px] flex items-center gap-0.5">
+                                    {listing.availability === "local_pickup" ? (
+                                      <MapPin className="h-2.5 w-2.5" />
+                                    ) : (
+                                      <Truck className="h-2.5 w-2.5" />
+                                    )}
+                                    {listing.availability === "local_pickup" ? "Local Pickup" : listing.availability === "shipping" ? "Shipping" : "Both"}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                            <p className="font-serif text-lg font-bold text-[#0B3954] shrink-0">
+                              ${Number(listing.price).toFixed(0)}
+                            </p>
+                          </div>
+                          <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{listing.description}</p>
+                          <p className="mt-3 text-xs text-muted-foreground">Listed {formatDate(listing.createdAt)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {soldListings.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-[#0B3954]/60 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                      Sold
+                    </h3>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {soldListings.map((listing: any) => (
+                        <div
+                          key={listing.id}
+                          className="rounded-2xl bg-white border border-border/40 p-5 shadow-sm opacity-70"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-semibold text-[#0B3954] truncate">{listing.title}</p>
+                              <Badge variant="secondary" className="text-[10px] capitalize mt-1">{listing.category}</Badge>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <p className="font-serif text-lg font-bold text-[#0B3954]">${Number(listing.price).toFixed(0)}</p>
+                              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 text-[10px] mt-1">Sold</Badge>
+                            </div>
+                          </div>
+                          <p className="mt-3 text-xs text-muted-foreground">{formatDate(listing.createdAt)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </Layout>
   );

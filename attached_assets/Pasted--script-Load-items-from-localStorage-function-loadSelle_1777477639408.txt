@@ -1,0 +1,77 @@
+<script>
+// Load items from localStorage
+function loadSellerItems() {
+  const items = JSON.parse(localStorage.getItem("sellerItems")) || [];
+  const list = document.getElementById("sellerItemsList");
+  list.innerHTML = "";
+
+  items.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "item-card";
+
+    card.innerHTML = `
+      <img src="${item.photo}" class="item-photo">
+      <h3>${item.name}</h3>
+      <p><strong>Category:</strong> ${item.category}</p>
+      <p><strong>Condition:</strong> ${item.condition}</p>
+      <p><strong>Color:</strong> ${item.color}</p>
+      <p><strong>Brand:</strong> ${item.brand}</p>
+      <p><strong>Description:</strong> ${item.description}</p>
+      <p><strong>Price:</strong> $${item.price}</p>
+      <p><strong>ZIP:</strong> ${item.zip}</p>
+      <p><strong>Delivery:</strong> ${item.delivery}</p>
+
+      <button onclick="deleteItem(${index})">Delete</button>
+    `;
+
+    list.appendChild(card);
+  });
+}
+
+// Delete an item
+function deleteItem(index) {
+  const items = JSON.parse(localStorage.getItem("sellerItems")) || [];
+  items.splice(index, 1);
+  localStorage.setItem("sellerItems", JSON.stringify(items));
+  loadSellerItems();
+}
+
+// Handle form submission
+document.getElementById("sellerForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const reader = new FileReader();
+  const file = document.getElementById("itemPhoto").files[0];
+
+  reader.onload = function() {
+    const newItem = {
+      name: document.getElementById("itemName").value,
+      category: document.getElementById("itemCategory").value,
+      condition: document.getElementById("itemCondition").value,
+      color: document.getElementById("itemColor").value,
+      brand: document.getElementById("itemBrand").value,
+      description: document.getElementById("itemDescription").value,
+      price: document.getElementById("itemPrice").value,
+      zip: document.getElementById("itemZip").value,
+      delivery: document.getElementById("itemDelivery").value,
+      photo: reader.result || ""
+    };
+
+    const items = JSON.parse(localStorage.getItem("sellerItems")) || [];
+    items.push(newItem);
+    localStorage.setItem("sellerItems", JSON.stringify(items));
+
+    loadSellerItems();
+    document.getElementById("sellerForm").reset();
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  } else {
+    reader.onload();
+  }
+});
+
+// Load items on page start
+loadSellerItems();
+</script>
