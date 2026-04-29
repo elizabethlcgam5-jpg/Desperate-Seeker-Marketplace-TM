@@ -13,6 +13,8 @@ import stripeRouter from "./stripe";
 import listingsRouter from "./listings";
 import commissionsRouter from "./commissions";
 import aiSearchRouter from "./openai/search";
+import analyzeImageRouter from "./openai/analyze-image";
+import notificationsRouter from "./notifications";
 
 const router: IRouter = Router();
 
@@ -30,5 +32,7 @@ router.use(stripeRouter);
 router.use(listingsRouter);
 router.use(commissionsRouter);
 router.use(aiSearchRouter);
+router.use(analyzeImageRouter);
+router.use(notificationsRouter);
 
 export default router;

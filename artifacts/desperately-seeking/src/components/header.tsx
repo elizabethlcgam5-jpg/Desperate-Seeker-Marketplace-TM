@@ -27,6 +27,7 @@ import { useGetCurrentUser } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
+import { NotificationBell } from "./notification-bell";
 
 export function Header() {
   const { data: user } = useGetCurrentUser();
@@ -153,6 +154,7 @@ export function Header() {
               </Button>
             </Link>
           )}
+          {user && <NotificationBell />}
           {/* Auth controls */}
           {isAuthenticated ? (
             <DropdownMenu>

@@ -27,7 +27,9 @@ import { useCreateRequest } from "@workspace/api-client-react";
 import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PenSquare, Lock, Search } from "lucide-react";
+import { PenSquare, Lock, Search, Camera, Sparkles, X as XIcon, Loader2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { getApiUrl } from "@/lib/api";
 
 const CATEGORIES = [
   "Antique Furniture",
@@ -81,6 +83,47 @@ export default function NewRequest() {
   const [_, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const createRequest = useCreateRequest();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+
+  async function handlePhotoUpload(file: File) {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUrl = e.target?.result as string;
+      setPhotoPreview(dataUrl);
+      setAnalyzing(true);
+      try {
+        const res = await fetch(getApiUrl("ai/analyze-image"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ imageBase64: dataUrl }),
+        });
+        if (res.ok) {
+          const { description } = await res.json();
+          if (description) {
+            form.setValue("title", description, { shouldValidate: true });
+            if (!form.getValues("description")) {
+              form.setValue(
+                "description",
+                `Looking for an item similar to what's shown in the photo. ${description}. Please share condition, price, and photos.`,
+                { shouldValidate: true },
+              );
+            }
+            toast.success("Photo analysed — form pre-filled!");
+          }
+        } else {
+          toast.error("Couldn't analyse photo. Fill in the form manually.");
+        }
+      } catch {
+        toast.error("Couldn't analyse photo. Fill in the form manually.");
+      } finally {
+        setAnalyzing(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -154,6 +197,81 @@ export default function NewRequest() {
         </div>
 
         <div className="bg-white border border-[#0B3954]/10 rounded-2xl p-6 md:p-8 shadow-md">
+          {/* Photo search banner */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handlePhotoUpload(file);
+              e.target.value = "";
+            }}
+          />
+          {photoPreview ? (
+            <div className="mb-6 flex items-start gap-3 bg-[#0B3954]/4 border border-[#0B3954]/12 rounded-xl p-3">
+              <div className="relative shrink-0">
+                <img
+                  src={photoPreview}
+                  alt="Uploaded"
+                  className="h-16 w-16 rounded-lg object-cover border border-[#0B3954]/15"
+                />
+                {analyzing && (
+                  <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center">
+                    <Loader2 className="h-5 w-5 text-white animate-spin" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                {analyzing ? (
+                  <div className="flex items-center gap-2 text-sm text-[#0B3954]">
+                    <Sparkles className="h-4 w-4 text-[#D4AF37] animate-pulse" />
+                    Analysing your photo…
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-sm text-[#0B3954]">
+                    <Sparkles className="h-4 w-4 text-[#D4AF37]" />
+                    <span className="font-medium">Form pre-filled from photo</span>
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground mt-1">
+                  Edit the fields below as needed.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setPhotoPreview(null);
+                  form.setValue("title", "");
+                  form.setValue("description", "");
+                }}
+                className="text-[#0B3954]/40 hover:text-[#0B3954] transition-colors"
+              >
+                <XIcon className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full mb-6 flex items-center gap-3 px-4 py-3 border border-dashed border-[#0B3954]/20 rounded-xl hover:border-[#0B3954]/40 hover:bg-[#0B3954]/3 transition-colors group text-left"
+            >
+              <div className="h-8 w-8 rounded-lg bg-[#D4AF37]/15 flex items-center justify-center group-hover:bg-[#D4AF37]/25 transition-colors shrink-0">
+                <Camera className="h-4 w-4 text-[#D4AF37]" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-[#0B3954]">
+                  Have a photo? Let AI fill this in for you
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Upload a picture and we'll identify the item and pre-fill the form.
+                </p>
+              </div>
+              <Sparkles className="h-4 w-4 text-[#D4AF37]/60 ml-auto shrink-0" />
+            </button>
+          )}
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
 

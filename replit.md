@@ -26,6 +26,12 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
 
+## Recent Features Added
+
+- **AI Photo Search** — `POST /api/ai/analyze-image` (requires auth, uses GPT vision). Used in both browse (Photo Search button) and request form (auto-fill from photo).
+- **Seller Match Notifications** — `notifications` DB table. After `POST /api/requests`, the server asynchronously matches the new request against active listings and creates notifications for matching sellers. REST: `GET /api/notifications`, `PATCH /api/notifications/:id/read`, `PATCH /api/notifications/read-all`.
+- **Notification Bell** — in `header.tsx`, polls every 30s, shows unread badge, dropdown with read/mark-all controls.
+
 ## Project: Desperately Seeking
 
 Buyer-first reverse marketplace. Buyers post ISO requests; subscribed sellers browse and respond.

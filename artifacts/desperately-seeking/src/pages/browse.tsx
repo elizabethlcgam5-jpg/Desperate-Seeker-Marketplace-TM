@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Layout } from "@/components/layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useListListings } from "@workspace/api-client-react";
-import { MapPin, Search, Tag, X, Star } from "lucide-react";
+import { MapPin, Search, Tag, X, Star, Camera, Sparkles, Loader2 } from "lucide-react";
+import { getApiUrl } from "@/lib/api";
+import { toast } from "sonner";
 
 const CATEGORIES = [
   "All",
@@ -129,6 +131,10 @@ export default function Browse() {
   const [zipInput, setZipInput] = useState("");
   const [activeZip, setActiveZip] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [aiQuery, setAiQuery] = useState("");
+  const [analyzingPhoto, setAnalyzingPhoto] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   const { data: listings, isLoading } = useListListings({
     zip: activeZip || undefined,
@@ -144,10 +150,69 @@ export default function Browse() {
     setActiveZip("");
   }
 
+  async function handlePhotoSearch(file: File) {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUrl = e.target?.result as string;
+      setPhotoPreview(dataUrl);
+      setAnalyzingPhoto(true);
+      try {
+        const res = await fetch(getApiUrl("ai/analyze-image"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ imageBase64: dataUrl }),
+        });
+        if (res.ok) {
+          const { description } = await res.json();
+          if (description) {
+            setAiQuery(description);
+            toast.success("Found it! Showing matches for your photo.");
+          }
+        } else {
+          toast.error("Couldn't identify item. Try browsing categories.");
+        }
+      } catch {
+        toast.error("Couldn't identify item. Try browsing categories.");
+      } finally {
+        setAnalyzingPhoto(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearPhotoSearch() {
+    setPhotoPreview(null);
+    setAiQuery("");
+  }
+
   const featuredCount = listings?.filter((l) => l.isFeatured).length ?? 0;
+
+  const filteredListings = aiQuery
+    ? (listings ?? []).filter((l) => {
+        const q = aiQuery.toLowerCase();
+        const words = q.split(/\s+/).filter((w) => w.length >= 4);
+        if (words.length === 0) return true;
+        const hay = `${l.title} ${l.description} ${l.category}`.toLowerCase();
+        return words.some((w) => hay.includes(w));
+      })
+    : listings;
 
   return (
     <Layout>
+      {/* Hidden photo input */}
+      <input
+        ref={photoInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) handlePhotoSearch(file);
+          e.target.value = "";
+        }}
+      />
+
       {/* Header */}
       <section className="bg-[#0B3954] py-10">
         <div className="container mx-auto px-4 md:px-8 max-w-5xl">
@@ -155,12 +220,12 @@ export default function Browse() {
             Browse Listings
           </h1>
           <p className="text-white/70 mb-6">
-            Find what you're looking for — filter by location or category.
+            Filter by location or category — or snap a photo to search visually.
           </p>
 
-          {/* ZIP filter */}
-          <div className="flex gap-2 max-w-sm">
-            <div className="relative flex-1">
+          {/* ZIP filter + photo search */}
+          <div className="flex gap-2 max-w-xl flex-wrap">
+            <div className="relative flex-1 min-w-40">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" />
               <Input
                 placeholder="Enter ZIP code"
@@ -188,7 +253,44 @@ export default function Browse() {
                 <X className="h-4 w-4" />
               </Button>
             )}
+            <Button
+              variant="outline"
+              onClick={() => photoInputRef.current?.click()}
+              disabled={analyzingPhoto}
+              className="border-white/25 text-white bg-white/10 hover:bg-white/20 hover:text-white gap-1.5 font-medium"
+              title="Search by photo"
+            >
+              {analyzingPhoto ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Camera className="h-4 w-4" />
+              )}
+              Photo Search
+            </Button>
           </div>
+
+          {/* AI query result banner */}
+          {aiQuery && (
+            <div className="mt-3 flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 bg-white/10 rounded-full pl-2 pr-1 py-1">
+                {photoPreview && (
+                  <img
+                    src={photoPreview}
+                    alt=""
+                    className="h-5 w-5 rounded-full object-cover"
+                  />
+                )}
+                <Sparkles className="h-3.5 w-3.5 text-[#D4AF37]" />
+                <span className="text-white/90 max-w-xs truncate">{aiQuery}</span>
+                <button
+                  onClick={clearPhotoSearch}
+                  className="ml-0.5 text-white/60 hover:text-white rounded-full"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
 
           {activeZip && (
             <p className="text-white/60 text-sm mt-2">
@@ -219,10 +321,11 @@ export default function Browse() {
         </div>
 
         {/* Results count */}
-        {!isLoading && listings && (
+        {!isLoading && filteredListings && (
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-muted-foreground">
-              {listings.length} listing{listings.length !== 1 ? "s" : ""} found
+              {filteredListings.length} listing{filteredListings.length !== 1 ? "s" : ""} found
+              {aiQuery && ` matching photo`}
               {activeCategory !== "All" && ` in ${activeCategory}`}
               {activeZip && ` near ${activeZip}`}
             </p>
@@ -241,20 +344,22 @@ export default function Browse() {
             Array.from({ length: 6 }).map((_, i) => (
               <Skeleton key={i} className="h-80 rounded-2xl" />
             ))
-          ) : listings?.length === 0 ? (
+          ) : filteredListings?.length === 0 ? (
             <div className="col-span-full py-16 text-center">
               <Tag className="h-12 w-12 text-[#0B3954]/20 mx-auto mb-3" />
               <p className="font-serif text-lg font-medium text-[#0B3954] mb-1">
                 No listings found
               </p>
               <p className="text-sm text-muted-foreground">
-                {activeZip
+                {aiQuery
+                  ? "No listings match your photo. Try browsing categories instead."
+                  : activeZip
                   ? `Nothing listed near ${activeZip} in that category yet.`
                   : "No listings yet — check back soon."}
               </p>
             </div>
           ) : (
-            listings?.map((listing) => (
+            filteredListings?.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))
           )}

@@ -4,8 +4,10 @@ import {
   requestsTable,
   responsesTable,
   usersTable,
+  listingsTable,
+  notificationsTable,
 } from "@workspace/db";
-import { and, desc, asc, eq, ilike, or, sql, count } from "drizzle-orm";
+import { and, desc, asc, eq, ilike, or, sql, count, ne } from "drizzle-orm";
 import {
   ListRequestsQueryParams,
   ListRequestsResponse,
@@ -166,6 +168,85 @@ router.get("/requests", async (req, res) => {
   res.json(ListRequestsResponse.parse(final));
 });
 
+async function notifyMatchingSellers(
+  requestId: string,
+  requestTitle: string,
+  requestDescription: string,
+  requestCategory: string,
+  buyerId: string,
+) {
+  try {
+    // Extract significant keywords (4+ chars, skip stop words)
+    const stopWords = new Set(["with", "from", "this", "that", "have", "want", "need", "looking", "good", "like"]);
+    const keywords = requestTitle
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length >= 4 && !stopWords.has(w));
+
+    if (keywords.length === 0) return;
+
+    // Find active listings matching by title keyword or category
+    const keywordConditions = keywords.map((kw) =>
+      ilike(listingsTable.title, `%${kw}%`),
+    );
+
+    const matches = await db
+      .select()
+      .from(listingsTable)
+      .where(
+        and(
+          eq(listingsTable.isAvailable, true),
+          eq(listingsTable.status, "active"),
+          ne(listingsTable.sellerId, buyerId),
+          or(
+            ilike(listingsTable.category, `%${requestCategory.split(" ")[0]}%`),
+            ...keywordConditions,
+          ),
+        ),
+      )
+      .limit(8);
+
+    if (matches.length === 0) return;
+
+    // Deduplicate by seller so one seller gets at most one notification per request
+    const seenSellers = new Set<string>();
+    const notifications = [];
+    for (const listing of matches) {
+      if (!listing.sellerId || seenSellers.has(listing.sellerId)) continue;
+      seenSellers.add(listing.sellerId);
+
+      // Determine match quality: exact = title shares 2+ keywords; similar = category match only
+      const titleWords = listing.title.toLowerCase().split(/\s+/);
+      const sharedKeywords = keywords.filter((kw) => titleWords.some((tw) => tw.includes(kw)));
+      const matchType = sharedKeywords.length >= 2 ? "exact" : "similar";
+      const matchLabel = matchType === "exact" ? "Exact match alert" : "Similar match";
+      const message =
+        matchType === "exact"
+          ? `A buyer is looking for "${requestTitle}" — it closely matches your listing "${listing.title}".`
+          : `A buyer posted for "${requestTitle}" — your listing "${listing.title}" may be a fit.`;
+
+      notifications.push({
+        id: randomUUID(),
+        userId: listing.sellerId,
+        type: matchType,
+        title: matchLabel,
+        message,
+        requestId,
+        requestTitle,
+        requestDescription: requestDescription.slice(0, 200),
+        listingId: listing.id,
+        read: false,
+      });
+    }
+
+    if (notifications.length > 0) {
+      await db.insert(notificationsTable).values(notifications);
+    }
+  } catch (err) {
+    // Non-critical: don't fail the request creation if matching fails
+  }
+}
+
 router.post("/requests", withCurrentUser, async (req, res) => {
   const body = CreateRequestBody.parse(req.body);
   const id = randomUUID();
@@ -189,6 +270,9 @@ router.post("/requests", withCurrentUser, async (req, res) => {
     tags: body.tags ?? [],
     isPrivate: body.isPrivate ?? false,
   });
+
+  // Fire-and-forget: notify matching sellers
+  notifyMatchingSellers(id, body.title, body.description, body.category, req.currentUserId!);
 
   const summary = await loadSummary(id);
   res.status(201).json(
