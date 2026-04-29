@@ -43,7 +43,6 @@ import {
   Tag,
   CheckCircle2,
   Star,
-  DollarSign,
   Package,
   Truck,
   MapPin,
@@ -422,12 +421,6 @@ export default function MyListingsPage() {
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         <p className="text-xs text-muted-foreground">{formatDate(listing.createdAt)}</p>
-                        <Link href="/me/commissions">
-                          <button className="text-xs text-[#D4AF37] underline underline-offset-2 flex items-center gap-1">
-                            <DollarSign className="h-3 w-3" />
-                            View commission
-                          </button>
-                        </Link>
                       </div>
                     </div>
                   ))}

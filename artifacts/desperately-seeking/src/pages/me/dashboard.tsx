@@ -242,11 +242,6 @@ export default function SellerDashboard() {
                 ) : (
                   <p className="text-sm text-muted-foreground italic">No sales recorded yet</p>
                 )}
-                <Link href="/me/commissions">
-                  <button className="mt-2 text-xs text-[#D4AF37] underline underline-offset-2 hover:text-[#c9a430]">
-                    View commission history →
-                  </button>
-                </Link>
               </div>
             </div>
           </div>
