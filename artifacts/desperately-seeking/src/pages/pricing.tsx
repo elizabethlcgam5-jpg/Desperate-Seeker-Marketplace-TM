@@ -2,28 +2,17 @@ import { Layout } from "@/components/layout";
 import { Check, X } from "lucide-react";
 import { useLocation } from "wouter";
 
-const WHAT_YOU_NEVER_PAY = [
-  "Listing fees",
-  "Shipping fees",
-  "Boosts or bumps",
-  "Ads",
-  "Monthly subscriptions",
-];
-
-const WHY_5_PERCENT = [
-  "Secure payments",
-  "Platform maintenance",
-  "Fraud protection",
-  "Customer support",
+const WHAT_WE_CHARGE = [
+  { label: "5% platform fee", detail: "on completed sales" },
+  { label: "$1.99/month seller subscription", detail: "for unlimited listings after your first 2 free" },
 ];
 
 const HOW_DIFFERENT = [
+  "No listing fees",
   "No shipping fees",
-  "No bumps or boosts",
+  "No boosts or bumps",
   "No ads",
-  "No subscriptions",
   "No hidden charges",
-  "Just 5% when your item sells",
 ];
 
 export default function Pricing() {
@@ -37,74 +26,84 @@ export default function Pricing() {
             Seller Pricing
           </p>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
-            Simple. Fair.{" "}
-            <span className="italic text-[#D4AF37]">Only 5%.</span>
+            Honest pricing.{" "}
+            <span className="italic text-[#D4AF37]">No surprises.</span>
           </h1>
           <p className="text-white/70 text-lg max-w-[540px]">
-            At Desperately Seeking, we keep pricing honest and easy. You keep 95% of every sale — no bumps, no ads, no hidden fees.
+            At Desperately Seeking, we keep pricing honest and easy.
+            You keep the majority of every sale — no bumps, no ads, no hidden fees.
           </p>
         </div>
       </section>
 
       <div className="bg-background">
-        <div className="container max-w-[760px] mx-auto px-4 py-12 md:py-16 space-y-12">
+        <div className="container max-w-[760px] mx-auto px-4 py-12 md:py-16 space-y-8">
+
+          {/* Start Free */}
+          <div className="bg-white rounded-2xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8">
+            <div className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#D4AF37]/15 text-[#0B3954] font-semibold mb-4">
+              Free to start
+            </div>
+            <h2 className="font-serif text-2xl font-semibold text-[#0B3954] mb-2">Start Free</h2>
+            <p className="text-[#0B3954]/70 text-sm leading-relaxed mb-1">
+              Every seller begins with <strong className="text-[#0B3954]">2 free item listings.</strong>
+            </p>
+            <p className="text-[#0B3954]/60 text-sm leading-relaxed mb-5">
+              No subscription required. No commitment.
+            </p>
+            <p className="text-[#0B3954]/65 text-sm leading-relaxed">
+              This lets you try the platform, upload your items, and connect with buyers before
+              deciding if you want to continue.
+            </p>
+          </div>
+
+          {/* What We Charge */}
+          <div className="bg-white rounded-2xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8">
+            <h2 className="font-serif text-2xl font-semibold text-[#0B3954] mb-5">What We Charge</h2>
+            <ul className="space-y-4">
+              {WHAT_WE_CHARGE.map(({ label, detail }) => (
+                <li key={label} className="flex items-start gap-3">
+                  <span className="h-5 w-5 rounded-full bg-[#D4AF37]/15 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="h-3 w-3 text-[#D4AF37]" strokeWidth={3} />
+                  </span>
+                  <span className="text-sm text-[#0B3954]/80 leading-relaxed">
+                    <span className="font-semibold text-[#0B3954]">{label}</span>
+                    {" "}{detail}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-sm font-semibold text-[#0B3954]">
+              That's it. No surprises.
+            </p>
+          </div>
 
           {/* How We're Different */}
-          <div className="bg-white rounded-2xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8">
-            <h2 className="font-serif text-2xl font-semibold text-[#0B3954] mb-2">How We're Different</h2>
-            <p className="text-[#0B3954]/70 text-sm leading-relaxed mb-6">
-              Most marketplaces charge multiple fees — shipping fees, boosted listings, ads, subscriptions, and high seller percentages. We don't.
+          <div className="bg-[#0B3954] rounded-2xl p-6 md:p-8">
+            <h2 className="font-serif text-2xl font-semibold text-white mb-2">How We're Different</h2>
+            <p className="text-white/60 text-sm leading-relaxed mb-6">
+              Most marketplaces stack multiple fees on sellers —
+              shipping fees, boosted listings, ads, subscriptions, and high percentage cuts.
+              <br /><br />
+              We don't do that.
             </p>
             <ul className="space-y-3">
               {HOW_DIFFERENT.map((item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-[#0B3954]/80">
-                  <Check className="h-4 w-4 text-[#D4AF37] shrink-0" />
+                <li key={item} className="flex items-center gap-3 text-sm text-white/80">
+                  <span className="h-5 w-5 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                    <X className="h-3 w-3 text-red-400" strokeWidth={3} />
+                  </span>
                   {item}
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Why 5% */}
-          <div className="bg-white rounded-2xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8">
-            <h2 className="font-serif text-2xl font-semibold text-[#0B3954] mb-2">Why 5%?</h2>
-            <p className="text-[#0B3954]/70 text-sm leading-relaxed mb-6">
-              Because selling shouldn't feel expensive. Our 5% fee covers:
-            </p>
-            <ul className="space-y-3">
-              {WHY_5_PERCENT.map((item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-[#0B3954]/80">
-                  <Check className="h-4 w-4 text-[#D4AF37] shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-5 text-sm text-[#0B3954]/60 italic">
-              We keep it simple so you can keep more of your money.
-            </p>
-          </div>
-
-          {/* What You'll Never Pay */}
-          <div className="bg-[#0B3954] rounded-2xl p-6 md:p-8">
-            <h2 className="font-serif text-2xl font-semibold text-white mb-2">What You'll Never Pay</h2>
-            <ul className="mt-5 space-y-3">
-              {WHAT_YOU_NEVER_PAY.map((item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-white/75">
-                  <X className="h-4 w-4 text-red-400 shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 text-sm text-[#D4AF37] font-semibold">
-              Just 5% when your item sells.
-            </p>
           </div>
 
           {/* CTA */}
           <div className="text-center pt-2">
             <button
               onClick={() => setLocation("/listings/new")}
-              className="rounded-full px-8 py-3 text-sm font-bold bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] transition-colors cursor-pointer"
+              className="rounded-full px-8 py-3 text-sm font-bold bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] transition-colors cursor-pointer shadow-[0_6px_16px_rgba(212,175,55,0.35)]"
             >
               Start selling — it's free to list
             </button>
