@@ -118,8 +118,7 @@ export default function Seller() {
             </p>
 
             <div className="bg-white rounded-xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8">
-              <div className="flex flex-col md:flex-row md:items-start gap-8">
-                <div className="flex-1">
+              <div>
                   <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#0B3954]/6 text-[#0B3954] font-semibold mb-3">
                     <DollarSign className="h-3 w-3" />
                     Seller‑friendly · No surprise charges
@@ -143,13 +142,6 @@ export default function Seller() {
                       </li>
                     ))}
                   </ul>
-                </div>
-                <div className="md:text-right shrink-0">
-                  <div className="text-3xl font-bold text-[#0B3954]">8–12%</div>
-                  <div className="text-sm text-muted-foreground max-w-[200px] md:ml-auto mt-1">
-                    of the final sale price as a platform fee (exact numbers can be finalized with your business plan).
-                  </div>
-                </div>
               </div>
             </div>
           </section>
