@@ -268,18 +268,21 @@ export default function NewListing() {
         </DialogContent>
       </Dialog>
 
-      <div className="container max-w-[800px] mx-auto px-4 py-8 md:py-12">
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-[#0B3954] mb-4">
-            <PackagePlus className="h-7 w-7 text-[#D4AF37]" />
-          </div>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#0B3954] mb-2">
-            I'm Selling
+      {/* Navy header banner — matches buyer pages */}
+      <section className="bg-[#0B3954] py-10">
+        <div className="container mx-auto px-4 md:px-8 max-w-[800px]">
+          <h1 className="font-serif text-3xl md:text-4xl font-bold text-white mb-2">
+            Sell an Item
           </h1>
-          <p className="text-muted-foreground text-base max-w-md mx-auto">
+          <p className="text-white/70">
             List what you have. Buyers who need it will find you.
           </p>
         </div>
+      </section>
+
+      {/* Cream content area — matches buyer pages */}
+      <div className="bg-[#f5ede0] flex-1">
+      <div className="container max-w-[800px] mx-auto px-4 py-8 md:py-12">
 
         <div className="bg-white border border-[#e0e0e0] rounded-[12px] p-6 md:p-8 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
           <Form {...form}>
@@ -737,6 +740,7 @@ export default function NewListing() {
             )}
           </div>
         )}
+      </div>
       </div>
     </Layout>
   );
