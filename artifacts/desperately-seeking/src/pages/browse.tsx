@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useListListings } from "@workspace/api-client-react";
-import { MapPin, Search, Tag, X, Star, Camera, Sparkles, Loader2 } from "lucide-react";
+import { MapPin, Search, Tag, X, Star, Camera, Loader2 } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -223,25 +223,40 @@ export default function Browse() {
             Filter by location or category — or snap a photo to search visually.
           </p>
 
-          {/* ZIP filter + photo search */}
+          {/* Search bar: text + photo + go */}
           <div className="flex gap-2 max-w-xl flex-wrap">
-            <div className="relative flex-1 min-w-40">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" />
-              <Input
-                placeholder="Enter ZIP code"
+            <div className="flex flex-1 min-w-52 items-center gap-2 bg-white rounded-xl px-3 py-2.5 shadow-sm">
+              <Search className="h-4 w-4 text-[#0B3954]/30 shrink-0" />
+              <input
+                className="flex-1 text-sm text-[#0B3954] placeholder:text-[#0B3954]/35 bg-transparent focus:outline-none min-w-0"
+                placeholder="Describe what you need…"
                 value={zipInput}
                 onChange={(e) => setZipInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && applyZip()}
-                maxLength={5}
-                className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:bg-white/20"
               />
             </div>
+            <button
+              onClick={() => photoInputRef.current?.click()}
+              title="Search by photo"
+              className={`rounded-xl px-3 flex items-center justify-center border transition-colors ${
+                photoPreview
+                  ? "bg-[#D4AF37] border-[#D4AF37]"
+                  : "bg-white/10 border-white/20 text-white/70 hover:border-[#D4AF37]/60 hover:bg-white/15"
+              }`}
+            >
+              {analyzingPhoto ? (
+                <Loader2 className="h-5 w-5 animate-spin text-white" />
+              ) : photoPreview ? (
+                <img src={photoPreview} alt="" className="h-6 w-6 object-cover rounded-lg" />
+              ) : (
+                <Camera className="h-5 w-5" />
+              )}
+            </button>
             <Button
               onClick={applyZip}
-              disabled={!zipInput}
-              className="bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] font-semibold border-0"
+              className="bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] font-bold border-0"
             >
-              <Search className="h-4 w-4 mr-1" /> Find Near Me
+              Go
             </Button>
             {activeZip && (
               <Button
@@ -253,42 +268,18 @@ export default function Browse() {
                 <X className="h-4 w-4" />
               </Button>
             )}
-            <Button
-              variant="outline"
-              onClick={() => photoInputRef.current?.click()}
-              disabled={analyzingPhoto}
-              className="border-white/25 text-white bg-white/10 hover:bg-white/20 hover:text-white gap-1.5 font-medium"
-              title="Search by photo"
-            >
-              {analyzingPhoto ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Camera className="h-4 w-4" />
-              )}
-              Photo Search
-            </Button>
           </div>
 
-          {/* AI query result banner */}
+          {/* Photo search status line */}
           {aiQuery && (
-            <div className="mt-3 flex items-center gap-2 text-sm">
-              <div className="flex items-center gap-2 bg-white/10 rounded-full pl-2 pr-1 py-1">
-                {photoPreview && (
-                  <img
-                    src={photoPreview}
-                    alt=""
-                    className="h-5 w-5 rounded-full object-cover"
-                  />
-                )}
-                <Sparkles className="h-3.5 w-3.5 text-[#D4AF37]" />
-                <span className="text-white/90 max-w-xs truncate">{aiQuery}</span>
-                <button
-                  onClick={clearPhotoSearch}
-                  className="ml-0.5 text-white/60 hover:text-white rounded-full"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </div>
+            <div className="mt-3 flex items-center gap-1.5">
+              <span className="text-[#D4AF37] text-xs font-bold">✓</span>
+              <span className="text-[11px] text-white/60">
+                Searching by photo — exact &amp; similar matches shown
+              </span>
+              <button onClick={clearPhotoSearch} className="ml-1 text-white/40 hover:text-white">
+                <X className="h-3 w-3" />
+              </button>
             </div>
           )}
 

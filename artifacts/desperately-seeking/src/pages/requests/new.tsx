@@ -209,68 +209,103 @@ export default function NewRequest() {
               e.target.value = "";
             }}
           />
-          {photoPreview ? (
-            <div className="mb-6 flex items-start gap-3 bg-[#0B3954]/4 border border-[#0B3954]/12 rounded-xl p-3">
-              <div className="relative shrink-0">
-                <img
-                  src={photoPreview}
-                  alt="Uploaded"
-                  className="h-16 w-16 rounded-lg object-cover border border-[#0B3954]/15"
-                />
-                {analyzing && (
-                  <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center">
-                    <Loader2 className="h-5 w-5 text-white animate-spin" />
-                  </div>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                {analyzing ? (
-                  <div className="flex items-center gap-2 text-sm text-[#0B3954]">
-                    <Sparkles className="h-4 w-4 text-[#D4AF37] animate-pulse" />
-                    Analysing your photo…
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 text-sm text-[#0B3954]">
-                    <Sparkles className="h-4 w-4 text-[#D4AF37]" />
-                    <span className="font-medium">Form pre-filled from photo</span>
-                  </div>
-                )}
-                <p className="text-xs text-muted-foreground mt-1">
-                  Edit the fields below as needed.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setPhotoPreview(null);
-                  form.setValue("title", "");
-                  form.setValue("description", "");
-                }}
-                className="text-[#0B3954]/40 hover:text-[#0B3954] transition-colors"
-              >
-                <XIcon className="h-4 w-4" />
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
+          {/* Photo upload zone */}
+          <div className="mb-6">
+            <p className="text-xs font-semibold text-[#0B3954] mb-0.5">Upload a photo</p>
+            <p className="text-[11px] text-[#0B3954]/50 mb-2">AI will identify the item and auto-fill the description for you.</p>
+            <div
               onClick={() => fileInputRef.current?.click()}
-              className="w-full mb-6 flex items-center gap-3 px-4 py-3 border border-dashed border-[#0B3954]/20 rounded-xl hover:border-[#0B3954]/40 hover:bg-[#0B3954]/3 transition-colors group text-left"
+              className={`rounded-2xl border-2 border-dashed cursor-pointer transition-all flex flex-col items-center justify-center text-center p-6 ${
+                photoPreview
+                  ? "border-[#D4AF37] bg-[#D4AF37]/5"
+                  : "border-[#0B3954]/15 bg-[hsl(39_83%_95%)] hover:border-[#D4AF37]/50"
+              }`}
+              style={{ minHeight: 130 }}
             >
-              <div className="h-8 w-8 rounded-lg bg-[#D4AF37]/15 flex items-center justify-center group-hover:bg-[#D4AF37]/25 transition-colors shrink-0">
-                <Camera className="h-4 w-4 text-[#D4AF37]" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-[#0B3954]">
-                  Have a photo? Let AI fill this in for you
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Upload a picture and we'll identify the item and pre-fill the form.
-                </p>
-              </div>
-              <Sparkles className="h-4 w-4 text-[#D4AF37]/60 ml-auto shrink-0" />
-            </button>
+              {photoPreview ? (
+                <div className="flex flex-col items-center gap-2">
+                  <div className="relative">
+                    <img
+                      src={photoPreview}
+                      alt="Uploaded"
+                      className="h-20 w-20 object-cover rounded-xl"
+                    />
+                    {analyzing && (
+                      <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
+                        <Loader2 className="h-5 w-5 text-white animate-spin" />
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPhotoPreview(null);
+                      form.setValue("title", "");
+                      form.setValue("description", "");
+                    }}
+                    className="text-[11px] text-[#0B3954]/50 underline hover:text-[#0B3954]"
+                  >
+                    Remove photo
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-1.5 text-[#0B3954]/35">
+                  <Camera className="h-8 w-8" />
+                  <span className="text-xs font-medium text-[#0B3954]/50">Tap to upload a photo</span>
+                  <span className="text-[11px] text-[#0B3954]/35">AI will identify what you're looking for</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* AI analysis result */}
+          {(analyzing || (photoPreview && !analyzing)) && (
+            <div
+              className={`mb-5 rounded-xl border px-3.5 py-3 flex items-start gap-2.5 ${
+                analyzing
+                  ? "border-[#D4AF37]/30 bg-[#D4AF37]/5"
+                  : "border-emerald-200 bg-emerald-50"
+              }`}
+            >
+              {analyzing ? (
+                <>
+                  <div className="h-4 w-4 rounded-full border-2 border-[#D4AF37] border-t-transparent animate-spin mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-xs font-semibold text-[#0B3954]">Analyzing your photo…</p>
+                    <p className="text-[11px] text-[#0B3954]/50 mt-0.5">Identifying item, style, and condition</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <span className="text-emerald-600 font-bold text-sm mt-0.5">✓</span>
+                  <div>
+                    <p className="text-[11px] font-semibold text-emerald-700">AI identified:</p>
+                    <p className="text-[11px] text-[#0B3954]/75 mt-0.5 leading-relaxed">
+                      {form.getValues("title")}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => form.setFocus("title")}
+                      className="text-[11px] text-[#0B3954] underline mt-1"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           )}
+
+          {/* Seller notification callout */}
+          <div className="mb-6 rounded-xl bg-[#0B3954]/5 border border-[#0B3954]/8 px-3.5 py-3 flex items-start gap-2">
+            <svg className="h-4 w-4 text-[#D4AF37] mt-0.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+            </svg>
+            <p className="text-[11px] text-[#0B3954]/60 leading-relaxed">
+              Matching sellers are <strong className="text-[#0B3954]">notified instantly</strong> — by app and by email — when you post.
+            </p>
+          </div>
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
