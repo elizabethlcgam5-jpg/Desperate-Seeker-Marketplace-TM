@@ -30,9 +30,11 @@ import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { PackagePlus, Truck, Lock, Package, Tag, CheckCircle2, MapPin } from "lucide-react";
+import { PackagePlus, Truck, Lock, Package, Tag, CheckCircle2, MapPin, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { useListMyListings, useGetCurrentUser } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { getApiUrl } from "@/lib/api";
 
 const FREE_LISTING_LIMIT = 2;
 const freeListingsUsed = 2;
@@ -94,6 +96,9 @@ export default function NewListing() {
   const [_, setLocation] = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [limitOpen, setLimitOpen] = useState(freeListingsUsed >= FREE_LISTING_LIMIT);
+  const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const qc = useQueryClient();
 
   const { data: user } = useGetCurrentUser();
   const { data: listings } = useListMyListings({ query: { enabled: !!user } });
@@ -134,9 +139,77 @@ export default function NewListing() {
     setEstimatedShipping(parseFloat((base + weightSurcharge).toFixed(2)));
   }
 
-  function onSubmit(_values: FormData) {
-    toast.success("Item submitted successfully!");
-    setLocation("/me/listings");
+  async function onSubmit(values: FormData) {
+    if (!user) {
+      toast.error("Please sign in to post an item.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const availabilityMap: Record<string, string> = {
+        "Local Pickup": "local_pickup",
+        "Meet-Up": "local_pickup",
+        "Shipping Available": "shipping",
+      };
+      const conditionMap: Record<string, string> = {
+        "New": "new",
+        "Like New": "like_new",
+        "Good": "good",
+        "Fair": "fair",
+      };
+
+      const res = await fetch(getApiUrl("listings"), {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: values.itemName,
+          description: values.description,
+          category: values.category,
+          brandName: values.brand ?? "",
+          condition: conditionMap[values.condition] ?? "good",
+          price: values.price,
+          availability: availabilityMap[values.deliveryOption] ?? "local_pickup",
+          shippingPrice: showShipping && estimatedShipping != null ? estimatedShipping : null,
+          zipCode: values.zipCode,
+          imageUrl: "",
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? "Failed to post item");
+      }
+      toast.success("Item posted successfully!");
+      form.reset();
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      setEstimatedShipping(null);
+      setShippingWeight("");
+      qc.invalidateQueries();
+    } catch (err: any) {
+      toast.error(err.message ?? "Couldn't post item. Try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function deleteItem(listingId: string) {
+    setDeletingId(listingId);
+    try {
+      const res = await fetch(getApiUrl(`listings/${listingId}`), {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? "Failed to delete item");
+      }
+      toast.success("Item deleted.");
+      qc.invalidateQueries();
+    } catch (err: any) {
+      toast.error(err.message ?? "Couldn't delete item.");
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
@@ -549,10 +622,11 @@ export default function NewListing() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="rounded-full px-8 bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 transition-transform hover:-translate-y-0.5"
+                  disabled={submitting}
+                  className="rounded-full px-8 bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 transition-transform hover:-translate-y-0.5 disabled:opacity-60"
                 >
                   <PackagePlus className="mr-2 h-4 w-4" />
-                  Submit Item
+                  {submitting ? "Posting…" : "Post Item"}
                 </Button>
               </div>
 
@@ -624,7 +698,19 @@ export default function NewListing() {
                             </p>
                           </div>
                           <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{listing.description}</p>
-                          <p className="mt-3 text-xs text-muted-foreground">Listed {formatDate(listing.createdAt)}</p>
+                          <div className="mt-3 flex items-center justify-between">
+                            <p className="text-xs text-muted-foreground">Listed {formatDate(listing.createdAt)}</p>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              disabled={deletingId === listing.id}
+                              className="rounded-full text-red-500 hover:text-red-600 hover:bg-red-50 h-8 px-2.5 text-xs"
+                              onClick={() => deleteItem(listing.id)}
+                            >
+                              <Trash2 className="h-3.5 w-3.5 mr-1" />
+                              {deletingId === listing.id ? "Deleting…" : "Delete"}
+                            </Button>
+                          </div>
                         </div>
                       ))}
                     </div>

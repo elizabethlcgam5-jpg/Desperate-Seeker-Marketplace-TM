@@ -107,6 +107,30 @@ router.get("/listings/:listingId", async (req, res) => {
   res.json(GetListingResponse.parse(serializeListing(row)));
 });
 
+router.delete("/listings/:listingId", withCurrentUser, async (req, res) => {
+  const { listingId } = req.params;
+  const sellerId = req.currentUserId!;
+
+  const [row] = await db
+    .select()
+    .from(listingsTable)
+    .where(eq(listingsTable.id, listingId))
+    .limit(1);
+
+  if (!row) {
+    res.status(404).json({ error: "Listing not found" });
+    return;
+  }
+
+  if (row.sellerId !== sellerId) {
+    res.status(403).json({ error: "Not your listing" });
+    return;
+  }
+
+  await db.delete(listingsTable).where(eq(listingsTable.id, listingId));
+  res.status(204).end();
+});
+
 router.post("/listings", withCurrentUser, async (req, res) => {
   const body = CreateListingBody.parse(req.body);
 
