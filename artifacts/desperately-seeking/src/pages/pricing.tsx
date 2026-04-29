@@ -4,17 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import {
   useGetCurrentUser,
   useListPricingPlans,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, Sparkles, BadgeCheck, Crown, Wallet, ExternalLink, HelpCircle, FileText, ShieldCheck, Truck, Heart } from "lucide-react";
+import { Check, Sparkles, BadgeCheck, Crown, Wallet, ExternalLink, FileText, Truck } from "lucide-react";
 import { toast } from "sonner";
 import { getApiUrl } from "@/lib/api";
 
@@ -33,45 +27,6 @@ function formatPrice(cents: number, interval: "month" | "semi" | "year" | "none"
     interval === "semi" ? "/6 months" : "/month";
   return { dollars: `$${dollars}`, suffix };
 }
-
-const FAQ = [
-  {
-    q: "What is Desperately Seeking?",
-    a: "A buyer-first marketplace where buyers post what they need and sellers respond with offers.",
-  },
-  {
-    q: "How do I post a request?",
-    a: "Tap \"Post What You Need,\" describe the item, add photos (optional), and submit.",
-  },
-  {
-    q: "How do sellers get notified?",
-    a: "Sellers receive instant Match Alerts when a buyer posts something they offer.",
-  },
-  {
-    q: "Is it free to use?",
-    a: "Yes. Everyone can join for free. Sellers get 2 free listings before choosing a subscription.",
-  },
-  {
-    q: "Why is there a 5% platform fee?",
-    a: "This small fee keeps the marketplace running, supports safety features, and helps us build new tools.",
-  },
-  {
-    q: "How does shipping work?",
-    a: "Sellers can offer local pickup or shipping. Shipping uses real carrier rates based on weight and distance.",
-  },
-  {
-    q: "Do I need an account?",
-    a: "Yes. A simple email sign-in helps you track your listings, messages, and subscription.",
-  },
-  {
-    q: "What's the difference between monthly and yearly Premium?",
-    a: "Monthly is great for casual sellers. Yearly saves over 60% and includes priority support and early access to new features.",
-  },
-  {
-    q: "Is Desperately Seeking safe?",
-    a: "We use secure messaging, email verification, and community guidelines to keep buyers and sellers safe.",
-  },
-];
 
 export default function Pricing() {
   const { data: plans, isLoading } = useListPricingPlans();
@@ -326,172 +281,6 @@ export default function Pricing() {
           </div>
         </div>
 
-        {/* FAQ */}
-        <div className="mx-auto mt-10 max-w-3xl">
-          <div className="flex items-center gap-2 mb-6">
-            <HelpCircle className="h-5 w-5 text-[#D4AF37]" />
-            <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">Frequently Asked Questions</h2>
-          </div>
-          <Accordion type="single" collapsible className="space-y-2">
-            {FAQ.map((item, i) => (
-              <AccordionItem
-                key={i}
-                value={`faq-${i}`}
-                className="rounded-2xl border border-border/60 bg-white px-5 shadow-sm data-[state=open]:shadow-md"
-              >
-                <AccordionTrigger className="text-left text-sm font-medium text-[#0B3954] hover:no-underline py-4">
-                  {item.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground pb-4 leading-relaxed">
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-
-        {/* Terms of Use */}
-        <div className="mx-auto mt-10 max-w-3xl">
-          <div className="flex items-center gap-2 mb-6">
-            <FileText className="h-5 w-5 text-[#D4AF37]" />
-            <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">Terms of Use</h2>
-          </div>
-          <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm space-y-5 text-sm text-[#0B3954]/75 leading-relaxed">
-            <p>Welcome to Desperately Seeking. By using our platform, you agree to the following terms:</p>
-            {[
-              { n: "1", title: "Marketplace Use", body: "Desperately Seeking connects buyers and sellers. We do not own or inspect items listed on the platform." },
-              { n: "2", title: "User Accounts", body: "Users must provide accurate information and are responsible for maintaining the security of their account." },
-              { n: "3", title: "Listings and Requests", body: "Buyers may post requests for items. Sellers may respond with offers. All communication must remain respectful and lawful." },
-              { n: "4", title: "Payments", body: "Payments are processed securely through third-party providers. A 5% platform fee applies to completed sales." },
-              { n: "5", title: "Shipping", body: "Sellers may offer local pickup or shipping. Shipping costs are based on real carrier rates." },
-              { n: "6", title: "Prohibited Items", body: "Illegal, dangerous, counterfeit, or restricted items are not allowed." },
-              { n: "7", title: "Liability", body: "Desperately Seeking is not responsible for item quality, delivery issues, or disputes between users." },
-              { n: "8", title: "Account Suspension", body: "We may suspend or remove accounts that violate our policies." },
-              { n: "9", title: "Changes to Terms", body: "We may update these terms at any time. Continued use of the platform means you accept the updated terms." },
-            ].map((item) => (
-              <div key={item.n} className="flex gap-3">
-                <span className="flex-shrink-0 font-bold text-[#D4AF37]">{item.n}.</span>
-                <div>
-                  <span className="font-semibold text-[#0B3954]">{item.title} — </span>
-                  {item.body}
-                </div>
-              </div>
-            ))}
-            <p className="pt-3 border-t border-border/50 text-[#0B3954]/60">
-              If you have questions, contact us at{" "}
-              <a href="mailto:support@desperatelyseeking.app" className="text-[#0B3954] underline underline-offset-2 hover:text-[#D4AF37] transition-colors">
-                support@desperatelyseeking.app
-              </a>
-            </p>
-          </div>
-        </div>
-
-        {/* About */}
-        <div className="mx-auto mt-10 max-w-3xl">
-          <div className="flex items-center gap-2 mb-6">
-            <Heart className="h-5 w-5 text-[#D4AF37]" />
-            <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">About Desperately Seeking</h2>
-          </div>
-          <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm space-y-5 text-sm text-[#0B3954]/75 leading-relaxed">
-            <p>
-              Desperately Seeking was built for real people with real needs. Instead of scrolling through endless listings, buyers simply post what they're looking for — and sellers come to them. It's faster, simpler, and built for local communities.
-            </p>
-            <p>
-              Our mission is to make buying and selling easier, safer, and more efficient. Whether you're decluttering, searching for something specific, or supporting small sellers, Desperately Seeking gives you a smarter way to connect.
-            </p>
-            <div>
-              <p className="font-semibold text-[#0B3954] mb-3">We believe in:</p>
-              <ul className="space-y-2">
-                {[
-                  "Buyer-first design",
-                  "Local community support",
-                  "Fair pricing for sellers",
-                  "No boosted posts or ads",
-                  "Real shipping rates with no markups",
-                  "Tools built for everyday people, not big box stores",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-[#D4AF37] mt-0.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <p className="pt-2 border-t border-border/50 italic text-[#0B3954]/60">
-              Thank you for being part of our growing marketplace.
-            </p>
-          </div>
-        </div>
-
-        {/* Privacy Policy */}
-        <div className="mx-auto mt-10 max-w-3xl mb-10">
-          <div className="flex items-center gap-2 mb-6">
-            <ShieldCheck className="h-5 w-5 text-[#D4AF37]" />
-            <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">Privacy Policy</h2>
-          </div>
-          <div className="rounded-2xl border border-border/60 bg-white p-6 md:p-8 shadow-sm space-y-5 text-sm text-[#0B3954]/75 leading-relaxed">
-            <p>Your privacy matters to us. This policy explains how Desperately Seeking collects and uses your information.</p>
-            {[
-              {
-                n: "1", title: "Information We Collect",
-                items: [
-                  "Email address for account login",
-                  "Listings, requests, and messages you create",
-                  "Basic device and usage data to improve the platform",
-                ],
-              },
-              {
-                n: "2", title: "How We Use Your Information",
-                items: [
-                  "To create and manage your account",
-                  "To match buyers and sellers",
-                  "To send notifications and updates",
-                  "To improve marketplace safety and performance",
-                ],
-              },
-              {
-                n: "3", title: "Sharing Your Information",
-                intro: "We do not sell your data. We only share information with:",
-                items: [
-                  "Payment processors (for subscriptions and sales)",
-                  "Shipping carriers (when shipping is used)",
-                ],
-              },
-            ].map((section) => (
-              <div key={section.n}>
-                <p className="font-semibold text-[#0B3954] mb-2">
-                  {section.n}. {section.title}
-                </p>
-                {section.intro && <p className="mb-2 text-[#0B3954]/70">{section.intro}</p>}
-                <ul className="space-y-1.5">
-                  {section.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#D4AF37] shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-            <div className="space-y-3 pt-1">
-              {[
-                { n: "4", title: "Data Security", body: "We use secure systems to protect your information. No system is 100% secure, but we take reasonable steps to safeguard your data." },
-                { n: "5", title: "Your Choices", body: "You may update or delete your account at any time." },
-              ].map((item) => (
-                <div key={item.n}>
-                  <span className="font-semibold text-[#0B3954]">{item.n}. {item.title} — </span>
-                  {item.body}
-                </div>
-              ))}
-            </div>
-            <p className="pt-3 border-t border-border/50 text-[#0B3954]/60">
-              For privacy questions, email{" "}
-              <a href="mailto:privacy@desperatelyseeking.app" className="text-[#0B3954] underline underline-offset-2 hover:text-[#D4AF37] transition-colors">
-                privacy@desperatelyseeking.app
-              </a>
-            </p>
-          </div>
-        </div>
       </div>
     </Layout>
   );

@@ -23,6 +23,11 @@ import Browse from "@/pages/browse";
 import Login from "@/pages/login";
 import Seller from "@/pages/seller";
 import NewListing from "@/pages/listings/new";
+import About from "@/pages/about";
+import FAQ from "@/pages/faq";
+import Terms from "@/pages/terms";
+import Privacy from "@/pages/privacy";
+import Contact from "@/pages/contact";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,6 +61,11 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/seller" component={Seller} />
       <Route path="/listings/new" component={NewListing} />
+      <Route path="/about" component={About} />
+      <Route path="/faq" component={FAQ} />
+      <Route path="/terms" component={Terms} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
     </Switch>
   );
