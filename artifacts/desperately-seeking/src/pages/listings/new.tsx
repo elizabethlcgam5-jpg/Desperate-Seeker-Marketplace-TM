@@ -281,7 +281,7 @@ export default function NewListing() {
       </section>
 
       {/* Cream content area — matches buyer pages */}
-      <div className="bg-[#f5ede0] flex-1">
+      <div className="bg-background flex-1">
       <div className="container max-w-[800px] mx-auto px-4 py-8 md:py-12">
 
         <div className="bg-white border border-[#e0e0e0] rounded-[12px] p-6 md:p-8 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
@@ -300,7 +300,7 @@ export default function NewListing() {
                     <FormControl>
                       <Input
                         placeholder="What are you selling?"
-                        className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
+                        className="rounded-[8px] border-[#b0c4de] bg-white h-11"
                         {...field}
                       />
                     </FormControl>
@@ -319,7 +319,7 @@ export default function NewListing() {
                       <FormLabel className="font-semibold text-[#0B3954]">Category *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff]">
+                          <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-white">
                             <SelectValue placeholder="Select a category" />
                           </SelectTrigger>
                         </FormControl>
@@ -341,7 +341,7 @@ export default function NewListing() {
                       <FormLabel className="font-semibold text-[#0B3954]">Condition *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff]">
+                          <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-white">
                             <SelectValue placeholder="Select condition" />
                           </SelectTrigger>
                         </FormControl>
@@ -368,7 +368,7 @@ export default function NewListing() {
                       <FormControl>
                         <Input
                           placeholder="e.g. Walnut Brown"
-                          className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
+                          className="rounded-[8px] border-[#b0c4de] bg-white h-11"
                           {...field}
                         />
                       </FormControl>
@@ -387,7 +387,7 @@ export default function NewListing() {
                       <FormControl>
                         <Input
                           placeholder="e.g. IKEA, Levi's"
-                          className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
+                          className="rounded-[8px] border-[#b0c4de] bg-white h-11"
                           {...field}
                         />
                       </FormControl>
@@ -408,7 +408,7 @@ export default function NewListing() {
                     <FormControl>
                       <Textarea
                         placeholder="Describe the item — condition details, dimensions, any flaws, reason for selling..."
-                        className="min-h-[90px] resize-y rounded-[8px] border-[#b0c4de] bg-[#f8faff]"
+                        className="min-h-[90px] resize-y rounded-[8px] border-[#b0c4de] bg-white"
                         {...field}
                       />
                     </FormControl>
@@ -430,7 +430,7 @@ export default function NewListing() {
                           type="number"
                           min={0}
                           placeholder="0"
-                          className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
+                          className="rounded-[8px] border-[#b0c4de] bg-white h-11"
                           {...field}
                         />
                       </FormControl>
@@ -448,7 +448,7 @@ export default function NewListing() {
                         <Input
                           placeholder="Your ZIP code"
                           maxLength={10}
-                          className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
+                          className="rounded-[8px] border-[#b0c4de] bg-white h-11"
                           {...field}
                         />
                       </FormControl>
@@ -506,7 +506,7 @@ export default function NewListing() {
                           setShippingWeight(e.target.value);
                           setEstimatedShipping(null);
                         }}
-                        className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-10"
+                        className="rounded-[8px] border-[#b0c4de] bg-white h-10"
                       />
                     </div>
 
@@ -522,7 +522,7 @@ export default function NewListing() {
                           setEstimatedShipping(null);
                         }}
                       >
-                        <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-10">
+                        <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-white h-10">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -545,7 +545,7 @@ export default function NewListing() {
                           setEstimatedShipping(null);
                         }}
                       >
-                        <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-10">
+                        <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-white h-10">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
