@@ -281,7 +281,7 @@ export default function NewListing() {
           </p>
         </div>
 
-        <div className="bg-white border border-[#0B3954]/10 rounded-2xl p-6 md:p-8 shadow-md">
+        <div className="bg-white border border-[#e0e0e0] rounded-[12px] p-6 md:p-8 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
