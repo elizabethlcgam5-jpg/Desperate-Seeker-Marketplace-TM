@@ -623,9 +623,8 @@ export default function NewListing() {
                   type="submit"
                   size="lg"
                   disabled={submitting}
-                  className="rounded-full px-8 bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+                  className="w-full rounded-[8px] bg-[#0366d6] text-white font-semibold text-[17px] hover:bg-[#024ea4] border-0 py-[14px] transition-colors duration-200 disabled:opacity-60"
                 >
-                  <PackagePlus className="mr-2 h-4 w-4" />
                   {submitting ? "Posting…" : "Post Item"}
                 </Button>
               </div>
