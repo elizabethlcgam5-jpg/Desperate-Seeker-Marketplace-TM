@@ -297,7 +297,7 @@ export default function NewListing() {
                     <FormControl>
                       <Input
                         placeholder="What are you selling?"
-                        className="rounded-xl border-[#0B3954]/20 h-11"
+                        className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
                         {...field}
                       />
                     </FormControl>
@@ -313,10 +313,10 @@ export default function NewListing() {
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#0B3954]">Category *</FormLabel>
+                      <FormLabel className="font-semibold text-[#0B3954]">Category *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-[#0B3954]/20">
+                          <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff]">
                             <SelectValue placeholder="Select a category" />
                           </SelectTrigger>
                         </FormControl>
@@ -335,10 +335,10 @@ export default function NewListing() {
                   name="condition"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#0B3954]">Condition *</FormLabel>
+                      <FormLabel className="font-semibold text-[#0B3954]">Condition *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger className="rounded-xl border-[#0B3954]/20">
+                          <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff]">
                             <SelectValue placeholder="Select condition" />
                           </SelectTrigger>
                         </FormControl>
@@ -361,11 +361,11 @@ export default function NewListing() {
                   name="color"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#0B3954]">Color *</FormLabel>
+                      <FormLabel className="font-semibold text-[#0B3954]">Color *</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="e.g. Walnut Brown"
-                          className="rounded-xl border-[#0B3954]/20 h-11"
+                          className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
                           {...field}
                         />
                       </FormControl>
@@ -384,7 +384,7 @@ export default function NewListing() {
                       <FormControl>
                         <Input
                           placeholder="e.g. IKEA, Levi's"
-                          className="rounded-xl border-[#0B3954]/20 h-11"
+                          className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
                           {...field}
                         />
                       </FormControl>
@@ -405,7 +405,7 @@ export default function NewListing() {
                     <FormControl>
                       <Textarea
                         placeholder="Describe the item — condition details, dimensions, any flaws, reason for selling..."
-                        className="min-h-[120px] resize-y rounded-xl border-[#0B3954]/20"
+                        className="min-h-[90px] resize-y rounded-[8px] border-[#b0c4de] bg-[#f8faff]"
                         {...field}
                       />
                     </FormControl>
@@ -421,13 +421,13 @@ export default function NewListing() {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#0B3954]">Price ($) *</FormLabel>
+                      <FormLabel className="font-semibold text-[#0B3954]">Price ($) *</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           min={0}
                           placeholder="0"
-                          className="rounded-xl border-[#0B3954]/20 h-11"
+                          className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
                           {...field}
                         />
                       </FormControl>
@@ -440,12 +440,12 @@ export default function NewListing() {
                   name="zipCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#0B3954]">ZIP Code *</FormLabel>
+                      <FormLabel className="font-semibold text-[#0B3954]">ZIP Code *</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Your ZIP code"
                           maxLength={10}
-                          className="rounded-xl border-[#0B3954]/20 h-11"
+                          className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-11"
                           {...field}
                         />
                       </FormControl>
@@ -461,10 +461,10 @@ export default function NewListing() {
                 name="deliveryOption"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-[#0B3954]">Delivery Options *</FormLabel>
+                    <FormLabel className="font-semibold text-[#0B3954]">Delivery Options *</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="rounded-xl border-[#0B3954]/20">
+                        <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff]">
                           <SelectValue placeholder="How can buyers get it?" />
                         </SelectTrigger>
                       </FormControl>
@@ -503,7 +503,7 @@ export default function NewListing() {
                           setShippingWeight(e.target.value);
                           setEstimatedShipping(null);
                         }}
-                        className="rounded-xl border-[#0B3954]/20 h-10"
+                        className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-10"
                       />
                     </div>
 
@@ -519,7 +519,7 @@ export default function NewListing() {
                           setEstimatedShipping(null);
                         }}
                       >
-                        <SelectTrigger className="rounded-xl border-[#0B3954]/20 h-10">
+                        <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-10">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -542,7 +542,7 @@ export default function NewListing() {
                           setEstimatedShipping(null);
                         }}
                       >
-                        <SelectTrigger className="rounded-xl border-[#0B3954]/20 h-10">
+                        <SelectTrigger className="rounded-[8px] border-[#b0c4de] bg-[#f8faff] h-10">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
