@@ -49,37 +49,6 @@ export default function Pricing() {
       <div className="bg-background">
         <div className="container max-w-[760px] mx-auto px-4 py-12 md:py-16 space-y-12">
 
-          {/* Our Fee */}
-          <div className="bg-white rounded-2xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8">
-            <h2 className="font-serif text-2xl font-semibold text-[#0B3954] mb-2">Our Fee</h2>
-            <p className="text-[#0B3954]/70 text-sm leading-relaxed mb-6">
-              Flat 5% per completed sale. That's it. No listing fees. No subscriptions. No shipping fees.
-            </p>
-
-            <div className="rounded-xl bg-[#FDF5E6] border border-[#D4AF37]/25 p-5 space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-widest text-[#D4AF37] mb-4">Example</p>
-              {[
-                { label: "Item sells for", value: "$40" },
-                { label: "Our fee", value: "$2", sub: true },
-                { label: "You keep", value: "$38", bold: true },
-              ].map((row) => (
-                <div
-                  key={row.label}
-                  className={`flex items-center justify-between text-sm ${
-                    row.bold
-                      ? "font-bold text-[#0B3954] pt-3 border-t border-[#D4AF37]/25"
-                      : row.sub
-                        ? "text-[#0B3954]/60"
-                        : "text-[#0B3954]/75"
-                  }`}
-                >
-                  <span>{row.label}</span>
-                  <span className={row.bold ? "text-[#D4AF37] text-base" : ""}>{row.value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* How We're Different */}
           <div className="bg-white rounded-2xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8">
             <h2 className="font-serif text-2xl font-semibold text-[#0B3954] mb-2">How We're Different</h2>
