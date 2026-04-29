@@ -1,12 +1,15 @@
 import { Router, type IRouter } from "express";
 import { eq, sql } from "drizzle-orm";
-import { db, usersTable } from "@workspace/db";
+import { db, usersTable, listingsTable, commissionsTable } from "@workspace/db";
 import {
   getUncachableStripeClient,
   getStripePublishableKey,
   getStripeSync,
 } from "../stripeClient";
 import { withCurrentUser } from "../lib/session";
+import { randomUUID } from "node:crypto";
+
+const COMMISSION_RATE = 0.05;
 
 const router: IRouter = Router();
 
@@ -257,6 +260,194 @@ router.post("/stripe/portal", withCurrentUser, async (req, res) => {
     res.json({ url: portal.url });
   } catch (err: any) {
     console.error("Portal error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── POST /api/stripe/connect/onboard ──────────────────────────────────────
+// Creates or retrieves a Stripe Express Connect account for the current seller
+// and returns a one-time onboarding URL.
+router.post("/stripe/connect/onboard", withCurrentUser, async (req, res) => {
+  try {
+    const stripe = await getUncachableStripeClient();
+
+    const [user] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, req.currentUserId!))
+      .limit(1);
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Create Connect account if one doesn't exist yet
+    let connectAccountId = user.stripeConnectAccountId;
+    if (!connectAccountId) {
+      const account = await stripe.accounts.create({
+        type: "express",
+        email: user.email ?? undefined,
+        metadata: { userId: user.id },
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true },
+        },
+      });
+      connectAccountId = account.id;
+      await db
+        .update(usersTable)
+        .set({ stripeConnectAccountId: connectAccountId })
+        .where(eq(usersTable.id, user.id));
+    }
+
+    const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
+    const accountLink = await stripe.accountLinks.create({
+      account: connectAccountId,
+      refresh_url: `${baseUrl}/dashboard?connect=refresh`,
+      return_url: `${baseUrl}/dashboard?connect=success`,
+      type: "account_onboarding",
+    });
+
+    res.json({ url: accountLink.url });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── GET /api/stripe/connect/status ────────────────────────────────────────
+// Returns the Connect onboarding status for the current seller.
+router.get("/stripe/connect/status", withCurrentUser, async (req, res) => {
+  try {
+    const [user] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, req.currentUserId!))
+      .limit(1);
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (!user.stripeConnectAccountId) {
+      return res.json({ connected: false, onboardingComplete: false });
+    }
+
+    // Check live status from Stripe if not yet marked complete
+    if (!user.stripeConnectOnboardingComplete) {
+      const stripe = await getUncachableStripeClient();
+      const account = await stripe.accounts.retrieve(user.stripeConnectAccountId);
+      const complete = account.details_submitted && !account.requirements?.currently_due?.length;
+
+      if (complete) {
+        await db
+          .update(usersTable)
+          .set({ stripeConnectOnboardingComplete: true })
+          .where(eq(usersTable.id, user.id));
+      }
+
+      return res.json({ connected: true, onboardingComplete: !!complete });
+    }
+
+    return res.json({ connected: true, onboardingComplete: true });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── POST /api/stripe/buy-listing/:listingId ───────────────────────────────
+// Creates a Stripe Checkout Session (payment mode) for a buyer to purchase a
+// listing. Applies a 5% application fee; 95% is automatically transferred to
+// the seller's Connect account.
+router.post("/stripe/buy-listing/:listingId", withCurrentUser, async (req, res) => {
+  try {
+    const { listingId } = req.params;
+    const buyerId = req.currentUserId!;
+
+    const [listing] = await db
+      .select()
+      .from(listingsTable)
+      .where(eq(listingsTable.id, listingId))
+      .limit(1);
+
+    if (!listing) return res.status(404).json({ error: "Listing not found" });
+    if (!listing.isAvailable || listing.status !== "active") {
+      return res.status(400).json({ error: "Listing is no longer available" });
+    }
+    if (listing.sellerId === buyerId) {
+      return res.status(400).json({ error: "You cannot buy your own listing" });
+    }
+
+    // Seller must have completed Connect onboarding
+    const [seller] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, listing.sellerId!))
+      .limit(1);
+
+    if (!seller?.stripeConnectAccountId || !seller.stripeConnectOnboardingComplete) {
+      return res.status(400).json({
+        error: "Seller has not connected their bank account yet. Contact them to arrange payment.",
+      });
+    }
+
+    const stripe = await getUncachableStripeClient();
+    const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
+
+    const priceInCents = Math.round(Number(listing.price) * 100);
+    const applicationFeeInCents = Math.round(priceInCents * COMMISSION_RATE);
+
+    // Pre-create the commission record (status = pending; will be marked paid via webhook)
+    const commissionId = randomUUID();
+    const commissionAmount = (Number(listing.price) * COMMISSION_RATE).toFixed(2);
+    const commissionRow = await db
+      .insert(commissionsTable)
+      .values({
+        id: commissionId,
+        sellerId: listing.sellerId!,
+        listingId: listing.id,
+        salePrice: Number(listing.price).toString(),
+        commissionAmount,
+        status: "pending",
+        notes: `Buyer checkout initiated`,
+      })
+      .returning();
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            unit_amount: priceInCents,
+            product_data: {
+              name: listing.title,
+              description: listing.description.slice(0, 200) || undefined,
+              images: listing.imageUrl ? [listing.imageUrl] : [],
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      payment_intent_data: {
+        application_fee_amount: applicationFeeInCents,
+        transfer_data: { destination: seller.stripeConnectAccountId },
+        metadata: {
+          listingId: listing.id,
+          sellerId: listing.sellerId!,
+          buyerId,
+          commissionId,
+        },
+      },
+      metadata: { commissionId, listingId: listing.id },
+      success_url: `${baseUrl}/checkout/success?listing=1&title=${encodeURIComponent(listing.title)}`,
+      cancel_url: `${baseUrl}/browse`,
+    });
+
+    // Store the session id on the commission so webhook can match it
+    await db
+      .update(commissionsTable)
+      .set({ stripeCheckoutSessionId: session.id })
+      .where(eq(commissionsTable.id, commissionId));
+
+    res.json({ url: session.url });
+  } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });

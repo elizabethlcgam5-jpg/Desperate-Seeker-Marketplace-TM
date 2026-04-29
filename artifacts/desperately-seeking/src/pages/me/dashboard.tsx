@@ -28,8 +28,14 @@ import {
   Crown,
   Truck,
   ArrowRight,
+  Landmark,
+  ExternalLink,
+  AlertCircle,
 } from "lucide-react";
 import { useListMyCommissions } from "@workspace/api-client-react";
+import { useState, useEffect } from "react";
+import { getApiUrl } from "@/lib/api";
+import { toast } from "sonner";
 
 export default function SellerDashboard() {
   const { data: user, isLoading: userLoading } = useGetCurrentUser();
@@ -44,6 +50,37 @@ export default function SellerDashboard() {
   const { data: commissions } = useListMyCommissions({
     query: { enabled: !!isSeller },
   });
+
+  const [connectStatus, setConnectStatus] = useState<{
+    connected: boolean;
+    onboardingComplete: boolean;
+  } | null>(null);
+  const [connectLoading, setConnectLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isSeller) return;
+    fetch(getApiUrl("stripe/connect/status"), { credentials: "include" })
+      .then((r) => r.json())
+      .then((d) => setConnectStatus(d))
+      .catch(() => {});
+  }, [isSeller]);
+
+  const handleConnectOnboard = async () => {
+    setConnectLoading(true);
+    try {
+      const res = await fetch(getApiUrl("stripe/connect/onboard"), {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else toast.error(data.error ?? "Could not start bank onboarding.");
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setConnectLoading(false);
+    }
+  };
 
   if (userLoading) {
     return (
@@ -246,6 +283,53 @@ export default function SellerDashboard() {
             </div>
           </div>
         </section>
+
+        {/* Stripe Connect — bank account */}
+        {connectStatus !== null && (
+          <section className="mb-10">
+            {connectStatus.onboardingComplete ? (
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 flex items-center gap-4">
+                <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                  <Landmark className="h-5 w-5 text-emerald-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-emerald-800 text-sm">Bank account connected</p>
+                  <p className="text-xs text-emerald-700/70 mt-0.5">
+                    Buyers can pay you directly online. 95% goes to you, 5% platform fee.
+                  </p>
+                </div>
+                <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 shrink-0">
+                  Active
+                </Badge>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-[#D4AF37]/40 bg-[#FDF5E6] p-6 flex flex-col sm:flex-row sm:items-center gap-5">
+                <div className="h-12 w-12 rounded-xl bg-[#D4AF37]/15 flex items-center justify-center shrink-0">
+                  <Landmark className="h-6 w-6 text-[#D4AF37]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-serif font-semibold text-[#0B3954]">Connect your bank account</p>
+                    <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                      <AlertCircle className="h-3 w-3" /> Recommended
+                    </span>
+                  </div>
+                  <p className="text-sm text-[#0B3954]/65 leading-relaxed">
+                    Let buyers pay for your listings directly online. Stripe handles the payout — 95% goes to you, 5% platform fee. Setup takes 2 minutes.
+                  </p>
+                </div>
+                <Button
+                  onClick={handleConnectOnboard}
+                  disabled={connectLoading}
+                  className="bg-[#0B3954] text-white hover:bg-[#0B3954]/90 border-0 rounded-full gap-2 shrink-0"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  {connectLoading ? "Loading…" : "Connect Bank"}
+                </Button>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Inventory Matches */}
         <section className="mb-10">

@@ -15,6 +15,8 @@ export const commissionsTable = pgTable("commissions", {
   commissionAmount: numeric("commission_amount").notNull(),
   status: text("status").notNull().default("pending"),
   notes: text("notes"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  stripeCheckoutSessionId: text("stripe_checkout_session_id"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

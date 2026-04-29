@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useListListings } from "@workspace/api-client-react";
-import { MapPin, Search, Tag, X, Star, Camera, Loader2 } from "lucide-react";
+import { useListListings, useGetCurrentUser } from "@workspace/api-client-react";
+import { MapPin, Search, Tag, X, Star, Camera, Loader2, ShoppingCart } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -26,6 +26,8 @@ const CATEGORIES = [
 
 function ListingCard({
   listing,
+  onBuy,
+  buyLoading,
 }: {
   listing: {
     id: string;
@@ -41,6 +43,8 @@ function ListingCard({
     sellerName?: string | null;
     createdAt: string;
   };
+  onBuy?: () => void;
+  buyLoading?: boolean;
 }) {
   return (
     <div
@@ -117,11 +121,24 @@ function ListingCard({
             )}
           </p>
         )}
-        {!listing.isAvailable && (
-          <div className="mt-2 text-center text-xs font-medium text-red-500 bg-red-50 rounded-full py-1">
+        {!listing.isAvailable ? (
+          <div className="mt-3 text-center text-xs font-medium text-red-500 bg-red-50 rounded-full py-1">
             Sold
           </div>
-        )}
+        ) : onBuy ? (
+          <button
+            onClick={onBuy}
+            disabled={buyLoading}
+            className="mt-3 w-full flex items-center justify-center gap-2 rounded-full py-2 text-xs font-bold bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] disabled:opacity-60 transition-colors cursor-pointer border-0"
+          >
+            {buyLoading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <ShoppingCart className="h-3.5 w-3.5" />
+            )}
+            {buyLoading ? "Loading…" : "Buy Now"}
+          </button>
+        ) : null}
       </div>
     </div>
   );
@@ -134,12 +151,38 @@ export default function Browse() {
   const [aiQuery, setAiQuery] = useState("");
   const [analyzingPhoto, setAnalyzingPhoto] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [buyingId, setBuyingId] = useState<string | null>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
+  const { data: user } = useGetCurrentUser();
   const { data: listings, isLoading } = useListListings({
     zip: activeZip || undefined,
     category: activeCategory === "All" ? undefined : activeCategory,
   });
+
+  async function handleBuy(listingId: string) {
+    if (!user) {
+      toast.error("Sign in to buy this item.");
+      return;
+    }
+    setBuyingId(listingId);
+    try {
+      const res = await fetch(getApiUrl(`stripe/buy-listing/${listingId}`), {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error ?? "Couldn't start checkout.");
+        return;
+      }
+      if (data.url) window.location.href = data.url;
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setBuyingId(null);
+    }
+  }
 
   function applyZip() {
     setActiveZip(zipInput.trim());
@@ -351,7 +394,12 @@ export default function Browse() {
             </div>
           ) : (
             filteredListings?.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
+              <ListingCard
+                key={listing.id}
+                listing={listing}
+                onBuy={user && listing.sellerId !== user.id ? () => handleBuy(listing.id) : undefined}
+                buyLoading={buyingId === listing.id}
+              />
             ))
           )}
         </div>
