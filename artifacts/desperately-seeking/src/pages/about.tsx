@@ -1,6 +1,12 @@
 import { Layout } from "@/components/layout";
-import { Heart, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { useLocation } from "wouter";
+
+const MISSION_ITEMS = [
+  "Sellers keep more of their earnings",
+  "Buyers find what they need quickly",
+  "Everyone feels safe and supported",
+];
 
 export default function About() {
   const [_, setLocation] = useLocation();
@@ -13,7 +19,7 @@ export default function About() {
             About Desperately Seeking
           </h1>
           <p className="text-white/70 text-base max-w-[520px]">
-            A buyer-first marketplace built for real people with real needs.
+            A buyer-first, seller-friendly marketplace built for real people.
           </p>
         </div>
       </section>
@@ -22,28 +28,17 @@ export default function About() {
         <div className="container max-w-[760px] mx-auto px-4 py-10 md:py-14 space-y-8">
 
           <div className="bg-white rounded-xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8 space-y-5 text-sm text-[#0B3954]/75 leading-relaxed">
-            <div className="flex items-center gap-2 mb-2">
-              <Heart className="h-5 w-5 text-[#D4AF37]" />
-              <h2 className="font-serif text-xl font-semibold text-[#0B3954]">Our Story</h2>
-            </div>
             <p>
-              Desperately Seeking was built for real people with real needs. Instead of scrolling through endless listings, buyers simply post what they're looking for — and sellers come to them. It's faster, simpler, and built for local communities.
+              Desperately Seeking is a buyer-first, seller-friendly marketplace built for real people who want a simple, safe, and affordable way to buy and sell locally.
             </p>
             <p>
-              Our mission is to make buying and selling easier, safer, and more efficient. Whether you're decluttering, searching for something specific, or supporting small sellers, Desperately Seeking gives you a smarter way to connect.
+              We believe selling shouldn't be complicated — or expensive. That's why we charge a flat 5% fee, with no ads, no bumps, and no hidden costs.
             </p>
 
             <div>
-              <p className="font-semibold text-[#0B3954] mb-3">We believe in:</p>
+              <p className="font-semibold text-[#0B3954] mb-3">Our mission is to create a marketplace where:</p>
               <ul className="space-y-2">
-                {[
-                  "Buyer-first design",
-                  "Local community support",
-                  "Fair pricing for sellers",
-                  "No boosted posts or ads",
-                  "Real shipping rates with no markups",
-                  "Tools built for everyday people, not big box stores",
-                ].map((item) => (
+                {MISSION_ITEMS.map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <Check className="h-4 w-4 text-[#D4AF37] mt-0.5 shrink-0" />
                     <span>{item}</span>
@@ -52,8 +47,8 @@ export default function About() {
               </ul>
             </div>
 
-            <p className="pt-4 border-t border-[#e0e0e0] italic text-[#0B3954]/60">
-              Thank you for being part of our growing marketplace.
+            <p>
+              Whether you're decluttering, reselling, or searching for something specific, Desperately Seeking makes the process easy, transparent, and fair.
             </p>
           </div>
 

@@ -9,36 +9,36 @@ import {
 
 const FAQ_ITEMS = [
   {
+    q: "Do any major marketplaces charge only 5%?",
+    a: "No. Most platforms charge between 10% and 20%, plus additional fees like shipping fees, boosts, ads, or subscriptions. Desperately Seeking is one of the only marketplaces offering a simple 5% on all sales, with no extra charges.",
+  },
+  {
+    q: "Why don't you charge shipping fees?",
+    a: "Because shipping fees frustrate people. We want selling to feel simple, fair, and predictable — so buyers pay the shipping cost directly, and sellers never get hit with extra charges.",
+  },
+  {
+    q: "Are there any hidden fees?",
+    a: "No. We don't charge for listings, bumps, ads, or subscriptions. Just 5% when your item sells.",
+  },
+  {
+    q: "Why is your fee lower than other platforms?",
+    a: "Because we're built for real people, not corporations. We keep our costs low so you can keep more of your money.",
+  },
+  {
+    q: "Is it OK to say you're different from other platforms without naming them?",
+    a: "Yes. Customers already know other apps charge shipping fees and extra costs. We don't need to name them — we simply explain what we do differently.",
+  },
+  {
     q: "What is Desperately Seeking?",
     a: "A buyer-first marketplace where buyers post what they need and sellers respond with offers.",
   },
   {
-    q: "How do I post a request?",
-    a: 'Tap "Post What You Need," describe the item, add photos (optional), and submit.',
-  },
-  {
-    q: "How do sellers get notified?",
-    a: "Sellers receive instant Match Alerts when a buyer posts something they offer.",
-  },
-  {
-    q: "Is it free to use?",
-    a: "Yes. Everyone can join for free. Sellers get 2 free listings before choosing a subscription.",
-  },
-  {
-    q: "Why is there a 5% platform fee?",
-    a: "This small fee keeps the marketplace running, supports safety features, and helps us build new tools.",
-  },
-  {
-    q: "How does shipping work?",
-    a: "Sellers can offer local pickup or shipping. Shipping uses real carrier rates based on weight and distance.",
+    q: "How do I post a request as a buyer?",
+    a: 'Tap "Post What You Need," describe the item, add photos (optional), and submit. It\'s free.',
   },
   {
     q: "Do I need an account?",
-    a: "Yes. A simple email sign-in helps you track your listings, messages, and subscription.",
-  },
-  {
-    q: "What's the difference between monthly and yearly Premium?",
-    a: "Monthly is great for casual sellers. Yearly saves over 60% and includes priority support and early access to new features.",
+    a: "Yes. A simple email sign-in helps you track your listings, messages, and offers.",
   },
   {
     q: "Is Desperately Seeking safe?",
