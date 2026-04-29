@@ -291,6 +291,24 @@ export default function NewListing() {
       <div className="bg-background flex-1">
       <div className="container max-w-[800px] mx-auto px-4 py-8 md:py-12">
 
+        {/* Mini seller flow */}
+        <div className="flex items-center gap-2 mb-6 text-xs text-[#0B3954]/60 flex-wrap">
+          <span className="flex items-center gap-1.5 font-semibold text-[#0B3954]">
+            <span className="h-5 w-5 rounded-full bg-[#D4AF37] text-[#0B3954] flex items-center justify-center font-bold text-[10px]">1</span>
+            List your item
+          </span>
+          <span className="text-[#0B3954]/30">→</span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-5 w-5 rounded-full bg-[#0B3954]/10 text-[#0B3954] flex items-center justify-center font-bold text-[10px]">2</span>
+            Buyers find you
+          </span>
+          <span className="text-[#0B3954]/30">→</span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-5 w-5 rounded-full bg-[#0B3954]/10 text-[#0B3954] flex items-center justify-center font-bold text-[10px]">3</span>
+            Mark as Sold in My Listings
+          </span>
+        </div>
+
         <div className="bg-white border border-[#e0e0e0] rounded-[12px] p-6 md:p-8 shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

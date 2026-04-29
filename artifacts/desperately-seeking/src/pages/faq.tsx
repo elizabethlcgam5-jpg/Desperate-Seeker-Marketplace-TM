@@ -18,7 +18,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Are there any hidden fees?",
-    a: "No. We don't charge for listings, bumps, ads, or subscriptions. Just 5% when your item sells.",
+    a: "No. We don't charge for listings, bumps, or ads. Just 5% when your item sells.",
   },
   {
     q: "Why is your fee lower than other platforms?",
@@ -34,7 +34,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "How do I post a request as a buyer?",
-    a: 'Tap "Post What You Need," describe the item, add photos (optional), and submit. It\'s free.',
+    a: 'Tap "Post What You Need," describe the item, add photos (optional).',
   },
   {
     q: "Do I need an account?",

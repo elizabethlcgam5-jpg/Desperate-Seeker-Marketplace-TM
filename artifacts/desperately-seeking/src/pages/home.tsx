@@ -186,7 +186,7 @@ export default function Home() {
             Simple, Transparent Pricing
           </h2>
           <p className="text-muted-foreground text-center mb-12">
-            Buyers are always free. Sellers choose a plan that works for them.
+            Buyers always free. Sellers post one or two items for free or choose a plan that works.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {/* Free */}
@@ -199,26 +199,36 @@ export default function Home() {
               </p>
             </div>
             {/* Premium */}
-            <div className="rounded-2xl border-2 border-[#D4AF37] bg-[#FDF5E6] p-6 text-center relative shadow-md">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#D4AF37] text-[#0B3954] text-xs font-bold px-3 py-1 rounded-full">
-                Most Popular
-              </span>
-              <p className="font-serif text-xl font-semibold text-[#0B3954] mb-2">Premium</p>
-              <p className="text-3xl font-bold font-serif text-[#0B3954] mb-1">$1.99</p>
-              <p className="text-sm text-muted-foreground mb-4">per month</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Unlimited responses, messaging, and instant match alerts.
-              </p>
-            </div>
+            <Link href="/pricing">
+              <div className="rounded-2xl border-2 border-[#D4AF37] bg-[#FDF5E6] p-6 text-center relative shadow-md cursor-pointer hover:shadow-lg transition-shadow">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#D4AF37] text-[#0B3954] text-xs font-bold px-3 py-1 rounded-full">
+                  Most Popular
+                </span>
+                <p className="font-serif text-xl font-semibold text-[#0B3954] mb-2">Premium</p>
+                <p className="text-3xl font-bold font-serif text-[#0B3954] mb-1">$1.99</p>
+                <p className="text-sm text-muted-foreground mb-4">per month</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  Unlimited responses, messaging, and instant match alerts.
+                </p>
+                <span className="inline-block rounded-full px-4 py-1.5 text-xs font-bold bg-[#D4AF37] text-[#0B3954]">
+                  Get Started →
+                </span>
+              </div>
+            </Link>
             {/* Yearly */}
-            <div className="rounded-2xl border border-border/60 p-6 text-center">
-              <p className="font-serif text-xl font-semibold text-[#0B3954] mb-2">Premium Yearly</p>
-              <p className="text-3xl font-bold font-serif text-[#0B3954] mb-1">$29.99</p>
-              <p className="text-sm text-muted-foreground mb-4">per year · save 60%</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Everything in Premium — best value for frequent sellers.
-              </p>
-            </div>
+            <Link href="/pricing">
+              <div className="rounded-2xl border border-border/60 p-6 text-center cursor-pointer hover:shadow-md transition-shadow">
+                <p className="font-serif text-xl font-semibold text-[#0B3954] mb-2">Premium Yearly</p>
+                <p className="text-3xl font-bold font-serif text-[#0B3954] mb-1">$29.99</p>
+                <p className="text-sm text-muted-foreground mb-4">per year · save 60%</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  Everything in Premium — best value for frequent sellers.
+                </p>
+                <span className="inline-block rounded-full px-4 py-1.5 text-xs font-bold border border-[#0B3954]/30 text-[#0B3954]">
+                  Get Started →
+                </span>
+              </div>
+            </Link>
           </div>
           <div className="text-center mt-8">
             <Link href="/pricing">
