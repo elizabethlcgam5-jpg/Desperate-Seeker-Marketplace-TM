@@ -70,13 +70,11 @@ function buildNotification(
   const title =
     direction === "seller"
       ? "Instant Match Found"
-      : matchType === "exact" ? "⚡ InstantMatch — Item found!" : "InstantMatch — Possible match";
+      : "New Match for Your Request";
   const message =
     direction === "seller"
       ? "Someone is looking for exactly what you posted. Tap to view the buyer's request."
-      : matchType === "exact"
-        ? `A seller just listed "${listingTitle}" — it closely matches what you're looking for in "${requestTitle}".`
-        : `A new listing "${listingTitle}" may match your request for "${requestTitle}".`;
+      : "A seller just posted an item that matches what you're looking for. Tap to view the listing.";
 
   return {
     id: randomUUID(),
