@@ -227,9 +227,9 @@ function buildNotification(
 
 /**
  * Called when a new buyer request is posted.
- * Checks request.instantMatchOn (per-request opt-in).
- * Notifies matching sellers who have user-level instantMatch on.
- * Uses AI-generated keywords when available.
+ * Gate: request.instantMatchOn must be true.
+ * For each active listing with instantMatchOn = true:
+ *   score >= THRESHOLD → notify BOTH the seller and the buyer (bidirectional).
  */
 export async function instantMatchOnRequest(
   requestId: string,
@@ -290,8 +290,13 @@ export async function instantMatchOnRequest(
       if (score < THRESHOLD) continue;
       seenSellers.add(listing.sellerId);
 
+      // Seller alert: an active buyer request matches their listing
       notifications.push(
         buildNotification(listing.sellerId, score, req.id, req.title, req.description, listing.id, listing.title, "seller")
+      );
+      // Buyer alert: an existing listing matches their new request
+      notifications.push(
+        buildNotification(buyerId, score, req.id, req.title, req.description, listing.id, listing.title, "buyer")
       );
     }
 
@@ -305,9 +310,9 @@ export async function instantMatchOnRequest(
 
 /**
  * Called when a new listing is posted.
- * Seller must have user-level instantMatch on.
- * Notifies buyers whose requests have instantMatchOn = true.
- * Uses AI-generated keywords from each request.
+ * Gate: listing.instantMatchOn must be true.
+ * For each active buyer request with instantMatchOn = true:
+ *   score >= THRESHOLD → notify BOTH the buyer and the seller (bidirectional).
  */
 export async function instantMatchOnListing(
   listingId: string,
@@ -376,8 +381,13 @@ export async function instantMatchOnListing(
       if (score < THRESHOLD) continue;
       seenBuyers.add(req.buyerId);
 
+      // Buyer alert: a new listing matches their request
       notifications.push(
         buildNotification(req.buyerId, score, req.id, req.title, req.description, listingId, listingTitle, "buyer")
+      );
+      // Seller alert: their listing matches an active buyer request
+      notifications.push(
+        buildNotification(sellerId, score, req.id, req.title, req.description, listingId, listingTitle, "seller")
       );
     }
 
