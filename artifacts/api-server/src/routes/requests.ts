@@ -22,6 +22,7 @@ import { withCurrentUser, readCurrentUserId } from "../lib/session";
 import { serializeUser } from "../lib/serializers";
 import { randomUUID } from "node:crypto";
 import { instantMatchOnRequest } from "../lib/matchEngine";
+import { generateAndSaveKeywords } from "../lib/keywordGenerator";
 
 const router: IRouter = Router();
 
@@ -250,6 +251,10 @@ async function notifyMatchingSellers(
 
 router.post("/requests", withCurrentUser, async (req, res) => {
   const body = CreateRequestBody.parse(req.body);
+  // Pull new fields directly from body (not yet in generated Zod schema)
+  const condition = typeof req.body.condition === "string" ? req.body.condition : "";
+  const instantMatchOn = req.body.instantMatchOn === true;
+
   const id = randomUUID();
   await db.insert(requestsTable).values({
     id,
@@ -270,11 +275,15 @@ router.post("/requests", withCurrentUser, async (req, res) => {
     urgency: body.urgency ?? "normal",
     tags: body.tags ?? [],
     isPrivate: body.isPrivate ?? false,
+    condition,
+    instantMatchOn,
   });
 
-  // Fire-and-forget: notify matching sellers (legacy) + InstantMatch
+  // Fire-and-forget: AI keyword generation, legacy seller notify, InstantMatch
+  generateAndSaveKeywords(id, body.title, body.description, body.category);
   notifyMatchingSellers(id, body.title, body.description, body.category, req.currentUserId!);
-  instantMatchOnRequest(id, body.title, body.description, body.category, req.currentUserId!);
+  // Delay InstantMatch slightly so keywords may be ready
+  setTimeout(() => instantMatchOnRequest(id, req.currentUserId!), 4000);
 
   const summary = await loadSummary(id);
   res.status(201).json(

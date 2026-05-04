@@ -58,6 +58,14 @@ const STYLES = [
   "Eclectic",
 ];
 
+const CONDITIONS = [
+  { value: "new", label: "New" },
+  { value: "like_new", label: "Like New" },
+  { value: "good", label: "Good" },
+  { value: "fair", label: "Fair" },
+  { value: "any", label: "Any condition" },
+];
+
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100),
   description: z
@@ -65,6 +73,7 @@ const formSchema = z.object({
     .min(20, "Please provide a bit more detail (min 20 characters)")
     .max(2000),
   category: z.string().min(1, "Please select a category"),
+  condition: z.string().optional(),
   style: z.string().optional(),
   budgetMin: z.coerce.number().optional().or(z.literal("")),
   budgetMax: z.coerce.number().optional().or(z.literal("")),
@@ -75,6 +84,7 @@ const formSchema = z.object({
   urgency: z.enum(["low", "normal", "high"]).default("normal"),
   tags: z.string().optional(),
   isPrivate: z.boolean().default(false),
+  instantMatchOn: z.boolean().default(false),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -131,6 +141,7 @@ export default function NewRequest() {
       title: "",
       description: "",
       category: "",
+      condition: "",
       style: "",
       budgetMin: "",
       budgetMax: "",
@@ -141,6 +152,7 @@ export default function NewRequest() {
       urgency: "normal",
       tags: "",
       isPrivate: false,
+      instantMatchOn: false,
     },
   });
 
@@ -151,6 +163,8 @@ export default function NewRequest() {
       category: values.category,
       urgency: values.urgency,
       isPrivate: values.isPrivate,
+      instantMatchOn: values.instantMatchOn,
+      ...(values.condition && { condition: values.condition }),
       ...(values.style && { style: values.style }),
       ...(values.budgetMin && { budgetMin: Number(values.budgetMin) }),
       ...(values.budgetMax && { budgetMax: Number(values.budgetMax) }),
@@ -356,7 +370,7 @@ export default function NewRequest() {
                 )}
               />
 
-              {/* Category + Style */}
+              {/* Category + Condition */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <FormField
                   control={form.control}
@@ -384,20 +398,20 @@ export default function NewRequest() {
                 />
                 <FormField
                   control={form.control}
-                  name="style"
+                  name="condition"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#0B3954]">Style</FormLabel>
+                      <FormLabel className="text-[#0B3954]">Condition</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value ?? ""}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-[#0B3954]/20">
-                            <SelectValue placeholder="Any style (optional)" />
+                            <SelectValue placeholder="Any condition (optional)" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {STYLES.map((s) => (
-                            <SelectItem key={s} value={s}>
-                              {s}
+                          {CONDITIONS.map((c) => (
+                            <SelectItem key={c.value} value={c.value}>
+                              {c.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -406,6 +420,31 @@ export default function NewRequest() {
                   )}
                 />
               </div>
+
+              {/* Style */}
+              <FormField
+                control={form.control}
+                name="style"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[#0B3954]">Style</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value ?? ""}>
+                      <FormControl>
+                        <SelectTrigger className="rounded-xl border-[#0B3954]/20">
+                          <SelectValue placeholder="Any style (optional)" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {STYLES.map((s) => (
+                          <SelectItem key={s} value={s}>
+                            {s}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
 
               {/* Budget */}
               <div className="grid grid-cols-2 gap-4">
@@ -534,6 +573,41 @@ export default function NewRequest() {
                         {...field}
                       />
                     </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              {/* InstantMatch toggle */}
+              <FormField
+                control={form.control}
+                name="instantMatchOn"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className={`flex items-start gap-4 rounded-xl border p-4 transition-colors ${field.value ? "border-[#0B3954]/20 bg-[#0B3954]/5" : "border-border bg-white"}`}>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="mt-0.5"
+                        />
+                      </FormControl>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-[#0B3954]" />
+                          <FormLabel className="text-sm font-semibold text-[#0B3954] cursor-pointer">
+                            InstantMatch
+                          </FormLabel>
+                          {field.value && (
+                            <Badge className="text-[10px] bg-[#0B3954]/10 text-[#0B3954] border-[#0B3954]/20 rounded-full px-2">
+                              On
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                          Get notified the moment a seller lists something that matches this request. AI-generated keywords make matching smarter.
+                        </p>
+                      </div>
+                    </div>
                   </FormItem>
                 )}
               />

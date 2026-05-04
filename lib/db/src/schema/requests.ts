@@ -28,6 +28,9 @@ export const requestsTable = pgTable("requests", {
   heightIn: numeric("height_in"),
   isPrivate: boolean("is_private").notNull().default(false),
   photos: jsonb("photos").$type<string[]>().notNull().default([]),
+  keywords: jsonb("keywords").$type<string[]>().notNull().default([]),
+  condition: text("condition").notNull().default(""),
+  instantMatchOn: boolean("instant_match_on").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

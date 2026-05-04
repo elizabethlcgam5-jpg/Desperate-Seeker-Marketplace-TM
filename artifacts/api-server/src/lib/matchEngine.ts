@@ -15,21 +15,36 @@ const STOP_WORDS = new Set([
 
 const THRESHOLD = 40;
 
-function keywords(text: string): string[] {
+function extractKeywords(text: string): string[] {
   return text
     .toLowerCase()
     .split(/[\s,]+/)
-    .filter((w) => w.length >= 4 && !STOP_WORDS.has(w));
+    .map((w) => w.replace(/[^a-z0-9]/g, ""))
+    .filter((w) => w.length >= 3 && !STOP_WORDS.has(w));
 }
 
-function keywordOverlap(a: string[], b: string[]): number {
-  if (a.length === 0 || b.length === 0) return 0;
-  const setA = new Set(a);
-  const matches = b.filter((w) => setA.has(w) || [...setA].some((k) => w.includes(k) || k.includes(w)));
-  return Math.round((matches.length / Math.max(a.length, b.length)) * 100);
+function keywordOverlap(listingKw: string[], requestKw: string[]): number {
+  if (listingKw.length === 0 || requestKw.length === 0) return 0;
+  const setA = new Set(listingKw);
+  const hits = requestKw.filter(
+    (w) => setA.has(w) || [...setA].some((k) => w.includes(k) || k.includes(w))
+  );
+  return Math.round((hits.length / Math.max(listingKw.length, requestKw.length)) * 100);
 }
 
-interface ListingRow {
+interface ScoredRequest {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  buyerId: string;
+  tags: unknown;
+  aiKeywords: string[];  // from DB keywords column
+  condition: string;
+  instantMatchOn: boolean;
+}
+
+interface ScoredListing {
   id: string;
   title: string;
   description: string;
@@ -38,69 +53,112 @@ interface ListingRow {
   sellerId: string | null;
 }
 
-interface RequestRow {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  buyerId: string;
-  tags: unknown;
-}
-
-function scoreListingVsRequest(listing: ListingRow, request: RequestRow): number {
+function scoreListingVsRequest(listing: ScoredListing, request: ScoredRequest): number {
   let score = 0;
 
-  // Category match (35 pts)
+  // Category match (30 pts)
   if (listing.category.toLowerCase() === request.category.toLowerCase()) {
-    score += 35;
+    score += 30;
   } else if (
     listing.category.toLowerCase().includes(request.category.toLowerCase().split(" ")[0]) ||
     request.category.toLowerCase().includes(listing.category.toLowerCase().split(" ")[0])
   ) {
-    score += 15;
+    score += 12;
   }
 
-  // Keyword overlap across title + description (up to 45 pts)
-  const listingKw = keywords(`${listing.title} ${listing.description}`);
-  const requestKw = keywords(`${request.title} ${request.description}`);
-  const overlap = keywordOverlap(listingKw, requestKw);
-  score += Math.round((overlap / 100) * 45);
+  // AI-generated keyword match (up to 35 pts) — highest quality signal
+  const listingKw = extractKeywords(`${listing.title} ${listing.description}`);
+  if (request.aiKeywords.length > 0) {
+    const aiOverlap = keywordOverlap(listingKw, request.aiKeywords);
+    score += Math.round((aiOverlap / 100) * 35);
+  }
 
-  // Tag match bonus (up to 20 pts)
+  // Text keyword overlap (up to 25 pts) — fallback / supplement
+  const requestKw = extractKeywords(`${request.title} ${request.description}`);
+  const textOverlap = keywordOverlap(listingKw, requestKw);
+  score += Math.round((textOverlap / 100) * 25);
+
+  // Tag match bonus (up to 10 pts)
   const tags: string[] = Array.isArray(request.tags) ? (request.tags as string[]) : [];
   if (tags.length > 0) {
-    const listingWords = new Set(keywords(`${listing.title} ${listing.description}`));
+    const listingSet = new Set(listingKw);
     const tagHits = tags.filter((t) =>
-      listingWords.has(t.toLowerCase()) ||
-      [...listingWords].some((w) => w.includes(t.toLowerCase()) || t.toLowerCase().includes(w))
+      listingSet.has(t.toLowerCase()) ||
+      [...listingSet].some((w) => w.includes(t.toLowerCase()) || t.toLowerCase().includes(w))
     );
-    score += Math.round((tagHits.length / tags.length) * 20);
+    score += Math.round((tagHits.length / tags.length) * 10);
+  }
+
+  // Condition match bonus (5 pts) — only if request specifies a condition
+  if (
+    request.condition &&
+    listing.condition &&
+    request.condition !== "" &&
+    (listing.condition === request.condition ||
+      (request.condition === "any"))
+  ) {
+    score += 5;
   }
 
   return Math.min(score, 100);
 }
 
-/**
- * Called when a new buyer request is posted.
- * Notifies InstantMatch sellers whose active listings match the request.
- */
-export async function instantMatchOnRequest(
+function buildNotification(
+  userId: string,
+  score: number,
   requestId: string,
   requestTitle: string,
   requestDescription: string,
-  requestCategory: string,
+  listingId: string,
+  listingTitle: string,
+  direction: "seller" | "buyer",
+) {
+  const matchType = score >= 70 ? "exact" : "similar";
+  const title =
+    direction === "seller"
+      ? matchType === "exact" ? "⚡ InstantMatch — Buyer alert" : "InstantMatch — Possible buyer"
+      : matchType === "exact" ? "⚡ InstantMatch — Item found!" : "InstantMatch — Possible match";
+  const message =
+    direction === "seller"
+      ? matchType === "exact"
+        ? `A buyer is actively looking for "${requestTitle}" — your listing "${listingTitle}" is a strong match.`
+        : `A buyer posted for "${requestTitle}" — your listing "${listingTitle}" may be a fit.`
+      : matchType === "exact"
+        ? `A seller just listed "${listingTitle}" — it closely matches what you're looking for in "${requestTitle}".`
+        : `A new listing "${listingTitle}" may match your request for "${requestTitle}".`;
+
+  return {
+    id: randomUUID(),
+    userId,
+    type: matchType,
+    title,
+    message,
+    requestId,
+    requestTitle,
+    requestDescription: requestDescription.slice(0, 200),
+    listingId,
+    read: false,
+  };
+}
+
+/**
+ * Called when a new buyer request is posted.
+ * Checks request.instantMatchOn (per-request opt-in).
+ * Notifies matching sellers who have user-level instantMatch on.
+ * Uses AI-generated keywords when available.
+ */
+export async function instantMatchOnRequest(
+  requestId: string,
   buyerId: string,
 ): Promise<void> {
   try {
-    // Only run if the buyer has InstantMatch on
-    const [buyer] = await db
-      .select({ instantMatch: usersTable.instantMatch })
-      .from(usersTable)
-      .where(eq(usersTable.id, buyerId))
+    const [req] = await db
+      .select()
+      .from(requestsTable)
+      .where(eq(requestsTable.id, requestId))
       .limit(1);
-    if (!buyer?.instantMatch) return;
+    if (!req?.instantMatchOn) return;
 
-    // Fetch all active listings from other sellers who have InstantMatch on
     const listings = await db
       .select({
         id: listingsTable.id,
@@ -109,7 +167,6 @@ export async function instantMatchOnRequest(
         category: listingsTable.category,
         condition: listingsTable.condition,
         sellerId: listingsTable.sellerId,
-        sellerInstantMatch: usersTable.instantMatch,
       })
       .from(listingsTable)
       .innerJoin(usersTable, eq(usersTable.id, listingsTable.sellerId))
@@ -122,13 +179,16 @@ export async function instantMatchOnRequest(
         ),
       );
 
-    const request: RequestRow = {
-      id: requestId,
-      title: requestTitle,
-      description: requestDescription,
-      category: requestCategory,
-      buyerId,
-      tags: [],
+    const request: ScoredRequest = {
+      id: req.id,
+      title: req.title,
+      description: req.description,
+      category: req.category,
+      buyerId: req.buyerId,
+      tags: req.tags,
+      aiKeywords: (req.keywords as string[]) ?? [],
+      condition: req.condition ?? "",
+      instantMatchOn: req.instantMatchOn,
     };
 
     const seenSellers = new Set<string>();
@@ -140,22 +200,9 @@ export async function instantMatchOnRequest(
       if (score < THRESHOLD) continue;
       seenSellers.add(listing.sellerId);
 
-      const matchType = score >= 70 ? "exact" : "similar";
-      notifications.push({
-        id: randomUUID(),
-        userId: listing.sellerId,
-        type: matchType,
-        title: matchType === "exact" ? "⚡ InstantMatch — Buyer alert" : "InstantMatch — Possible buyer",
-        message:
-          matchType === "exact"
-            ? `A buyer is actively looking for "${requestTitle}" — your listing "${listing.title}" is a strong match (score ${score}).`
-            : `A buyer posted for "${requestTitle}" — your listing "${listing.title}" may be a fit (score ${score}).`,
-        requestId,
-        requestTitle,
-        requestDescription: requestDescription.slice(0, 200),
-        listingId: listing.id,
-        read: false,
-      });
+      notifications.push(
+        buildNotification(listing.sellerId, score, req.id, req.title, req.description, listing.id, listing.title, "seller")
+      );
     }
 
     if (notifications.length > 0) {
@@ -168,7 +215,9 @@ export async function instantMatchOnRequest(
 
 /**
  * Called when a new listing is posted.
- * Notifies InstantMatch buyers whose open requests match the listing.
+ * Seller must have user-level instantMatch on.
+ * Notifies buyers whose requests have instantMatchOn = true.
+ * Uses AI-generated keywords from each request.
  */
 export async function instantMatchOnListing(
   listingId: string,
@@ -179,7 +228,6 @@ export async function instantMatchOnListing(
   sellerId: string,
 ): Promise<void> {
   try {
-    // Only run if the seller has InstantMatch on
     const [seller] = await db
       .select({ instantMatch: usersTable.instantMatch })
       .from(usersTable)
@@ -187,7 +235,6 @@ export async function instantMatchOnListing(
       .limit(1);
     if (!seller?.instantMatch) return;
 
-    // Fetch all open requests from other buyers who have InstantMatch on
     const requests = await db
       .select({
         id: requestsTable.id,
@@ -196,19 +243,20 @@ export async function instantMatchOnListing(
         category: requestsTable.category,
         buyerId: requestsTable.buyerId,
         tags: requestsTable.tags,
-        buyerInstantMatch: usersTable.instantMatch,
+        keywords: requestsTable.keywords,
+        condition: requestsTable.condition,
+        instantMatchOn: requestsTable.instantMatchOn,
       })
       .from(requestsTable)
-      .innerJoin(usersTable, eq(usersTable.id, requestsTable.buyerId))
       .where(
         and(
           eq(requestsTable.status, "open"),
           ne(requestsTable.buyerId, sellerId),
-          eq(usersTable.instantMatch, true),
+          eq(requestsTable.instantMatchOn, true),
         ),
       );
 
-    const listing: ListingRow = {
+    const listing: ScoredListing = {
       id: listingId,
       title: listingTitle,
       description: listingDescription,
@@ -220,28 +268,28 @@ export async function instantMatchOnListing(
     const seenBuyers = new Set<string>();
     const notifications = [];
 
-    for (const request of requests) {
-      if (seenBuyers.has(request.buyerId)) continue;
+    for (const req of requests) {
+      if (seenBuyers.has(req.buyerId)) continue;
+
+      const request: ScoredRequest = {
+        id: req.id,
+        title: req.title,
+        description: req.description,
+        category: req.category,
+        buyerId: req.buyerId,
+        tags: req.tags,
+        aiKeywords: (req.keywords as string[]) ?? [],
+        condition: req.condition ?? "",
+        instantMatchOn: req.instantMatchOn,
+      };
+
       const score = scoreListingVsRequest(listing, request);
       if (score < THRESHOLD) continue;
-      seenBuyers.add(request.buyerId);
+      seenBuyers.add(req.buyerId);
 
-      const matchType = score >= 70 ? "exact" : "similar";
-      notifications.push({
-        id: randomUUID(),
-        userId: request.buyerId,
-        type: matchType,
-        title: matchType === "exact" ? "⚡ InstantMatch — Item found!" : "InstantMatch — Possible match",
-        message:
-          matchType === "exact"
-            ? `A seller just listed "${listingTitle}" — it closely matches what you're looking for in "${request.title}".`
-            : `A new listing "${listingTitle}" may match your request for "${request.title}".`,
-        requestId: request.id,
-        requestTitle: request.title,
-        requestDescription: request.description.slice(0, 200),
-        listingId,
-        read: false,
-      });
+      notifications.push(
+        buildNotification(req.buyerId, score, req.id, req.title, req.description, listingId, listingTitle, "buyer")
+      );
     }
 
     if (notifications.length > 0) {
