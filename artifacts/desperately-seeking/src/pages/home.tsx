@@ -271,10 +271,10 @@ export default function Home() {
             Our Mission
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-            Desperately Seeking was built for the moments when you know exactly what you want but can't find it anywhere. We believe the best deals happen locally — between real people, face to face. Our platform puts buyers in control, protects their privacy, and rewards sellers who actually show up with the goods.
+            Desperately Seeking was built for people who know exactly what they want and don't have time to hunt for it. Instead of scrolling through endless listings, buyers post what they need and let the right match come to them.
           </p>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            No bidding wars. No algorithmic chaos. Just clear intent, honest listings, and community trust.
+            Our platform flips the marketplace experience so buyers lead the way — and sellers step forward when they have exactly what's needed. It's a smarter, simpler, more human way to buy and sell.
           </p>
           <div className="mt-10">
             <Link href="/requests/new">
