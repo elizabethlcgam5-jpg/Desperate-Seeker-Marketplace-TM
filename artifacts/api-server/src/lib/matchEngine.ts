@@ -69,13 +69,11 @@ function buildNotification(
   const matchType = score >= 4 ? "exact" : "similar";
   const title =
     direction === "seller"
-      ? matchType === "exact" ? "⚡ InstantMatch — Buyer alert" : "InstantMatch — Possible buyer"
+      ? "Instant Match Found"
       : matchType === "exact" ? "⚡ InstantMatch — Item found!" : "InstantMatch — Possible match";
   const message =
     direction === "seller"
-      ? matchType === "exact"
-        ? `A buyer is actively looking for "${requestTitle}" — your listing "${listingTitle}" is a strong match.`
-        : `A buyer posted for "${requestTitle}" — your listing "${listingTitle}" may be a fit.`
+      ? "Someone is looking for exactly what you posted. Tap to view the buyer's request."
       : matchType === "exact"
         ? `A seller just listed "${listingTitle}" — it closely matches what you're looking for in "${requestTitle}".`
         : `A new listing "${listingTitle}" may match your request for "${requestTitle}".`;
