@@ -139,6 +139,8 @@ export async function instantMatchOnRequest(
       .limit(1);
     if (!buyer?.instantMatch) return;
 
+    // Only include listings where BOTH the per-listing flag AND the seller's
+    // account-level InstantMatch are enabled.
     const listings = await db
       .select({
         id: listingsTable.id,
@@ -150,12 +152,14 @@ export async function instantMatchOnRequest(
         instantMatchOn: listingsTable.instantMatchOn,
       })
       .from(listingsTable)
+      .innerJoin(usersTable, eq(usersTable.id, listingsTable.sellerId))
       .where(
         and(
           eq(listingsTable.isAvailable, true),
           eq(listingsTable.status, "active"),
           ne(listingsTable.sellerId, buyerId),
           eq(listingsTable.instantMatchOn, true),
+          eq(usersTable.instantMatch, true),
         ),
       );
 
@@ -225,6 +229,14 @@ export async function instantMatchOnListing(
 ): Promise<void> {
   try {
     if (!listingInstantMatchOn) return;
+
+    // Account-level gate: seller must have InstantMatch enabled on their profile
+    const [seller] = await db
+      .select({ instantMatch: usersTable.instantMatch })
+      .from(usersTable)
+      .where(eq(usersTable.id, sellerId))
+      .limit(1);
+    if (!seller?.instantMatch) return;
 
     // Fetch the listing's current keywords (may have been generated after posting)
     const [listingRow] = await db
