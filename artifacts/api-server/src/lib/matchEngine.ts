@@ -9,18 +9,96 @@ import {
 import { and, eq, ne } from "drizzle-orm";
 
 const STOP_WORDS = new Set([
-  "with", "from", "this", "that", "have", "want", "need",
-  "looking", "good", "like", "very", "some", "just", "also",
+  "a","an","the","and","or","but","in","on","at","to","for","of","with",
+  "by","from","up","about","into","through","during","is","are","was",
+  "were","be","been","being","have","has","had","do","does","did","will",
+  "would","could","should","may","might","shall","can","this","that",
+  "these","those","i","me","my","we","our","you","your","he","his","she",
+  "her","it","its","they","their","them","what","which","who","whom",
+  "when","where","why","how","all","any","both","each","few","more",
+  "most","other","some","such","no","not","only","own","same","so",
+  "than","too","very","just","also","want","need","looking","get","got",
+  "good","nice","great","like","make","made","use","used","come","came",
+  "know","think","take","well","back","still","way","even","much","go",
+  "new","old","one","two","three","see","now","then","here","there",
+  "list","sell","buy","sale","sold","item","items","thing","things",
 ]);
 
 const THRESHOLD = 40;
 
+// --- Lightweight Porter-inspired stemmer ---
+
+function hasSuffix(w: string, suffix: string): boolean {
+  return w.endsWith(suffix) && w.length > suffix.length + 2;
+}
+
+function stem(word: string): string {
+  let w = word;
+
+  // Step 1a: plurals & past tense
+  if (hasSuffix(w, "sses")) w = w.slice(0, -2);
+  else if (hasSuffix(w, "ies")) w = w.slice(0, -2);
+  else if (!hasSuffix(w, "ss") && w.endsWith("s") && w.length > 3) w = w.slice(0, -1);
+
+  // Step 1b: -ed / -ing
+  if (hasSuffix(w, "eed")) {
+    w = w.slice(0, -1);
+  } else if (hasSuffix(w, "ed") && /[aeiou]/.test(w.slice(0, -2))) {
+    w = w.slice(0, -2);
+    if (hasSuffix(w, "at") || hasSuffix(w, "bl") || hasSuffix(w, "iz")) w += "e";
+    else if (/([^aeiou])\1$/.test(w) && !/(l|s|z)$/.test(w)) w = w.slice(0, -1);
+  } else if (hasSuffix(w, "ing") && /[aeiou]/.test(w.slice(0, -3))) {
+    w = w.slice(0, -3);
+    if (hasSuffix(w, "at") || hasSuffix(w, "bl") || hasSuffix(w, "iz")) w += "e";
+    else if (/([^aeiou])\1$/.test(w) && !/(l|s|z)$/.test(w)) w = w.slice(0, -1);
+  }
+
+  // Step 1c: -y → i
+  if (w.endsWith("y") && w.length > 3 && !/[aeiou]/.test(w[w.length - 2])) {
+    w = w.slice(0, -1) + "i";
+  }
+
+  // Step 2: common suffixes
+  const step2: [string, string][] = [
+    ["ational","ate"],["tional","tion"],["enci","ence"],["anci","ance"],
+    ["izer","ize"],["ising","ise"],["izing","ize"],["iser","ise"],
+    ["alism","al"],["aliti","al"],["ousli","ous"],["ousness","ous"],
+    ["iveness","ive"],["fulness","ful"],["ation","ate"],["ator","ate"],
+    ["alism","al"],["alness","al"],["entli","ent"],
+  ];
+  for (const [suffix, replacement] of step2) {
+    if (hasSuffix(w, suffix)) { w = w.slice(0, -suffix.length) + replacement; break; }
+  }
+
+  // Step 3: remove final -e when stem is long enough
+  if (w.endsWith("e") && w.length > 4) w = w.slice(0, -1);
+
+  return w;
+}
+
+// ---
+
+const TOP_K = 20;
+
 function extractKeywords(text: string): string[] {
-  return text
+  const words = text
     .toLowerCase()
-    .split(/[\s,]+/)
+    .split(/[\s\-_,;:!?()\[\]{}"']+/)
     .map((w) => w.replace(/[^a-z0-9]/g, ""))
     .filter((w) => w.length >= 3 && !STOP_WORDS.has(w));
+
+  // Stem and count frequency
+  const freq = new Map<string, number>();
+  for (const w of words) {
+    const s = stem(w);
+    if (s.length >= 2) freq.set(s, (freq.get(s) ?? 0) + 1);
+  }
+
+  // Return top-K stems by frequency, ties broken by length (longer = more specific)
+  return [...freq.entries()]
+    .sort((a, b) => b[1] - a[1] || b[0].length - a[0].length)
+    .slice(0, TOP_K)
+    .map(([s]) => s);
 }
 
 function keywordOverlap(listingKw: string[], requestKw: string[]): number {
