@@ -175,39 +175,14 @@ router.post("/listings", withCurrentUser, async (req, res) => {
     })
     .returning();
 
+  // Always generate AI keywords in the background for future match quality.
+  // When instantMatchOn=true, wait for keywords before running the match engine.
   if (instantMatchOn) {
-    // Generate AI keywords (~4s), then run InstantMatch
     setTimeout(async () => {
       await generateAndSaveListingKeywords(row.id, row.title, row.description, row.category);
-      const [updated] = await db
-        .select({ keywords: listingsTable.keywords })
-        .from(listingsTable)
-        .where(eq(listingsTable.id, row.id))
-        .limit(1);
-      instantMatchOnListing(
-        row.id,
-        row.title,
-        row.description,
-        row.category,
-        row.condition,
-        true,
-        (updated?.keywords as string[]) ?? [],
-        sellerId,
-      );
+      instantMatchOnListing(row.id, row.title, row.category, row.condition, true, sellerId);
     }, 4000);
   } else {
-    // Still fire InstantMatch immediately (no AI keywords yet), without delay
-    instantMatchOnListing(
-      row.id,
-      row.title,
-      row.description,
-      row.category,
-      row.condition,
-      false,
-      [],
-      sellerId,
-    );
-    // Generate keywords in background for future match quality
     generateAndSaveListingKeywords(row.id, row.title, row.description, row.category);
   }
 
