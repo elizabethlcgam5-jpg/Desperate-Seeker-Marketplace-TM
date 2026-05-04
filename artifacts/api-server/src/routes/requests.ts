@@ -424,4 +424,34 @@ router.patch("/requests/:requestId", withCurrentUser, async (req, res) => {
   );
 });
 
+router.post("/requests/:requestId/repost", withCurrentUser, async (req, res) => {
+  const { requestId } = req.params;
+
+  const [existing] = await db
+    .select()
+    .from(requestsTable)
+    .where(eq(requestsTable.id, requestId))
+    .limit(1);
+  if (!existing) {
+    res.status(404).json({ error: "Request not found" });
+    return;
+  }
+  if (existing.buyerId !== req.currentUserId) {
+    res.status(403).json({ error: "Only the buyer can repost this request" });
+    return;
+  }
+
+  await db
+    .update(requestsTable)
+    .set({ status: "open", keywords: null })
+    .where(eq(requestsTable.id, requestId));
+
+  // Re-run keyword gen + InstantMatch
+  generateAndSaveKeywords(requestId, existing.title, existing.description, existing.category);
+  setTimeout(() => instantMatchOnRequest(requestId, req.currentUserId!), 4000);
+
+  const summary = await loadSummary(requestId);
+  res.json(summary);
+});
+
 export default router;

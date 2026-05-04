@@ -189,4 +189,41 @@ router.post("/listings", withCurrentUser, async (req, res) => {
   res.status(201).json(serializeListing(row));
 });
 
+router.post("/listings/:listingId/repost", withCurrentUser, async (req, res) => {
+  const { listingId } = req.params;
+  const sellerId = req.currentUserId!;
+
+  const [existing] = await db
+    .select()
+    .from(listingsTable)
+    .where(eq(listingsTable.id, listingId))
+    .limit(1);
+  if (!existing) {
+    res.status(404).json({ error: "Listing not found" });
+    return;
+  }
+  if (existing.sellerId !== sellerId) {
+    res.status(403).json({ error: "Not your listing" });
+    return;
+  }
+
+  const [row] = await db
+    .update(listingsTable)
+    .set({ status: "active", isAvailable: true, keywords: null })
+    .where(eq(listingsTable.id, listingId))
+    .returning();
+
+  // Re-run keyword gen + InstantMatch
+  if (row.instantMatchOn) {
+    setTimeout(async () => {
+      await generateAndSaveListingKeywords(row.id, row.title, row.description, row.category);
+      instantMatchOnListing(row.id, row.title, row.category, row.condition ?? "good", true, sellerId);
+    }, 4000);
+  } else {
+    generateAndSaveListingKeywords(row.id, row.title, row.description, row.category);
+  }
+
+  res.json(serializeListing(row));
+});
+
 export default router;

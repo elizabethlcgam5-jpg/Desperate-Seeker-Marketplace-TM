@@ -45,6 +45,7 @@ import {
   Package,
   Truck,
   MapPin,
+  RefreshCw,
 } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
@@ -123,6 +124,24 @@ export default function MyListingsPage() {
   const [markingLoading, setMarkingLoading] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
+  const [repostingId, setRepostingId] = useState<string | null>(null);
+
+  const handleRepost = async (listingId: string) => {
+    setRepostingId(listingId);
+    try {
+      const res = await fetch(getApiUrl(`listings/${listingId}/repost`), {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error((await res.json()).error ?? "Failed to repost");
+      toast.success("Listing reposted! InstantMatch is scanning for buyers.");
+      qc.invalidateQueries();
+    } catch (err: any) {
+      toast.error(err.message ?? "Couldn't repost. Try again.");
+    } finally {
+      setRepostingId(null);
+    }
+  };
 
   const activeListings = listings?.filter((l) => l.status === "active") ?? [];
   const soldListings = listings?.filter((l) => l.status === "sold") ?? [];
@@ -378,7 +397,7 @@ export default function MyListingsPage() {
                   {soldListings.map((listing: any) => (
                     <div
                       key={listing.id}
-                      className="rounded-2xl bg-white border border-border/40 p-5 shadow-sm opacity-70"
+                      className="rounded-2xl bg-white border border-border/40 p-5 shadow-sm opacity-80"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0 flex-1">
@@ -398,6 +417,16 @@ export default function MyListingsPage() {
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         <p className="text-xs text-muted-foreground">{formatDate(listing.createdAt)}</p>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="rounded-full border-[#0B3954]/30 text-[#0B3954] text-xs hover:bg-[#0B3954]/5 font-semibold gap-1.5"
+                          disabled={repostingId === listing.id}
+                          onClick={() => handleRepost(listing.id)}
+                        >
+                          <RefreshCw className={`h-3.5 w-3.5 ${repostingId === listing.id ? "animate-spin" : ""}`} />
+                          {repostingId === listing.id ? "Reposting…" : "Relist"}
+                        </Button>
                       </div>
                     </div>
                   ))}

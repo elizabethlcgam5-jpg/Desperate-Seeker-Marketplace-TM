@@ -2,11 +2,15 @@ import { Layout } from "@/components/layout";
 import { useListRequests, useGetCurrentUser } from "@workspace/api-client-react";
 import { RequestCard } from "@/components/request-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ClipboardList, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ClipboardList, Zap, RefreshCw, MapPin, Clock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { formatDistanceToNow } from "date-fns";
 
 export default function MyRequests() {
   const { data: currentUser } = useGetCurrentUser();
@@ -14,9 +18,11 @@ export default function MyRequests() {
     { buyerId: currentUser?.id },
     { query: { enabled: !!currentUser?.id } }
   );
+  const qc = useQueryClient();
 
   const [instantMatch, setInstantMatch] = useState<boolean | null>(null);
   const [instantMatchLoading, setInstantMatchLoading] = useState(false);
+  const [repostingId, setRepostingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (currentUser) setInstantMatch((currentUser as any).instantMatch ?? false);
@@ -45,8 +51,32 @@ export default function MyRequests() {
     }
   };
 
+  const handleRepost = async (requestId: string) => {
+    setRepostingId(requestId);
+    try {
+      const res = await fetch(getApiUrl(`requests/${requestId}/repost`), {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error((await res.json()).error ?? "Failed to repost");
+      toast.success("Request reposted! InstantMatch is scanning for matches.");
+      qc.invalidateQueries();
+    } catch (err: any) {
+      toast.error(err.message ?? "Couldn't repost. Try again.");
+    } finally {
+      setRepostingId(null);
+    }
+  };
+
   const openRequests = requests?.filter(r => r.status === 'open') || [];
   const pastRequests = requests?.filter(r => r.status !== 'open') || [];
+
+  const formatBudget = (min?: number | null, max?: number | null) => {
+    if (min && max) return `$${min} – $${max}`;
+    if (min) return `Over $${min}`;
+    if (max) return `Up to $${max}`;
+    return "Open budget";
+  };
 
   return (
     <Layout>
@@ -149,7 +179,41 @@ export default function MyRequests() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {pastRequests.map(req => (
-                  <RequestCard key={req.id} request={req} />
+                  <div key={req.id} className="rounded-2xl bg-white border border-border/60 p-5 shadow-sm opacity-80">
+                    <div className="flex flex-wrap items-center gap-1.5 mb-2">
+                      <Badge variant="outline" className="font-normal capitalize rounded-full text-[#0B3954] border-[#0B3954]/20 bg-[#0B3954]/5 text-xs">
+                        {req.category}
+                      </Badge>
+                      <Badge variant="secondary" className="rounded-full text-xs capitalize">
+                        {req.status}
+                      </Badge>
+                    </div>
+                    <p className="font-semibold font-serif text-[#0B3954] line-clamp-2 mb-1">{req.title}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{req.description}</p>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
+                      {req.location && (
+                        <span className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3 text-[#D4AF37]" />
+                          {req.location}
+                        </span>
+                      )}
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {formatDistanceToNow(new Date(req.createdAt), { addSuffix: true })}
+                      </span>
+                      <span className="font-medium text-[#0B3954]">{formatBudget(req.budgetMin, req.budgetMax)}</span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full rounded-full border-[#0B3954]/30 text-[#0B3954] hover:bg-[#0B3954]/5 text-xs font-semibold gap-1.5"
+                      disabled={repostingId === req.id}
+                      onClick={() => handleRepost(req.id)}
+                    >
+                      <RefreshCw className={`h-3.5 w-3.5 ${repostingId === req.id ? "animate-spin" : ""}`} />
+                      {repostingId === req.id ? "Reposting…" : "Repost Request"}
+                    </Button>
+                  </div>
                 ))}
               </div>
             )}
