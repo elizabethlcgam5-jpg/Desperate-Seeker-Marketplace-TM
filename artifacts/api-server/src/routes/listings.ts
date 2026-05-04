@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, listingsTable, usersTable } from "@workspace/db";
 import { eq, desc, and } from "drizzle-orm";
+import { instantMatchOnListing } from "../lib/matchEngine";
 import {
   ListListingsResponse,
   GetListingResponse,
@@ -169,6 +170,16 @@ router.post("/listings", withCurrentUser, async (req, res) => {
       isFeatured,
     })
     .returning();
+
+  // Fire-and-forget: notify matching buyers via InstantMatch
+  instantMatchOnListing(
+    row.id,
+    row.title,
+    row.description,
+    row.category,
+    row.condition,
+    sellerId,
+  );
 
   res.status(201).json(serializeListing(row));
 });

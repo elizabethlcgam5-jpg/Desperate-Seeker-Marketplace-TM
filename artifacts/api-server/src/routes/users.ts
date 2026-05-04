@@ -65,6 +65,20 @@ router.post("/me/subscribe", withCurrentUser, async (req, res) => {
   res.json(SubscribeCurrentUserResponse.parse(serializeUser(updated)));
 });
 
+router.patch("/me/instant-match", withCurrentUser, async (req, res) => {
+  const { enabled } = req.body as { enabled: boolean };
+  if (typeof enabled !== "boolean") {
+    res.status(400).json({ error: "enabled must be a boolean" });
+    return;
+  }
+  const [updated] = await db
+    .update(usersTable)
+    .set({ instantMatch: enabled })
+    .where(eq(usersTable.id, req.currentUserId!))
+    .returning();
+  res.json({ instantMatch: updated.instantMatch });
+});
+
 router.get("/pricing/plans", async (_req, res) => {
   const plans = [
     {

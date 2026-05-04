@@ -21,6 +21,7 @@ import {
 import { withCurrentUser, readCurrentUserId } from "../lib/session";
 import { serializeUser } from "../lib/serializers";
 import { randomUUID } from "node:crypto";
+import { instantMatchOnRequest } from "../lib/matchEngine";
 
 const router: IRouter = Router();
 
@@ -271,8 +272,9 @@ router.post("/requests", withCurrentUser, async (req, res) => {
     isPrivate: body.isPrivate ?? false,
   });
 
-  // Fire-and-forget: notify matching sellers
+  // Fire-and-forget: notify matching sellers (legacy) + InstantMatch
   notifyMatchingSellers(id, body.title, body.description, body.category, req.currentUserId!);
+  instantMatchOnRequest(id, body.title, body.description, body.category, req.currentUserId!);
 
   const summary = await loadSummary(id);
   res.status(201).json(

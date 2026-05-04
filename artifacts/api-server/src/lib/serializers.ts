@@ -18,6 +18,7 @@ export function serializeUser(u: User) {
     subscriptionRenewsAt: u.subscriptionRenewsAt
       ? u.subscriptionRenewsAt.toISOString()
       : null,
+    instantMatch: u.instantMatch,
   };
 }
 

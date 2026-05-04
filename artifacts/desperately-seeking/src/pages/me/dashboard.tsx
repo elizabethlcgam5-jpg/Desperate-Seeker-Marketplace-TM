@@ -56,6 +56,8 @@ export default function SellerDashboard() {
     onboardingComplete: boolean;
   } | null>(null);
   const [connectLoading, setConnectLoading] = useState(false);
+  const [instantMatch, setInstantMatch] = useState<boolean | null>(null);
+  const [instantMatchLoading, setInstantMatchLoading] = useState(false);
 
   useEffect(() => {
     if (!isSeller) return;
@@ -64,6 +66,10 @@ export default function SellerDashboard() {
       .then((d) => setConnectStatus(d))
       .catch(() => {});
   }, [isSeller]);
+
+  useEffect(() => {
+    if (user) setInstantMatch((user as any).instantMatch ?? false);
+  }, [user]);
 
   const handleConnectOnboard = async () => {
     setConnectLoading(true);
@@ -79,6 +85,29 @@ export default function SellerDashboard() {
       toast.error("Something went wrong. Please try again.");
     } finally {
       setConnectLoading(false);
+    }
+  };
+
+  const handleInstantMatchToggle = async () => {
+    if (instantMatchLoading) return;
+    const next = !instantMatch;
+    setInstantMatch(next);
+    setInstantMatchLoading(true);
+    try {
+      const res = await fetch(getApiUrl("me/instant-match"), {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: next }),
+      });
+      const data = await res.json();
+      setInstantMatch(data.instantMatch);
+      toast.success(data.instantMatch ? "InstantMatch turned on." : "InstantMatch turned off.");
+    } catch {
+      setInstantMatch(!next);
+      toast.error("Couldn't update InstantMatch. Please try again.");
+    } finally {
+      setInstantMatchLoading(false);
     }
   };
 
@@ -328,6 +357,58 @@ export default function SellerDashboard() {
                 </Button>
               </div>
             )}
+          </section>
+        )}
+
+        {/* InstantMatch toggle */}
+        {instantMatch !== null && (
+          <section className="mb-10">
+            <div
+              className={`rounded-2xl border p-5 flex flex-col sm:flex-row sm:items-center gap-4 transition-colors ${
+                instantMatch
+                  ? "border-[#0B3954]/20 bg-[#0B3954]/5"
+                  : "border-border bg-white"
+              }`}
+            >
+              <div
+                className={`h-11 w-11 rounded-xl flex items-center justify-center shrink-0 ${
+                  instantMatch ? "bg-[#0B3954]/10" : "bg-muted"
+                }`}
+              >
+                <Zap className={`h-5 w-5 ${instantMatch ? "text-[#0B3954]" : "text-muted-foreground"}`} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <p className="font-serif font-semibold text-[#0B3954]">InstantMatch</p>
+                  {instantMatch && (
+                    <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-[#0B3954]/10 text-[#0B3954] border border-[#0B3954]/15 font-medium">
+                      <Zap className="h-3 w-3" /> On
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-[#0B3954]/60 leading-relaxed">
+                  {instantMatch
+                    ? "You'll get instant alerts when a buyer posts a request that matches your listings — and buyers with InstantMatch on will be notified when you list something new."
+                    : "Turn on to get real-time alerts when a buyer posts a request matching your listings, and let buyers find your new listings the moment they go live."}
+                </p>
+              </div>
+              <button
+                onClick={handleInstantMatchToggle}
+                disabled={instantMatchLoading}
+                className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 transition-colors focus:outline-none disabled:opacity-60 cursor-pointer ${
+                  instantMatch
+                    ? "bg-[#0B3954] border-[#0B3954]"
+                    : "bg-muted border-border"
+                }`}
+                aria-label="Toggle InstantMatch"
+              >
+                <span
+                  className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${
+                    instantMatch ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
           </section>
         )}
 

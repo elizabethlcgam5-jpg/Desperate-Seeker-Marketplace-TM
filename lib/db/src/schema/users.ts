@@ -20,6 +20,7 @@ export const usersTable = pgTable("users", {
   stripeConnectOnboardingComplete: boolean("stripe_connect_onboarding_complete")
     .notNull()
     .default(false),
+  instantMatch: boolean("instant_match").notNull().default(false),
 });
 
 export type User = typeof usersTable.$inferSelect;
