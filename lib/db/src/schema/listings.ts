@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, numeric, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, numeric, boolean, jsonb } from "drizzle-orm/pg-core";
 import { usersTable } from "./users";
 
 export const listingsTable = pgTable("listings", {
@@ -20,6 +20,8 @@ export const listingsTable = pgTable("listings", {
   status: text("status").notNull().default("active"),
   isAvailable: boolean("is_available").notNull().default(true),
   isFeatured: boolean("is_featured").notNull().default(false),
+  keywords: jsonb("keywords").$type<string[]>().notNull().default([]),
+  instantMatchOn: boolean("instant_match_on").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

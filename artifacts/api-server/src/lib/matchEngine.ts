@@ -51,6 +51,8 @@ interface ScoredListing {
   category: string;
   condition: string;
   sellerId: string | null;
+  aiKeywords: string[];
+  instantMatchOn: boolean;
 }
 
 function scoreListingVsRequest(listing: ScoredListing, request: ScoredRequest): number {
@@ -67,7 +69,11 @@ function scoreListingVsRequest(listing: ScoredListing, request: ScoredRequest): 
   }
 
   // AI-generated keyword match (up to 35 pts) — highest quality signal
-  const listingKw = extractKeywords(`${listing.title} ${listing.description}`);
+  // Use listing's AI keywords (if available) or fall back to extracted text keywords
+  const listingKw = listing.aiKeywords.length > 0
+    ? listing.aiKeywords
+    : extractKeywords(`${listing.title} ${listing.description}`);
+
   if (request.aiKeywords.length > 0) {
     const aiOverlap = keywordOverlap(listingKw, request.aiKeywords);
     score += Math.round((aiOverlap / 100) * 35);
@@ -167,15 +173,16 @@ export async function instantMatchOnRequest(
         category: listingsTable.category,
         condition: listingsTable.condition,
         sellerId: listingsTable.sellerId,
+        keywords: listingsTable.keywords,
+        instantMatchOn: listingsTable.instantMatchOn,
       })
       .from(listingsTable)
-      .innerJoin(usersTable, eq(usersTable.id, listingsTable.sellerId))
       .where(
         and(
           eq(listingsTable.isAvailable, true),
           eq(listingsTable.status, "active"),
           ne(listingsTable.sellerId, buyerId),
-          eq(usersTable.instantMatch, true),
+          eq(listingsTable.instantMatchOn, true),
         ),
       );
 
@@ -196,7 +203,12 @@ export async function instantMatchOnRequest(
 
     for (const listing of listings) {
       if (!listing.sellerId || seenSellers.has(listing.sellerId)) continue;
-      const score = scoreListingVsRequest(listing, request);
+      const scoredListing: ScoredListing = {
+        ...listing,
+        aiKeywords: (listing.keywords as string[]) ?? [],
+        instantMatchOn: listing.instantMatchOn,
+      };
+      const score = scoreListingVsRequest(scoredListing, request);
       if (score < THRESHOLD) continue;
       seenSellers.add(listing.sellerId);
 
@@ -225,15 +237,12 @@ export async function instantMatchOnListing(
   listingDescription: string,
   listingCategory: string,
   listingCondition: string,
+  listingInstantMatchOn: boolean,
+  listingAiKeywords: string[],
   sellerId: string,
 ): Promise<void> {
   try {
-    const [seller] = await db
-      .select({ instantMatch: usersTable.instantMatch })
-      .from(usersTable)
-      .where(eq(usersTable.id, sellerId))
-      .limit(1);
-    if (!seller?.instantMatch) return;
+    if (!listingInstantMatchOn) return;
 
     const requests = await db
       .select({
@@ -263,6 +272,8 @@ export async function instantMatchOnListing(
       category: listingCategory,
       condition: listingCondition,
       sellerId,
+      aiKeywords: listingAiKeywords,
+      instantMatchOn: listingInstantMatchOn,
     };
 
     const seenBuyers = new Set<string>();

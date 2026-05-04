@@ -30,7 +30,8 @@ import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { PackagePlus, Truck, Lock, Package, Tag, CheckCircle2, MapPin, Trash2 } from "lucide-react";
+import { PackagePlus, Truck, Lock, Package, Tag, CheckCircle2, MapPin, Trash2, Sparkles } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { useRef, useState, useEffect } from "react";
 import { useListMyListings, useGetCurrentUser } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -71,6 +72,7 @@ const formSchema = z.object({
   price: z.coerce.number().min(0, "Price must be 0 or more"),
   zipCode: z.string().min(5, "Please enter a valid ZIP code"),
   deliveryOption: z.string().min(1, "Please select a delivery option"),
+  instantMatchOn: z.boolean().default(false),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -130,6 +132,7 @@ export default function NewListing() {
       price: 0,
       zipCode: "",
       deliveryOption: "",
+      instantMatchOn: false,
     },
   });
 
@@ -180,6 +183,7 @@ export default function NewListing() {
           shippingPrice: showShipping && estimatedShipping != null ? estimatedShipping : null,
           zipCode: values.zipCode,
           imageUrl: "",
+          instantMatchOn: values.instantMatchOn,
         }),
       });
       if (!res.ok) {
@@ -637,6 +641,41 @@ export default function NewListing() {
                   />
                 </div>
               </div>
+
+              {/* InstantMatch toggle */}
+              <FormField
+                control={form.control}
+                name="instantMatchOn"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className={`flex items-start gap-4 rounded-xl border p-4 transition-colors ${field.value ? "border-[#0B3954]/20 bg-[#0B3954]/5" : "border-border bg-white"}`}>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="mt-0.5"
+                        />
+                      </FormControl>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-[#0B3954]" />
+                          <FormLabel className="text-sm font-semibold text-[#0B3954] cursor-pointer">
+                            InstantMatch
+                          </FormLabel>
+                          {field.value && (
+                            <Badge className="text-[10px] bg-[#0B3954]/10 text-[#0B3954] border-[#0B3954]/20 rounded-full px-2">
+                              On
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                          Notify buyers the moment you post — if their open request matches this listing. AI keywords make matching smarter.
+                        </p>
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
 
               <div className="pt-4 border-t border-[#0B3954]/10 flex justify-end gap-3">
                 <Button

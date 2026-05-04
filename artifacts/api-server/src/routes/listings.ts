@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { db, listingsTable, usersTable } from "@workspace/db";
 import { eq, desc, and } from "drizzle-orm";
 import { instantMatchOnListing } from "../lib/matchEngine";
+import { generateAndSaveListingKeywords } from "../lib/keywordGenerator";
 import {
   ListListingsResponse,
   GetListingResponse,
@@ -151,6 +152,8 @@ router.post("/listings", withCurrentUser, async (req, res) => {
     sellerName = user.name;
   }
 
+  const instantMatchOn = typeof body.instantMatchOn === "boolean" ? body.instantMatchOn : false;
+
   const [row] = await db
     .insert(listingsTable)
     .values({
@@ -168,18 +171,45 @@ router.post("/listings", withCurrentUser, async (req, res) => {
       sellerId,
       sellerName,
       isFeatured,
+      instantMatchOn,
     })
     .returning();
 
-  // Fire-and-forget: notify matching buyers via InstantMatch
-  instantMatchOnListing(
-    row.id,
-    row.title,
-    row.description,
-    row.category,
-    row.condition,
-    sellerId,
-  );
+  if (instantMatchOn) {
+    // Generate AI keywords (~4s), then run InstantMatch
+    setTimeout(async () => {
+      await generateAndSaveListingKeywords(row.id, row.title, row.description, row.category);
+      const [updated] = await db
+        .select({ keywords: listingsTable.keywords })
+        .from(listingsTable)
+        .where(eq(listingsTable.id, row.id))
+        .limit(1);
+      instantMatchOnListing(
+        row.id,
+        row.title,
+        row.description,
+        row.category,
+        row.condition,
+        true,
+        (updated?.keywords as string[]) ?? [],
+        sellerId,
+      );
+    }, 4000);
+  } else {
+    // Still fire InstantMatch immediately (no AI keywords yet), without delay
+    instantMatchOnListing(
+      row.id,
+      row.title,
+      row.description,
+      row.category,
+      row.condition,
+      false,
+      [],
+      sellerId,
+    );
+    // Generate keywords in background for future match quality
+    generateAndSaveListingKeywords(row.id, row.title, row.description, row.category);
+  }
 
   res.status(201).json(serializeListing(row));
 });
