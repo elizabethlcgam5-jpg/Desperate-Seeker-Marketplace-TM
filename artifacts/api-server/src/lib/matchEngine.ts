@@ -3,6 +3,7 @@ import {
   db,
   listingsTable,
   requestsTable,
+  usersTable,
   notificationsTable,
 } from "@workspace/db";
 import { and, eq, ne } from "drizzle-orm";
@@ -130,6 +131,14 @@ export async function instantMatchOnRequest(
       .limit(1);
     if (!req?.instantMatchOn) return;
 
+    // Account-level gate: buyer must have InstantMatch enabled on their profile
+    const [buyer] = await db
+      .select({ instantMatch: usersTable.instantMatch })
+      .from(usersTable)
+      .where(eq(usersTable.id, buyerId))
+      .limit(1);
+    if (!buyer?.instantMatch) return;
+
     const listings = await db
       .select({
         id: listingsTable.id,
@@ -233,6 +242,8 @@ export async function instantMatchOnListing(
       instantMatchOn: listingInstantMatchOn,
     };
 
+    // Only include requests where BOTH the per-request flag AND the buyer's
+    // account-level InstantMatch are enabled.
     const requests = await db
       .select({
         id: requestsTable.id,
@@ -245,11 +256,13 @@ export async function instantMatchOnListing(
         instantMatchOn: requestsTable.instantMatchOn,
       })
       .from(requestsTable)
+      .innerJoin(usersTable, eq(usersTable.id, requestsTable.buyerId))
       .where(
         and(
           eq(requestsTable.status, "open"),
           ne(requestsTable.buyerId, sellerId),
           eq(requestsTable.instantMatchOn, true),
+          eq(usersTable.instantMatch, true),
         ),
       );
 
