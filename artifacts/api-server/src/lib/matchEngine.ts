@@ -90,6 +90,28 @@ function buildNotification(
   };
 }
 
+function buildNearMissNotification(
+  userId: string,
+  requestId: string,
+  requestTitle: string,
+  requestDescription: string,
+  listingId: string,
+  listingTitle: string,
+) {
+  return {
+    id: randomUUID(),
+    userId,
+    type: "similar",
+    title: "Possible Match",
+    message: "We found something similar to what you're looking for.",
+    requestId,
+    requestTitle,
+    requestDescription: requestDescription.slice(0, 200),
+    listingId,
+    read: false,
+  };
+}
+
 /**
  * Called when a new buyer request is posted.
  * Gate: request.instantMatchOn must be true.
@@ -138,6 +160,7 @@ export async function instantMatchOnRequest(
     };
 
     const seenSellers = new Set<string>();
+    const nearMissSellers = new Set<string>();
     const notifications = [];
 
     for (const listing of listings) {
@@ -151,17 +174,22 @@ export async function instantMatchOnRequest(
         instantMatchOn: listing.instantMatchOn,
       };
       const score = calculateMatchScore(scoredListing, request);
-      if (score < THRESHOLD) continue;
-      seenSellers.add(listing.sellerId);
 
-      // Seller alert: an active buyer request matches their listing
-      notifications.push(
-        buildNotification(listing.sellerId, score, req.id, req.title, req.description, listing.id, listing.title, "seller")
-      );
-      // Buyer alert: an existing listing matches their new request
-      notifications.push(
-        buildNotification(buyerId, score, req.id, req.title, req.description, listing.id, listing.title, "buyer")
-      );
+      if (score >= THRESHOLD) {
+        seenSellers.add(listing.sellerId);
+        // Seller alert
+        notifications.push(
+          buildNotification(listing.sellerId, score, req.id, req.title, req.description, listing.id, listing.title, "seller")
+        );
+        // Buyer alert
+        notifications.push(
+          buildNotification(buyerId, score, req.id, req.title, req.description, listing.id, listing.title, "buyer")
+        );
+      } else if (score === THRESHOLD - 1 && !nearMissSellers.has(listing.sellerId)) {
+        nearMissSellers.add(listing.sellerId);
+        notifications.push(buildNearMissNotification(listing.sellerId, req.id, req.title, req.description, listing.id, listing.title));
+        notifications.push(buildNearMissNotification(buyerId, req.id, req.title, req.description, listing.id, listing.title));
+      }
     }
 
     if (notifications.length > 0) {
@@ -226,6 +254,7 @@ export async function instantMatchOnListing(
       );
 
     const seenBuyers = new Set<string>();
+    const nearMissBuyers = new Set<string>();
     const notifications = [];
 
     for (const req of requests) {
@@ -241,17 +270,22 @@ export async function instantMatchOnListing(
       };
 
       const score = calculateMatchScore(listing, request);
-      if (score < THRESHOLD) continue;
-      seenBuyers.add(req.buyerId);
 
-      // Buyer alert: a new listing matches their request
-      notifications.push(
-        buildNotification(req.buyerId, score, req.id, req.title, req.description, listingId, listingTitle, "buyer")
-      );
-      // Seller alert: their listing matches an active buyer request
-      notifications.push(
-        buildNotification(sellerId, score, req.id, req.title, req.description, listingId, listingTitle, "seller")
-      );
+      if (score >= THRESHOLD) {
+        seenBuyers.add(req.buyerId);
+        // Buyer alert
+        notifications.push(
+          buildNotification(req.buyerId, score, req.id, req.title, req.description, listingId, listingTitle, "buyer")
+        );
+        // Seller alert
+        notifications.push(
+          buildNotification(sellerId, score, req.id, req.title, req.description, listingId, listingTitle, "seller")
+        );
+      } else if (score === THRESHOLD - 1 && !nearMissBuyers.has(req.buyerId)) {
+        nearMissBuyers.add(req.buyerId);
+        notifications.push(buildNearMissNotification(req.buyerId, req.id, req.title, req.description, listingId, listingTitle));
+        notifications.push(buildNearMissNotification(sellerId, req.id, req.title, req.description, listingId, listingTitle));
+      }
     }
 
     if (notifications.length > 0) {
