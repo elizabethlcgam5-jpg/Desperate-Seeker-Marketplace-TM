@@ -26,6 +26,12 @@ import NewListing from "@/pages/listings/new";
 import About from "@/pages/about";
 import FAQ from "@/pages/faq";
 import HowItWorks from "@/pages/how-it-works";
+import HelpCenter from "@/pages/help/index";
+import HelpHowItWorks from "@/pages/help/how-it-works";
+import HelpSellerRules from "@/pages/help/seller-rules";
+import HelpBuyerRules from "@/pages/help/buyer-rules";
+import HelpWhyDifferent from "@/pages/help/why-different";
+import HelpSafetyTips from "@/pages/help/safety-tips";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import Contact from "@/pages/contact";
@@ -64,6 +70,12 @@ function Router() {
       <Route path="/listings/new" component={NewListing} />
       <Route path="/about" component={About} />
       <Route path="/how-it-works" component={HowItWorks} />
+      <Route path="/help" component={HelpCenter} />
+      <Route path="/help/how-it-works" component={HelpHowItWorks} />
+      <Route path="/help/seller-rules" component={HelpSellerRules} />
+      <Route path="/help/buyer-rules" component={HelpBuyerRules} />
+      <Route path="/help/why-different" component={HelpWhyDifferent} />
+      <Route path="/help/safety-tips" component={HelpSafetyTips} />
       <Route path="/faq" component={FAQ} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
