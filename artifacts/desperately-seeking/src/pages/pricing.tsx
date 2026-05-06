@@ -2,9 +2,10 @@ import { Layout } from "@/components/layout";
 import { Check, X } from "lucide-react";
 import { useLocation } from "wouter";
 
-const WHAT_WE_CHARGE = [
-  { label: "5% platform fee", detail: "on completed sales" },
-  { label: "$1.99/month seller subscription", detail: "for unlimited listings after your first 2 free" },
+const SUBSCRIPTION_FEATURES = [
+  "Unlimited item posts",
+  "Respond to all buyer requests",
+  "Full seller features",
 ];
 
 const HOW_DIFFERENT = [
@@ -30,8 +31,7 @@ export default function Pricing() {
             <span className="italic text-[#D4AF37]">No surprises.</span>
           </h1>
           <p className="text-white/70 text-lg max-w-[540px]">
-            At Desperately Seeking, we keep pricing honest and easy.
-            You keep the majority of every sale — no bumps, no ads, no hidden fees.
+            At Desperately Seeking, we keep pricing simple and easy to understand. No bumps, no ads, no hidden fees.
           </p>
         </div>
       </section>
@@ -58,24 +58,55 @@ export default function Pricing() {
           </div>
 
           {/* What We Charge */}
-          <div className="bg-white rounded-2xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8">
-            <h2 className="font-serif text-2xl font-semibold text-[#0B3954] mb-5">What We Charge</h2>
-            <ul className="space-y-4">
-              {WHAT_WE_CHARGE.map(({ label, detail }) => (
-                <li key={label} className="flex items-start gap-3">
-                  <span className="h-5 w-5 rounded-full bg-[#D4AF37]/15 flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="h-3 w-3 text-[#D4AF37]" strokeWidth={3} />
-                  </span>
-                  <span className="text-sm text-[#0B3954]/80 leading-relaxed">
-                    <span className="font-semibold text-[#0B3954]">{label}</span>
-                    {" "}{detail}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 text-sm font-semibold text-[#0B3954]">
-              That's it. No surprises.
-            </p>
+          <div className="bg-white rounded-2xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8 space-y-6">
+            <h2 className="font-serif text-2xl font-semibold text-[#0B3954]">What We Charge</h2>
+
+            {/* 5% fee */}
+            <div className="flex items-start gap-3">
+              <span className="h-5 w-5 rounded-full bg-[#D4AF37]/15 flex items-center justify-center shrink-0 mt-0.5">
+                <Check className="h-3 w-3 text-[#D4AF37]" strokeWidth={3} />
+              </span>
+              <span className="text-sm text-[#0B3954]/80 leading-relaxed">
+                <span className="font-semibold text-[#0B3954]">5% platform fee</span> on completed sales.
+              </span>
+            </div>
+
+            {/* Plan cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              {/* Monthly */}
+              <div className="rounded-xl border border-[#e0e0e0] p-5">
+                <div className="font-serif text-2xl font-bold text-[#0B3954] mb-0.5">
+                  $1.99<span className="text-base font-sans font-normal text-[#0B3954]/50">/month</span>
+                </div>
+                <p className="text-xs text-[#0B3954]/50 mb-4">Seller subscription</p>
+                <ul className="space-y-2">
+                  {SUBSCRIPTION_FEATURES.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm text-[#0B3954]/70">
+                      <Check className="h-3.5 w-3.5 text-[#D4AF37] shrink-0" strokeWidth={3} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Annual */}
+              <div className="rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/5 p-5">
+                <div className="font-serif text-2xl font-bold text-[#0B3954] mb-0.5">
+                  $29.99<span className="text-base font-sans font-normal text-[#0B3954]/50">/year</span>
+                </div>
+                <p className="text-xs text-[#0B3954]/50 mb-4">Seller subscription · <span className="text-[#D4AF37] font-semibold">Save 60%</span></p>
+                <ul className="space-y-2">
+                  {SUBSCRIPTION_FEATURES.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm text-[#0B3954]/70">
+                      <Check className="h-3.5 w-3.5 text-[#D4AF37] shrink-0" strokeWidth={3} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <p className="text-sm font-semibold text-[#0B3954]">That's it. No surprises.</p>
           </div>
 
           {/* How We're Different */}
