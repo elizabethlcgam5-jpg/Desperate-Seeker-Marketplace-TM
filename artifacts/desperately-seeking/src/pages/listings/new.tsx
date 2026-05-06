@@ -669,7 +669,7 @@ export default function NewListing() {
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                          Notify buyers the moment you post — if their open request matches this listing. AI keywords make matching smarter.
+                          Notify buyers the moment you post — if their open request matches this listing.
                         </p>
                       </div>
                     </div>
