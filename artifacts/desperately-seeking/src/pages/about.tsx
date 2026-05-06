@@ -9,10 +9,10 @@ export default function About() {
       <section className="bg-[#0B3954] py-12">
         <div className="container mx-auto px-4 max-w-[760px]">
           <h1 className="font-serif text-3xl md:text-4xl font-bold text-white mb-3">
-            About Desperately Seeking
+            Our Story
           </h1>
           <p className="text-white/70 text-base max-w-[520px]">
-            A buyer-first, seller-friendly marketplace built for real people.
+            How Desperately Seeking came to be — and why we built it differently.
           </p>
         </div>
       </section>
@@ -22,13 +22,13 @@ export default function About() {
 
           <div className="bg-white rounded-xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8 space-y-5 text-sm text-[#0B3954]/75 leading-relaxed">
             <p>
-              Desperately Seeking was created for people who are tired of wasting time scrolling through endless listings. Instead of searching, you simply post what you need — and sellers come to you. It's a faster, cleaner, and more modern way to buy and sell locally.
+              Desperately Seeking started with a simple idea: people shouldn't have to waste time searching for the things they need. After years of using marketplaces that felt overwhelming and outdated, we wanted something better — something built around real life and real people.
             </p>
             <p>
-              Our goal is simple: make local buying and selling easier, safer, and way less stressful. No more guessing, no more digging, no more dead-end listings. Just real people helping each other find exactly what they're looking for.
+              We noticed the same problem everywhere. Too much scrolling. Too many dead-end listings. Too many messages that went nowhere. So we flipped the process. Instead of searching, buyers post what they need and let the right sellers come to them.
             </p>
             <p>
-              Whether you're a buyer or a seller, Desperately Seeking keeps things quick, honest, and straightforward. Post it. Match it. Get it done.
+              Desperately Seeking was created to make buying and selling feel easier, faster, and more human. It's a place where people can help each other find what they're looking for without all the frustration.
             </p>
           </div>
 
