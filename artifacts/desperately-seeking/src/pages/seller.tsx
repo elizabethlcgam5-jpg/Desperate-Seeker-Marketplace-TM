@@ -122,30 +122,57 @@ export default function Seller() {
             </div>
           </section>
 
-          {/* Unlimited for $1.99 */}
+          {/* Unlimited plans */}
           <section>
-            <div className="bg-[#0B3954] rounded-2xl p-6 md:p-8">
-              <div className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-semibold mb-4">
-                Unlimited plan
+            <h2 className="font-serif text-2xl font-bold text-[#0B3954] mb-1.5">
+              Unlimited Selling Plans
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-[520px] mb-6">
+              After your first 2 active listings, unlock unlimited item posts with a simple, affordable plan.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Monthly */}
+              <div className="bg-[#0B3954] rounded-2xl p-6">
+                <div className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-semibold mb-4">
+                  Monthly
+                </div>
+                <div className="font-serif text-3xl font-bold text-white mb-1">$1.99<span className="text-white/50 text-base font-sans font-normal">/month</span></div>
+                <ul className="space-y-2 mt-4 mb-6">
+                  {["Unlimited item posts", "Respond to all buyer requests", "Full seller features"].map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm text-white/70">
+                      <Check className="h-3.5 w-3.5 text-[#D4AF37] shrink-0" strokeWidth={3} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => setLocation("/listings/new")}
+                  className="w-full rounded-full py-2.5 text-sm font-semibold bg-white/10 text-white border border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                >
+                  Get started
+                </button>
               </div>
-              <h2 className="font-serif text-2xl font-bold text-white mb-2">
-                Unlimited Selling for $1.99/Month
-              </h2>
-              <p className="text-white/60 text-sm leading-relaxed mb-4 max-w-[520px]">
-                After your first 2 active listings, you can unlock unlimited item posts with a
-                simple, affordable $1.99/month seller subscription.
-              </p>
-              <p className="text-white/45 text-sm leading-relaxed mb-6">
-                No tricks. No upsells. No complicated tiers.
-                <br />
-                Just unlimited selling for less than the price of a cup of coffee.
-              </p>
-              <button
-                onClick={() => setLocation("/listings/new")}
-                className="rounded-full px-7 py-2.5 text-sm font-semibold bg-[#D4AF37] text-[#0B3954] border-0 cursor-pointer hover:bg-[#c9a430] transition-colors"
-              >
-                Get started free
-              </button>
+              {/* Annual */}
+              <div className="bg-[#D4AF37] rounded-2xl p-6">
+                <div className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#0B3954]/15 text-[#0B3954] font-semibold mb-4">
+                  Save 60%
+                </div>
+                <div className="font-serif text-3xl font-bold text-[#0B3954] mb-1">$29.99<span className="text-[#0B3954]/50 text-base font-sans font-normal">/year</span></div>
+                <ul className="space-y-2 mt-4 mb-6">
+                  {["Unlimited item posts", "Respond to all buyer requests", "Full seller features"].map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm text-[#0B3954]/80">
+                      <Check className="h-3.5 w-3.5 text-[#0B3954] shrink-0" strokeWidth={3} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => setLocation("/listings/new")}
+                  className="w-full rounded-full py-2.5 text-sm font-semibold bg-[#0B3954] text-white border-0 cursor-pointer hover:bg-[#0a3247] transition-colors"
+                >
+                  Get started
+                </button>
+              </div>
             </div>
           </section>
 
