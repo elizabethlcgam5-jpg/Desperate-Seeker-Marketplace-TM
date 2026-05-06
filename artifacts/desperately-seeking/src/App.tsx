@@ -25,6 +25,7 @@ import Seller from "@/pages/seller";
 import NewListing from "@/pages/listings/new";
 import About from "@/pages/about";
 import FAQ from "@/pages/faq";
+import HowItWorks from "@/pages/how-it-works";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import Contact from "@/pages/contact";
@@ -62,6 +63,7 @@ function Router() {
       <Route path="/seller" component={Seller} />
       <Route path="/listings/new" component={NewListing} />
       <Route path="/about" component={About} />
+      <Route path="/how-it-works" component={HowItWorks} />
       <Route path="/faq" component={FAQ} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />

@@ -1,0 +1,129 @@
+<!-- HOW DESPERATELY SEEKING WORKS -->
+<h2>How Desperately Seeking Works</h2>
+<p>Desperately Seeking is built to save you time. Instead of scrolling through endless listings, you just post what you need — and sellers come to you. It’s simple, fast, and made for people who don’t want to waste their day searching.</p>
+
+<h3>1. Buyers Post What They Need</h3>
+<p>Tell the community exactly what you're looking for. Be specific so sellers know if they have it.</p>
+
+<h3>2. Sellers Respond With Matches</h3>
+<p>Sellers check your post and reply if they have the item. No more digging through old listings — the right items come straight to you.</p>
+
+<h3>3. Chat, Ask Questions, and Confirm</h3>
+<p>Buyers and sellers can message each other to confirm details, ask questions, or negotiate before buying.</p>
+
+<h3>4. Pay Inside the App</h3>
+<p>Once you're ready, the buyer pays through the app. This keeps everything safe and makes sure the sale is recorded.</p>
+
+<h3>5. Pick Up or Get It Shipped</h3>
+<p>You can meet locally, do a porch pickup, or have the seller ship the item. Whatever works best.</p>
+
+<h3>6. Sale Completed</h3>
+<p>After payment, the seller gets their payout and the buyer gets their item. Easy, clean, and no confusion.</p>
+
+<hr>
+
+<!-- SELLER RULES -->
+<h2>Seller Rules & Expectations on Desperately Seeking</h2>
+<p>Desperately Seeking is built to make selling simple. These quick guidelines help keep things smooth, safe, and fair for everyone using the app.</p>
+
+<h3>1. Only Respond If You Really Have the Item</h3>
+<p>Buyers post exactly what they need. Please only reply if you actually have the item and it matches what they’re asking for.</p>
+
+<h3>2. Be Honest About Condition</h3>
+<p>List the real condition — new, like new, good, fair, or needs work. No surprises when the buyer shows up.</p>
+
+<h3>3. Communicate Clearly</h3>
+<p>Answer questions, send photos if needed, and keep things simple. Good communication makes the sale faster.</p>
+
+<h3>4. Use In-App Payments</h3>
+<p>All sales should be completed inside the app. This protects both sides and makes sure the sale is recorded properly.</p>
+
+<h3>5. Be On Time for Meet-Ups</h3>
+<p>If you're doing a local pickup or meet-up, be reliable. Let the buyer know if you're running late or need to reschedule.</p>
+
+<h3>6. No Spam or Fake Listings</h3>
+<p>Only post real items you actually have. No scams, no fake posts, no misleading photos.</p>
+
+<h3>7. Respect the Buyer</h3>
+<p>Everyone’s here to save time. Be polite, be fair, and keep things simple.</p>
+
+<hr>
+
+<!-- BUYER RULES -->
+<h2>Buyer Rules & Expectations on Desperately Seeking</h2>
+<p>Desperately Seeking is all about saving time. These quick guidelines help keep things smooth, safe, and easy for everyone using the app.</p>
+
+<h3>1. Post What You Really Need</h3>
+<p>Be clear about what you're looking for. The more details you give, the faster sellers can match you with the right item.</p>
+
+<h3>2. Respond to Sellers</h3>
+<p>If a seller reaches out with something that fits your request, reply back. Even a quick “No thanks” helps keep things moving.</p>
+
+<h3>3. Ask Questions Before You Buy</h3>
+<p>Need more photos? Want to confirm the condition? Ask before paying so there are no surprises later.</p>
+
+<h3>4. Pay Inside the App</h3>
+<p>Always complete your payment through the app. It keeps the transaction safe and makes sure everything is recorded properly.</p>
+
+<h3>5. Be On Time for Pickups</h3>
+<p>If you're meeting a seller or doing a porch pickup, be reliable. Let them know if you're running late or need to change the time.</p>
+
+<h3>6. No Lowballing or Harassment</h3>
+<p>Negotiate respectfully. No rude messages, no pressure, no disrespect. Everyone’s here to save time, not deal with drama.</p>
+
+<h3>7. Confirm the Sale When You Get the Item</h3>
+<p>Once you’ve picked up or received your item, mark the sale as completed so the seller gets their payout.</p>
+
+<hr>
+
+<!-- WHY DESPERATELY SEEKING IS DIFFERENT -->
+<h2>Why Desperately Seeking Is Different</h2>
+<p>Desperately Seeking isn’t just another marketplace. It’s built for people who are tired of wasting time scrolling, searching, and dealing with dead-end listings. Here’s what makes us different.</p>
+
+<h3>1. Buyers Don’t Search — They Post</h3>
+<p>Instead of digging through thousands of listings, buyers simply post what they need. Sellers come to them. It’s faster, cleaner, and way less stressful.</p>
+
+<h3>2. Sellers Only Respond If They Have It</h3>
+<p>No random listings. No guessing. Sellers reply only when they actually have the item the buyer wants. It cuts out all the noise.</p>
+
+<h3>3. No Endless Scrolling</h3>
+<p>Other marketplaces make you scroll forever. Desperately Seeking flips the script — the right items find you.</p>
+
+<h3>4. Simple, Safe Payments</h3>
+<p>All payments go through the app. No cash, no Zelle, no “meet me at the ATM.” It keeps things safe and makes every sale trackable.</p>
+
+<h3>5. Local or Shipped — Your Choice</h3>
+<p>Meet up, porch pickup, or shipping. Whatever works best for you. The app supports all of it.</p>
+
+<h3>6. Built Around Real-Life Complaints</h3>
+<p>We listened to what people hate about other marketplaces — scams, ghosting, endless scrolling, no-shows — and built something better.</p>
+
+<h3>7. Designed to Save Time</h3>
+<p>Everything about Desperately Seeking is made to be quick, simple, and easy. No drama. No confusion. Just results.</p>
+
+<hr>
+
+<!-- LOCAL PICKUP SAFETY TIPS -->
+<h2>Local Pickup Safety Tips on Desperately Seeking</h2>
+<p>Most people on Desperately Seeking are just regular buyers and sellers trying to save time. Still, it’s always smart to stay safe when meeting someone in person. Here are a few simple tips to keep things smooth and stress-free.</p>
+
+<h3>1. Meet in a Public Place</h3>
+<p>Choose a well-lit, busy location like a store parking lot, coffee shop, or police station safe zone. Avoid private homes unless you're doing a porch pickup.</p>
+
+<h3>2. Bring Someone With You</h3>
+<p>If possible, take a friend or family member along. Extra eyes always help.</p>
+
+<h3>3. Keep Communication Inside the App</h3>
+<p>Use the in-app chat so everything stays documented. Avoid giving out your phone number unless you’re comfortable.</p>
+
+<h3>4. Inspect the Item Before You Confirm</h3>
+<p>Check the item in person before marking the sale as completed. Make sure it matches the description and condition.</p>
+
+<h3>5. Don’t Carry Large Amounts of Cash</h3>
+<p>Payments should be done inside the app. No cash needed, no awkward exchanges.</p>
+
+<h3>6. Trust Your Gut</h3>
+<p>If something feels off, cancel the meetup. Your safety comes first, always.</p>
+
+<h3>7. Porch Pickup? Keep It Simple</h3>
+<p>For porch pickups, leave the item in a visible spot and confirm payment through the app. No need for face-to-face if you don’t want it.</p>

@@ -20,6 +20,7 @@ export function Layout({ children }: { children: ReactNode }) {
             </div>
             <nav className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
               <Link href="/about" className="hover:text-white transition-colors">About</Link>
+              <Link href="/how-it-works" className="hover:text-white transition-colors">How It Works</Link>
               <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
               <Link href="/faq" className="hover:text-white transition-colors">FAQ</Link>
               <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
