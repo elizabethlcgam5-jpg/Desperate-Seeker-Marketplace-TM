@@ -226,7 +226,7 @@ export default function NewRequest() {
           {/* Photo upload zone */}
           <div className="mb-6">
             <p className="text-xs font-semibold text-[#0B3954] mb-0.5">Upload a photo</p>
-            <p className="text-[11px] text-[#0B3954]/50 mb-2">AI will identify the item and auto-fill the description for you.</p>
+            <p className="text-[11px] text-[#0B3954]/50 mb-2">Add a picture to help sellers understand what you're looking for.</p>
             <div
               onClick={() => fileInputRef.current?.click()}
               className={`rounded-2xl border-2 border-dashed cursor-pointer transition-all flex flex-col items-center justify-center text-center p-6 ${
@@ -267,7 +267,7 @@ export default function NewRequest() {
                 <div className="flex flex-col items-center gap-1.5 text-[#0B3954]/35">
                   <Camera className="h-8 w-8" />
                   <span className="text-xs font-medium text-[#0B3954]/50">Tap to upload a photo</span>
-                  <span className="text-[11px] text-[#0B3954]/35">AI will identify what you're looking for</span>
+                  <span className="text-[11px] text-[#0B3954]/35">Choose a photo from your device.</span>
                 </div>
               )}
             </div>
