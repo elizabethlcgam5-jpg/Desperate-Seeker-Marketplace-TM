@@ -206,7 +206,7 @@ export default function NewRequest() {
             Write a Wanted Ad
           </h1>
           <p className="text-muted-foreground text-base max-w-md mx-auto">
-            Describe what you're looking for in plain language. Sellers will come to you with their best offers.
+            Describe what you need. Desperately Seeking will help match you with sellers. Add a few keywords to make your request easier to find.
           </p>
         </div>
 
