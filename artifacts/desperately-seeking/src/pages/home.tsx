@@ -205,7 +205,7 @@ export default function Home() {
             <div className="rounded-2xl border border-border/60 p-6 text-center">
               <p className="font-serif text-xl font-semibold text-[#0B3954] mb-2">Free</p>
               <p className="text-3xl font-bold font-serif text-[#0B3954] mb-1">$0</p>
-              <p className="text-sm text-muted-foreground mb-4">Forever</p>
+              <p className="text-sm text-muted-foreground mb-4"></p>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Post requests, browse listings, view responses.
               </p>
