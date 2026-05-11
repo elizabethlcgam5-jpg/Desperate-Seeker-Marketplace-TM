@@ -9,40 +9,64 @@ import {
 
 const FAQ_ITEMS = [
   {
-    q: "Do any major marketplaces charge only 5%?",
-    a: "No. Most platforms charge between 10% and 20%, plus additional fees like shipping fees, boosts, ads, or subscriptions. Desperately Seeking is one of the only marketplaces offering a simple 5% on all sales, with no extra charges.",
-  },
-  {
-    q: "Why don't you charge shipping fees?",
-    a: "Because shipping fees frustrate people. We want selling to feel simple, fair, and predictable — so buyers pay the shipping cost directly, and sellers never get hit with extra charges.",
-  },
-  {
-    q: "Are there any hidden fees?",
-    a: "No. We don't charge for listings, bumps, or ads. Just 5% when your item sells.",
-  },
-  {
-    q: "Why is your fee lower than other platforms?",
-    a: "Because we're built for real people, not corporations. We keep our costs low so you can keep more of your money.",
-  },
-  {
-    q: "Is it OK to say you're different from other platforms without naming them?",
-    a: "Yes. Customers already know other apps charge shipping fees and extra costs. We don't need to name them — we simply explain what we do differently.",
-  },
-  {
     q: "What is Desperately Seeking?",
-    a: "A buyer-first marketplace where buyers post what they need and sellers respond with offers.",
+    a: "A simple, buyer-first marketplace where you post what you need, and sellers come to you.",
   },
   {
-    q: "How do I post a request as a buyer?",
-    a: 'Tap "Post What You Need," describe the item, add photos (optional).',
+    q: "How does it work?",
+    a: "You post what you're looking for. Sellers nearby see your request and respond if they have it.",
   },
   {
-    q: "Do I need an account?",
-    a: "Yes. A simple email sign-in helps you track your listings, messages, and offers.",
+    q: "Is it free to use?",
+    a: "Yes. Browsing and posting requests are always free for buyers.",
+  },
+  {
+    q: "How much does it cost to sell?",
+    a: "Sellers can post two items for free. After that, you can choose a monthly or yearly plan if you want to keep selling.",
+  },
+  {
+    q: "Is 5% really the only fee?",
+    a: "Yes. Most marketplaces charge 10–20% plus extra fees. We keep it simple with one small 5% fee on completed sales — no surprises.",
+  },
+  {
+    q: "Why do sellers pay a subscription after two items?",
+    a: "It keeps the platform clean, reduces spam, and makes sure real sellers get real buyers.",
+  },
+  {
+    q: "Do buyers pay anything?",
+    a: "No. Buyers only pay for the items they choose to buy.",
+  },
+  {
+    q: "How do I post what I need?",
+    a: "Tap Post What You Need, add a photo or description, and you're done.",
+  },
+  {
+    q: "How do I start selling?",
+    a: "Tap Start Selling, upload your item, and post it. Your first two listings are free.",
+  },
+  {
+    q: "What is InstantMatch?",
+    a: "InstantMatch notifies buyers the moment you post an item that matches their request. You can turn it on or off anytime.",
+  },
+  {
+    q: "Do I have to meet in person?",
+    a: "Most people choose local pickup, but you can arrange whatever works best for both sides.",
   },
   {
     q: "Is Desperately Seeking safe?",
-    a: "We use secure messaging, email verification, and community guidelines to keep buyers and sellers safe.",
+    a: "Yes. We encourage meeting in public places, checking profiles, and trusting your instincts.",
+  },
+  {
+    q: "Can I delete my posts?",
+    a: "Yes. You can remove any request or item at any time from your profile.",
+  },
+  {
+    q: "What if I can't find what I need?",
+    a: "Post a request — sellers will come to you.",
+  },
+  {
+    q: "What if I don't get any responses?",
+    a: "Try adding a photo or more details. Sometimes sellers need a little more info.",
   },
 ];
 
