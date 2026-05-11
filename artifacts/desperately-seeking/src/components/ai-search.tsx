@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getApiUrl } from "@/lib/api";
 import { Link } from "wouter";
-import { Sparkles, Search, Tag, ShoppingBag, X, ArrowRight, MapPin } from "lucide-react";
+import { Search, Tag, ShoppingBag, X, ArrowRight, MapPin } from "lucide-react";
 
 interface SearchResult {
   interpretation: string;
@@ -102,13 +102,13 @@ export function AISearch() {
       {/* Search input */}
       <div className="relative">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
-          <Sparkles className="h-4 w-4 text-[#D4AF37]" />
+          <Search className="h-4 w-4 text-[#D4AF37]" />
         </div>
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => results && setOpen(true)}
-          placeholder="AI search — try 'vintage sofa near 90210' or 'camera under $200'..."
+          placeholder="Search — try 'vintage sofa near 90210' or 'camera under $200'..."
           className="pl-10 pr-10 h-12 rounded-2xl border-[#D4AF37]/40 bg-white/10 text-white placeholder:text-white/40 focus:bg-white/15 focus:border-[#D4AF37] text-sm"
         />
         {query && (
@@ -127,8 +127,8 @@ export function AISearch() {
           {loading ? (
             <div className="p-4 space-y-3">
               <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                <Sparkles className="h-3.5 w-3.5 text-[#D4AF37] animate-pulse" />
-                AI is searching...
+                <Search className="h-3.5 w-3.5 text-[#D4AF37] animate-pulse" />
+                Searching...
               </div>
               <Skeleton className="h-8 w-full rounded-xl" />
               <Skeleton className="h-8 w-3/4 rounded-xl" />
@@ -145,7 +145,7 @@ export function AISearch() {
               {/* AI interpretation */}
               {results?.interpretation && (
                 <div className="px-4 py-3 flex items-start gap-2 bg-[#FDF5E6]/60">
-                  <Sparkles className="h-3.5 w-3.5 text-[#D4AF37] mt-0.5 shrink-0" />
+                  <Search className="h-3.5 w-3.5 text-[#D4AF37] mt-0.5 shrink-0" />
                   <p className="text-xs text-[#0B3954]/70 italic">{results.interpretation}</p>
                 </div>
               )}
