@@ -115,6 +115,18 @@ export default function Home() {
               </Button>
             </Link>
           </div>
+          <div className="mt-4">
+            <Link href="/seller">
+              <div className="inline-flex flex-col items-center gap-0.5 group cursor-pointer">
+                <span className="text-white font-semibold text-sm group-hover:text-[#D4AF37] transition-colors">
+                  Start Selling
+                </span>
+                <span className="text-white/45 text-xs">
+                  Post your first 2 items for free.
+                </span>
+              </div>
+            </Link>
+          </div>
 
           {/* Stats bar */}
           {stats && (
