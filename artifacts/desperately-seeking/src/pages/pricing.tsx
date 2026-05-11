@@ -46,14 +46,10 @@ export default function Pricing() {
             </div>
             <h2 className="font-serif text-2xl font-semibold text-[#0B3954] mb-2">Start Free</h2>
             <p className="text-[#0B3954]/70 text-sm leading-relaxed mb-1">
-              Every seller begins with <strong className="text-[#0B3954]">2 free item listings.</strong>
-            </p>
-            <p className="text-[#0B3954]/60 text-sm leading-relaxed mb-5">
-              No subscription required. No commitment.
+              Browse for free.
             </p>
             <p className="text-[#0B3954]/65 text-sm leading-relaxed">
-              This lets you try the platform, upload your items, and connect with buyers before
-              deciding if you want to continue.
+              Sellers can post one or two items for free, or choose a plan that works.
             </p>
           </div>
 
