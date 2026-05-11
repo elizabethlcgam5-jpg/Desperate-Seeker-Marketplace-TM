@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout";
 import { useLocation } from "wouter";
-import { Check, X, Upload, MessageSquare, CheckCircle, DollarSign } from "lucide-react";
+import { Check, X, Upload, MessageSquare, CheckCircle } from "lucide-react";
 
 const OTHER_PLATFORMS = [
   "Complicated fees",
@@ -45,12 +45,6 @@ const HOW_IT_WORKS = [
     Icon: CheckCircle,
     title: "Complete the sale",
     text: "Local or shipped — whatever works for you.",
-  },
-  {
-    n: "4",
-    Icon: DollarSign,
-    title: "Get paid",
-    text: "You keep the majority of every sale.",
   },
 ];
 
