@@ -23,9 +23,6 @@ export default function Pricing() {
             Honest pricing.{" "}
             <span className="italic text-[#D4AF37]">No surprises.</span>
           </h1>
-          <p className="text-white/70 text-lg max-w-[540px]">
-            At Desperately Seeking, we keep pricing simple and easy to understand. No bumps, no ads, no hidden fees.
-          </p>
         </div>
       </section>
 
