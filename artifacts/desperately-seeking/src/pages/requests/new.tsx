@@ -604,7 +604,7 @@ export default function NewRequest() {
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                          Get notified the moment a seller lists something that matches this request. AI-generated keywords make matching smarter.
+                          Get notified the moment a seller posts something that matches this request. Smart keywords help make matching more accurate.
                         </p>
                       </div>
                     </div>
@@ -637,8 +637,7 @@ export default function NewRequest() {
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                          Only subscribed sellers can see this request. Your name and
-                          contact details stay hidden from non-subscribers.
+                          Only sellers who are eligible to respond can see this request. Your name and contact details stay hidden until you choose to share them.
                         </p>
                       </div>
                     </div>
