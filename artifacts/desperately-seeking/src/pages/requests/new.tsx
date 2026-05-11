@@ -645,6 +645,28 @@ export default function NewRequest() {
                 )}
               />
 
+              {/* Messaging & Notifications */}
+              <div className="rounded-xl border border-[#0B3954]/15 bg-[#0B3954]/4 p-4 space-y-3">
+                <div>
+                  <p className="text-sm font-semibold text-[#0B3954]">Messaging &amp; Notifications</p>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    Choose how you want to be contacted. You can receive messages inside the app, email alerts, or both. Make sure you're signed in so your messages and notifications reach you.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#0B3954]">Matching sellers are notified instantly</p>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    Sellers get alerts the moment you post a request. Make sure you're signed in so you can receive messages and choose email or app notifications.
+                  </p>
+                </div>
+                <div className="flex items-start gap-2 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/30 p-3">
+                  <Lock className="h-4 w-4 text-[#D4AF37] mt-0.5 shrink-0" />
+                  <p className="text-xs text-[#6b530f] leading-relaxed">
+                    <span className="font-semibold">Sign-in required —</span> Please sign in before posting so you can receive messages and notifications.
+                  </p>
+                </div>
+              </div>
+
               <div className="pt-4 border-t border-[#0B3954]/10 flex justify-end gap-3">
                 <Button
                   type="button"
