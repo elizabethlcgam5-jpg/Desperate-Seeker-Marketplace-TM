@@ -1,5 +1,5 @@
 import { Layout } from "@/components/layout";
-import { Check, X } from "lucide-react";
+import { Check } from "lucide-react";
 import { useLocation } from "wouter";
 
 const SUBSCRIPTION_FEATURES = [
@@ -8,13 +8,6 @@ const SUBSCRIPTION_FEATURES = [
   "Full seller features",
 ];
 
-const HOW_DIFFERENT = [
-  "No listing fees",
-  "No shipping fees",
-  "No boosts or bumps",
-  "No ads",
-  "No hidden charges",
-];
 
 export default function Pricing() {
   const [_, setLocation] = useLocation();
@@ -103,27 +96,6 @@ export default function Pricing() {
             </div>
 
             <p className="text-sm font-semibold text-[#0B3954]">That's it. No surprises.</p>
-          </div>
-
-          {/* How We're Different */}
-          <div className="bg-[#0B3954] rounded-2xl p-6 md:p-8">
-            <h2 className="font-serif text-2xl font-semibold text-white mb-2">How We're Different</h2>
-            <p className="text-white/60 text-sm leading-relaxed mb-6">
-              Most marketplaces stack multiple fees on sellers —
-              shipping fees, boosted listings, ads, subscriptions, and high percentage cuts.
-              <br /><br />
-              We don't do that.
-            </p>
-            <ul className="space-y-3">
-              {HOW_DIFFERENT.map((item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-white/80">
-                  <span className="h-5 w-5 rounded-full bg-white/10 flex items-center justify-center shrink-0">
-                    <X className="h-3 w-3 text-red-400" strokeWidth={3} />
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* CTA */}
