@@ -98,12 +98,12 @@ export default function BuyerRequests() {
           {!isSeller && (
             <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-4 py-2 text-sm text-[#D4AF37]">
               <Lock className="h-4 w-4" />
-              Free sellers can view requests but cannot respond.{" "}
+              You can respond while your first two free items are active.{" "}
               <button
                 onClick={() => setPaywallOpen(true)}
                 className="underline underline-offset-2 font-semibold hover:text-[#c9a430]"
               >
-                Upgrade to respond
+                Upgrade anytime to unlock unlimited selling.
               </button>
             </div>
           )}
