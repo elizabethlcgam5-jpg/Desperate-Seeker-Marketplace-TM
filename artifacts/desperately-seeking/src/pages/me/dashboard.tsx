@@ -509,6 +509,35 @@ export default function SellerDashboard() {
             </div>
           )}
         </section>
+
+        {/* Manage Subscription */}
+        <section className="mb-10">
+          <div className="rounded-2xl border border-border/60 bg-white p-6 shadow-sm">
+            <h2 className="font-serif text-lg font-semibold text-[#0B3954] mb-1">Manage Subscription</h2>
+            <p className="text-sm text-muted-foreground mb-5">
+              Update your billing details, switch plans, or cancel your subscription anytime — no questions asked.
+            </p>
+            <Button
+              variant="outline"
+              className="rounded-full border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 text-sm"
+              onClick={async () => {
+                try {
+                  const res = await fetch(getApiUrl("stripe/portal"), {
+                    method: "POST",
+                    credentials: "include",
+                  });
+                  const data = await res.json();
+                  if (data.url) window.location.href = data.url;
+                  else toast.error("Could not open billing portal. Please try again.");
+                } catch {
+                  toast.error("Something went wrong. Please try again.");
+                }
+              }}
+            >
+              Cancel Subscription
+            </Button>
+          </div>
+        </section>
       </div>
     </Layout>
   );

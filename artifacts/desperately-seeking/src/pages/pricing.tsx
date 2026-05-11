@@ -137,6 +137,9 @@ export default function Pricing() {
             <p className="mt-3 text-xs text-muted-foreground">
               Payments processed securely by Stripe. Your card details never touch our servers.
             </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              You can cancel your subscription anytime in your account settings.
+            </p>
           </div>
 
         </div>
