@@ -324,9 +324,14 @@ export default function Home() {
                     <Link key={req.id} href={`/requests/${req.id}`}>
                       <div className="bg-white rounded-2xl border border-border/60 p-5 hover:border-[#D4AF37] hover:shadow-sm transition-all cursor-pointer">
                         <div className="flex items-start justify-between gap-2 mb-2">
-                          <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#0B3954]/8 text-[#0B3954]">
-                            {req.category}
-                          </span>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#0B3954] text-white">
+                              Looking For
+                            </span>
+                            <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#0B3954]/8 text-[#0B3954]">
+                              {req.category}
+                            </span>
+                          </div>
                           {req.maxBudget && (
                             <span className="text-[#D4AF37] font-bold font-serif text-sm shrink-0">
                               ${req.maxBudget}

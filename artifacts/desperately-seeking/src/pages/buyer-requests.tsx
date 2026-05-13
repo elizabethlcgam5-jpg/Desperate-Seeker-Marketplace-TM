@@ -179,6 +179,9 @@ export default function BuyerRequests() {
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <Badge className="text-[10px] font-semibold bg-[#0B3954] text-white border-0 rounded-full px-2.5">
+                        Looking For
+                      </Badge>
                       <Badge
                         variant="outline"
                         className="text-xs capitalize bg-background"

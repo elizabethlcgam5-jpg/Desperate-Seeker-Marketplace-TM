@@ -279,7 +279,7 @@ export default function RequestDetail() {
                 <p className="text-sm font-medium group-hover:text-primary transition-colors">
                   {request.buyer.name}
                 </p>
-                <p className="text-xs text-muted-foreground">Buyer</p>
+                <p className="text-xs text-muted-foreground">Looking For</p>
               </div>
             </Link>
 

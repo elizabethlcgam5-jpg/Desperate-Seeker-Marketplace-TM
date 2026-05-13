@@ -87,6 +87,14 @@ function ListingCard({
         </div>
       )}
       <div className="p-4 flex flex-col flex-1">
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#0B3954]">
+            For Sale
+          </span>
+          <Badge variant="outline" className="text-[10px] border-[#0B3954]/15 text-[#0B3954] rounded-full capitalize">
+            {listing.category}
+          </Badge>
+        </div>
         <div className="flex items-start justify-between gap-2 mb-1">
           <h3 className="font-serif font-semibold text-[#0B3954] leading-snug line-clamp-2">
             {listing.title}
