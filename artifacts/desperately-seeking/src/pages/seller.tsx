@@ -176,7 +176,7 @@ export default function Seller() {
               Why Sellers Love It Here
             </h2>
             <p className="text-sm text-muted-foreground max-w-[520px] mb-6">
-              We designed this marketplace around what sellers complain about on other platforms.
+              We built Desperately Seeking around the things sellers are tired of dealing with on other platforms.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
