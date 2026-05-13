@@ -113,9 +113,13 @@ export default function RequestDetail() {
           form.reset();
           queryClient.invalidateQueries();
         },
-        onError: (err) => {
-          toast.error("Failed to send offer.");
-          console.error(err);
+        onError: (err: any) => {
+          if (err?.data?.error === "free_limit_reached") {
+            setIsResponseDialogOpen(false);
+            setPaywallOpen(true);
+          } else {
+            toast.error("Failed to send offer.");
+          }
         },
       }
     );

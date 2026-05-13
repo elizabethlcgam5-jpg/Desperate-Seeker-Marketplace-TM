@@ -146,7 +146,7 @@ export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) 
               <X className="h-4 w-4 mt-0.5 shrink-0" />
               <span>
                 <strong className="text-foreground">Free plan:</strong>{" "}
-                Post items, view requests, browse marketplace. Cannot respond or message buyers.
+                Post items, view requests, browse the marketplace. Respond to up to two buyers for free.
               </span>
             </div>
           </div>
