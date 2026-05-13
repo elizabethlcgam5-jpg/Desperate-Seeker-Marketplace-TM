@@ -104,6 +104,7 @@ export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) 
             >
               {loading === "monthly" ? "Redirecting…" : "Get Premium"}
             </Button>
+            <p className="text-center text-[10px] text-white/50 mt-2">Cancel anytime. No questions asked.</p>
           </div>
 
           {/* Annual */}
@@ -134,6 +135,7 @@ export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) 
             >
               {loading === "annual" ? "Redirecting…" : "Get Premium Yearly"}
             </Button>
+            <p className="text-center text-[10px] text-muted-foreground mt-2">Cancel anytime. No questions asked.</p>
           </div>
         </div>
 
