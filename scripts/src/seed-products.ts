@@ -11,25 +11,17 @@ import { getUncachableStripeClient } from "./stripeClient";
 
 const PLANS = [
   {
-    name: "Seller Basic (Monthly)",
-    description: "Access leads + respond to requests. Billed monthly.",
+    name: "Premium Monthly",
+    description: "Respond to buyer requests, full messaging, match alerts. Billed monthly.",
     tier: "seller_basic",
-    unitAmount: 499,
+    unitAmount: 199,
     interval: "month" as const,
   },
   {
-    name: "Seller Pro (6-Month)",
-    description: "Everything in Basic, priority placement. Billed every 6 months.",
-    tier: "seller_pro",
-    unitAmount: 1299,
-    interval: "month" as const,
-    intervalCount: 6,
-  },
-  {
-    name: "Seller Annual",
-    description: "Best value. Full access, billed annually.",
+    name: "Premium Annual",
+    description: "Everything in Premium, billed annually. Best value.",
     tier: "seller_annual",
-    unitAmount: 1999,
+    unitAmount: 2999,
     interval: "year" as const,
   },
 ];
