@@ -57,6 +57,18 @@ const FAQ_ITEMS = [
     a: "Yes. We encourage meeting in public places, checking profiles, and trusting your instincts.",
   },
   {
+    q: "Why should I pay through the app instead of cash?",
+    a: "Paying through the app creates a digital receipt, timestamps, and a verified payment trail for both sides. It also lets us step in if something goes wrong. Cash sales are allowed but aren't covered by our in-app protections.",
+  },
+  {
+    q: "Are cash sales allowed?",
+    a: "Yes. Buyers and sellers can use cash for local or porch pickups if they prefer. Just know that cash transactions happen outside the app, so we can't verify the exchange or help resolve payment-related issues.",
+  },
+  {
+    q: "Should I mark a cash sale as sold in the app?",
+    a: "Yes. Marking an item as sold keeps your listings organized and your account accurate, even if the payment was made in person.",
+  },
+  {
     q: "Can I delete my posts?",
     a: "Yes. You can remove any request or item at any time from your profile.",
   },

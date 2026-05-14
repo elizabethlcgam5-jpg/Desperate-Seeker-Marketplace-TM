@@ -6,6 +6,7 @@ import {
   Users,
   Star,
   MapPin,
+  CreditCard,
   ArrowRight,
 } from "lucide-react";
 
@@ -44,6 +45,13 @@ const SECTIONS = [
     label: "Local Pickup Safety Tips",
     desc: "Simple, practical tips for staying safe when meeting buyers or sellers in person.",
     color: "bg-rose-50",
+  },
+  {
+    href: "/help/safety-payments",
+    icon: CreditCard,
+    label: "Safety & Payments",
+    desc: "How payments work, what protections apply, and what to know about cash sales.",
+    color: "bg-amber-50",
   },
 ];
 
