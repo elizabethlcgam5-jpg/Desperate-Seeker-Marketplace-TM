@@ -7,7 +7,7 @@ const RULES = [
   { title: "Post What You Really Need", body: "Be clear about what you're looking for. The more details you give, the faster sellers can match you with the right item." },
   { title: "Respond to Sellers", body: "If a seller reaches out with something that fits your request, reply back. Even a quick 'No thanks' helps keep things moving." },
   { title: "Ask Questions Before You Buy", body: "Need more photos? Want to confirm the condition? Ask before paying so there are no surprises later." },
-  { title: "Pay Inside the App", body: "Always complete your payment through the app. It keeps the transaction safe and makes sure everything is recorded properly." },
+  { title: "Pay Inside the App", body: "Once you're ready, the buyer pays through the app. This keeps everything safe and ensures the payment is recorded." },
   { title: "Be On Time for Pickups", body: "If you're meeting a seller or doing a porch pickup, be reliable. Let them know if you're running late or need to change the time." },
   { title: "No Lowballing or Harassment", body: "Negotiate respectfully. No rude messages, no pressure, no disrespect. Everyone's here to save time, not deal with drama." },
   { title: "Confirm the Sale When You Get the Item", body: "Once you've picked up or received your item, mark the sale as completed so the seller gets their payout." },

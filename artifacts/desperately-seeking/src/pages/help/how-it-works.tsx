@@ -7,7 +7,7 @@ const STEPS = [
   { icon: FileText, title: "Buyers Post What They Need", body: "Tell the community exactly what you're looking for. Be specific so sellers know if they have it." },
   { icon: Users, title: "Sellers Respond With Matches", body: "Sellers check your post and reply if they have the item. No more digging through old listings — the right items come straight to you." },
   { icon: MessageSquare, title: "Chat, Ask Questions, and Confirm", body: "Buyers and sellers can message each other to confirm details, ask questions, or negotiate before buying." },
-  { icon: CreditCard, title: "Pay Inside the App", body: "Once you're ready, the buyer pays through the app. This keeps everything safe and makes sure the sale is recorded." },
+  { icon: CreditCard, title: "Pay Inside the App", body: "Once you're ready, the buyer pays through the app. This keeps everything safe and ensures the payment is recorded." },
   { icon: Package, title: "Pick Up or Get It Shipped", body: "You can meet locally, do a porch pickup, or have the seller ship the item. Whatever works best." },
   { icon: CheckCircle2, title: "Sale Completed", body: "After payment, the seller gets their payout and the buyer gets their item. Easy, clean, and no confusion." },
 ];

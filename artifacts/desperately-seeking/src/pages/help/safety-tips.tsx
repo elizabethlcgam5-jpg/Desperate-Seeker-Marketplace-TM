@@ -10,7 +10,7 @@ const TIPS = [
   { icon: ShieldCheck, title: "Inspect the Item Before You Confirm", body: "Check the item in person before marking the sale as completed. Make sure it matches the description and condition." },
   { icon: CreditCard, title: "Don't Carry Large Amounts of Cash", body: "Payments should be done inside the app. No cash needed, no awkward exchanges." },
   { icon: AlertTriangle, title: "Trust Your Gut", body: "If something feels off, cancel the meetup. Your safety comes first, always." },
-  { icon: Package, title: "Porch Pickup? Keep It Simple", body: "For porch pickups, leave the item in a visible spot and confirm payment through the app. No need for face-to-face if you don't want it." },
+  { icon: Package, title: "Porch Pickup", body: "For porch pickups, leave the item in a visible spot and confirm payment through the app. No need for face-to-face contact unless you want to." },
 ];
 
 export default function HelpSafetyTips() {
@@ -24,7 +24,7 @@ export default function HelpSafetyTips() {
           <span className="block text-xs font-semibold uppercase tracking-widest text-[#D4AF37] mb-3">Stay Safe</span>
           <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Local Pickup Safety Tips</h1>
           <p className="text-white/70 text-lg leading-relaxed max-w-2xl">
-            Most people on Desperately Seeking are just regular buyers and sellers trying to save time. Still, it's always smart to stay safe when meeting someone in person. Here are a few simple tips to keep things smooth and stress-free.
+            Simple, practical tips for staying safe when meeting buyers or sellers in person.
           </p>
         </div>
       </section>

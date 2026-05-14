@@ -35,7 +35,7 @@ const HOW_IT_WORKS = [
   {
     icon: CreditCard,
     title: "Pay Inside the App",
-    body: "Once you're ready, the buyer pays through the app. This keeps everything safe and makes sure the sale is recorded.",
+    body: "Once you're ready, the buyer pays through the app. This keeps everything safe and ensures the payment is recorded.",
   },
   {
     icon: Package,
@@ -63,7 +63,7 @@ const BUYER_RULES = [
   { title: "Post What You Really Need", body: "Be clear about what you're looking for. The more details you give, the faster sellers can match you with the right item." },
   { title: "Respond to Sellers", body: "If a seller reaches out with something that fits your request, reply back. Even a quick 'No thanks' helps keep things moving." },
   { title: "Ask Questions Before You Buy", body: "Need more photos? Want to confirm the condition? Ask before paying so there are no surprises later." },
-  { title: "Pay Inside the App", body: "Always complete your payment through the app. It keeps the transaction safe and makes sure everything is recorded properly." },
+  { title: "Pay Inside the App", body: "Once you're ready, the buyer pays through the app. This keeps everything safe and ensures the payment is recorded." },
   { title: "Be On Time for Pickups", body: "If you're meeting a seller or doing a porch pickup, be reliable. Let them know if you're running late or need to change the time." },
   { title: "No Lowballing or Harassment", body: "Negotiate respectfully. No rude messages, no pressure, no disrespect. Everyone's here to save time, not deal with drama." },
   { title: "Confirm the Sale When You Get the Item", body: "Once you've picked up or received your item, mark the sale as completed so the seller gets their payout." },
@@ -86,7 +86,7 @@ const SAFETY_TIPS = [
   { icon: ShieldCheck, title: "Inspect the Item Before You Confirm", body: "Check the item in person before marking the sale as completed. Make sure it matches the description and condition." },
   { icon: CreditCard, title: "Don't Carry Large Amounts of Cash", body: "Payments should be done inside the app. No cash needed, no awkward exchanges." },
   { icon: AlertTriangle, title: "Trust Your Gut", body: "If something feels off, cancel the meetup. Your safety comes first, always." },
-  { icon: Package, title: "Porch Pickup? Keep It Simple", body: "For porch pickups, leave the item in a visible spot and confirm payment through the app. No need for face-to-face if you don't want it." },
+  { icon: Package, title: "Porch Pickup", body: "For porch pickups, leave the item in a visible spot and confirm payment through the app. No need for face-to-face contact unless you want to." },
 ];
 
 function SectionHeader({ label, title }: { label: string; title: string }) {
