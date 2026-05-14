@@ -18,7 +18,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Is it free to use?",
-    a: "Yes. Browsing and posting requests are always free for buyers.",
+    a: "Yes. Browsing the marketplace is always free for both buyers and sellers. If you want to message someone, post an item, or respond to a request, you'll need to create a free account so your conversations and sales can be saved to your profile.",
   },
   {
     q: "How much does it cost to sell?",
