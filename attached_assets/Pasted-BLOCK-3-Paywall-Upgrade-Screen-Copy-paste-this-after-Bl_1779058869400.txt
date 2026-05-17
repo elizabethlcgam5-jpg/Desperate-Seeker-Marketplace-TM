@@ -1,0 +1,182 @@
+BLOCK 3 — Paywall / Upgrade Screen — Copy & paste this after Block 2 is confirmed:
+
+"Please build the Paywall screen that appears when a user tries to list more items than their free limit allows. Use this exact copy:
+
+Headline: You've reached your free listing limit.
+Subheadline: Upgrade to keep selling without limits.
+Body: Subscribers can list as many items as they want — plus get a Seller badge, priority support, and more.
+
+Show two plan options:
+Monthly: $1.99/month — Button: Start for $1.99/month
+Yearly: $14.99/year — Badge: Best Value – Save 37% 🎉 — Button: Get the Best Deal – $14.99/year
+
+Also add a dismiss link that says: Maybe Later
+And a restore link that says: Restore Purchase
+Footer text: Cancel anytime. Billed through your app store.
+
+Please confirm when the Paywall screen is built."
+
+BLOCK 4 — Chat Safety Options — Copy & paste after Block 3 is confirmed:
+
+"Please add a Safety Options menu inside the chat screen, accessible by tapping the three dots (...) or a flag icon. It should contain three options:
+
+Option 1 — Report User: Description: Something feel off? Let us know and we'll look into it right away. Confirmation prompt: Are you sure you want to report this user? Our team will review this report confidentially. Confirm button: Yes, Report. Cancel button: Never Mind.
+
+Option 2 — Block User: Description: Block this person to stop receiving messages from them. Confirmation prompt: Block this user? They won't be able to contact you or see your listings. Confirm button: Yes, Block. Cancel button: Cancel.
+
+Option 3 — Flag This Listing: Description: Think this listing breaks the rules? Flag it and we'll review it. Confirmation prompt: Flag this listing for review? We'll look into it and take action if needed. Confirm button: Yes, Flag It. Cancel button: Go Back.
+
+After any action show this message: Thanks for letting us know. We take all reports seriously and will review this promptly. 💙
+
+Please confirm when Chat Safety Options are live."
+
+BLOCK 5 — Porch Pickup Photo Confirmation — Copy & paste after Block 4 is confirmed:
+
+"Please add a required photo confirmation step to the Porch Pickup flow. Here is the complete copy for both the seller and buyer sides:
+
+SELLER SIDE:
+Step 1 — Photo Prompt: Headline: Almost ready! Snap a quick photo first. 📸. Body: Before we notify your buyer, take a photo of the item on your porch. This protects you both if there's ever a question about pickup. Button 1: Take Photo. Button 2: Upload from Camera Roll. Note: Photo is required — no skip option.
+
+Step 2 — Photo Preview: Headline: Looks good! Ready to notify your buyer? Subtext: This photo will be timestamped and saved to this transaction. Button 1: Yes, Notify Buyer. Button 2: Retake Photo.
+
+Step 3 — Confirmation: Headline: Your buyer has been notified! 🎉. Body: They know your item is ready on the porch. You'll get a notification once they confirm pickup. Status label: Awaiting Buyer Pickup Confirmation.
+
+BUYER SIDE:
+Push notification — Title: Your item is ready! 🏡. Body: Your seller left your item on the porch. Tap to see the photo and confirm pickup.
+
+Pickup Confirmation Screen — Headline: Did you grab your item? Subtext: Tap below to confirm pickup. This releases payment to the seller. Button 1: ✅ Yes, I Got It! Button 2: ❓ I Have an Issue.
+
+If buyer taps I Have an Issue — show these options: The item wasn't there when I arrived / The item doesn't match the listing / Someone else may have taken it / Other. Then a Submit Report button. Support note: Our team will review the photo and transaction details and follow up within 24 hours.
+
+Please confirm when the Porch Pickup photo confirmation flow is live."
+
+BLOCK 6 — Escrow Payment Hold — Copy & paste after Block 5 is confirmed:
+
+"Please add an escrow-style payment hold to the in-app payment system. Funds should be held when the buyer pays and only released after the buyer confirms receipt. Here is all the copy:
+
+BUYER SIDE:
+Payment Initiated — Headline: Payment sent — your money is protected. 🔒. Body: Your payment is being held securely until you confirm you've received your item. You're in control. Status label: Payment Held in Escrow. Subtext: Funds will be released to the seller once you confirm receipt.
+
+Confirm Receipt Screen — Headline: Did everything go smoothly? ✅. Body: Tap below to release payment to your seller and close this transaction. Only confirm if you've actually received your item. Button 1: Yes, Release Payment. Button 2: No, I Have a Problem.
+
+SELLER SIDE:
+Payment Pending — Headline: Payment received — almost yours! ⏳. Body: The buyer's payment is being held securely. Once they confirm receipt it'll be released straight to your account. Status label: Funds Pending Release.
+
+Payment Released Push Notification — Title: 💸 You got paid! Body: Your buyer confirmed receipt. Your payment has been released.
+
+Payment Released Screen — Headline: You've been paid! 🎉. Body: The funds from this transaction have been released to your account. Balance note: Payments typically appear within 1–3 business days.
+
+AUTO-RELEASE (if buyer doesn't confirm within 5 days):
+Seller push — Title: Payment auto-released! Body: Since the buyer didn't report any issues within 5 days, your payment has been automatically released. 🎉
+Buyer push — Title: Your transaction is complete. Body: Payment was automatically released to your seller. If you had an issue please contact support.
+
+DISPUTE FLOW (if buyer taps No, I Have a Problem):
+Headline: Tell us what happened. Body: We're here to help. Describe the issue and our team will review the transaction. Options: I never received the item / The item doesn't match the description / The item was damaged / I was charged the wrong amount / Other. CTA Button: Submit Dispute. Confirmation: Your dispute has been submitted. We'll follow up within 24 hours. Payment will remain on hold during the review.
+
+Please confirm when the escrow payment hold system is built."
+
+BLOCK 7 — Seller Rules Page — Copy & paste after Block 6 is confirmed:
+
+"Please build a Seller Rules page with this content:
+
+Headline: A few simple rules to keep our community great.
+Intro: We want buying and selling here to feel safe, fair, and fun for everyone. Here's what we ask of all sellers:
+
+Rules:
+
+Only list items you actually own and are ready to sell.
+
+Be honest — describe your items accurately, including any flaws or damage.
+
+Price your items fairly and update listings when items sell.
+
+Respond to buyers in a timely manner. A little communication goes a long way.
+
+Honor your commitments — if you agree to a sale, follow through.
+
+No prohibited items. See our full list of restricted items in the Help Center.
+
+Keep it friendly. Treat every buyer the way you'd want to be treated.
+
+Footer: Sellers who repeatedly violate these rules may have their listings removed or their account suspended. Thanks for being a great community member! 🙌
+
+Button: Got It, Let's Sell!
+
+Please confirm when the Seller Rules page is live."
+
+BLOCK 8 — Buyer & Seller Profile Tags — Copy & paste after Block 7 is confirmed:
+
+"Please add Buyer and Seller tags to user profiles with the following copy:
+
+BUYER TAGS:
+Tag label: Buyer. Tooltip: This member is an active buyer in the community.
+New Buyer variant: Just getting started — welcome to the community! 👋
+Verified Buyer variant: Trusted buyer with a track record of completed purchases. ✅
+
+SELLER TAGS (requires active subscription):
+Tag label: Seller. Tooltip: This member is an active seller. They've agreed to our Seller Rules and are ready to make a deal.
+New Seller variant: Just started selling — check out their listings! 🛍️
+Verified Seller variant: Experienced seller with great reviews. ⭐
+Top Seller variant: One of our most active and trusted sellers in the community. 🏆
+
+SUBSCRIBER-ONLY BADGE:
+Badge label: ⭐ Pro Seller. Tooltip: This seller has an active subscription and access to exclusive selling features.
+
+Please confirm when Buyer and Seller tags are live on profiles."
+
+BLOCK 9 — Start Selling Free Modal — Copy & paste after Block 8 is confirmed:
+
+"Please build a Start Selling Free modal that appears when a user attempts to sell for the first time. Use this exact copy:
+
+Headline: Start Selling — It's Free! 🎉
+Subheadline: List your first item at no cost.
+Body: No subscription needed to get started. Create your listing, connect with buyers, and make your first sale — all for free. When you're ready to level up, our plans start at just $1.99/month.
+
+Feature checklist inside the modal:
+✅ Free to list your first item
+✅ Built-in chat with buyers
+✅ Secure in-app payments
+✅ Upgrade anytime for unlimited listings
+
+Button 1 (primary): Create My First Listing
+Button 2 (secondary): See Subscription Plans
+Dismiss link: Not Right Now
+
+Please confirm when the Start Selling Free modal is live."
+
+BLOCK 10 — Admin Dashboard — Copy & paste this last — it's the biggest build:
+
+"I need you to build an admin dashboard — my back window to monitor everything happening in the app. Only I can access it as the founder/admin. It needs these 8 sections:
+
+OVERVIEW — Total subscribers, active listings, pending disputes, today's revenue. A subscriber growth chart for the last 30 days. A real-time activity feed showing new subscribers, flagged listings, disputes, and payments.
+
+USERS & MEMBERS — A searchable table of all users showing name, type (Buyer/Seller), join date, number of listings, transaction count, and status (Active/Flagged/Suspended). Ability to View, Warn, or Suspend any user. A separate section showing flagged accounts that need my attention.
+
+LISTINGS MONITOR — A table of all listings with filters for Active, Flagged, and Removed. Show item title, seller name, category, price, pickup method, and status. Let me remove a listing or clear a flag with one click. Show a warning banner when flagged listings need urgent review.
+
+PAYMENTS & DISPUTES — Show total funds held in escrow, released today, open disputes, and resolved this week. Show each open dispute as a card with buyer name, seller name, item, amount, reason, and action buttons to resolve or view the full transaction.
+
+REPORTS & FLAGS — A priority queue of pending user reports and listing flags. Each report shows who reported, who was reported, the reason, and action buttons to Investigate, Dismiss, or Ban User.
+
+SUBSCRIPTION REVENUE — Monthly recurring revenue, annual run rate, subscriber count by plan type, churn rate, and a revenue growth chart. Show a projection table up to 5,000 subscribers.
+
+FRAUD ALERTS — Active fraud alerts for suspicious accounts and behavior. A pattern monitor table showing known fraud patterns and how many times each appeared this week. A status panel showing all my built-in protections are active.
+
+DAILY CHECKLIST — 8 checkboxes I can tick off each morning: review reports, check disputes, scan listings, review fraud alerts, check app store reviews, review subscriber metrics, respond to support messages, post social media content. Show a progress bar and a celebration message when all 8 are done.
+
+Please confirm when the Admin Dashboard is built and show me how to access it."
+
+📋 Your Quick Reference — Linda's Paste Order
+Block	Section	Status
+✅ 1	Pricing Fix	Done!
+⬅️ 2	FAQ Page	Paste now
+3	Paywall Screen	After 2
+4	Chat Safety Options	After 3
+5	Porch Pickup Photo	After 4
+6	Escrow Payment Hold	After 5
+7	Seller Rules	After 6
+8	Buyer & Seller Tags	After 7
+9	Start Selling Free Modal	After 8
+10	Admin Dashboard	Last 🏁
+
+

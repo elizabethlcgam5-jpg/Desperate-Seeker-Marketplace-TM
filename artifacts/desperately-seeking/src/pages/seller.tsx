@@ -1,6 +1,8 @@
 import { Layout } from "@/components/layout";
 import { useLocation } from "wouter";
 import { Check, X, Upload, MessageSquare, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import { StartSellingModal } from "@/components/start-selling-modal";
 
 const OTHER_PLATFORMS = [
   "Complicated fees",
@@ -50,6 +52,7 @@ const HOW_IT_WORKS = [
 
 export default function Seller() {
   const [_, setLocation] = useLocation();
+  const [startModalOpen, setStartModalOpen] = useState(false);
 
   return (
     <Layout>
@@ -67,7 +70,7 @@ export default function Seller() {
             marketplace. You're the heart of this platform — and we treat you that way.
           </p>
           <button
-            onClick={() => setLocation("/listings/new")}
+            onClick={() => setStartModalOpen(true)}
             className="rounded-full px-8 py-3 text-[0.95rem] font-semibold bg-[#D4AF37] text-[#0B3954] border-0 cursor-pointer hover:bg-[#c9a430] transition-colors shadow-[0_6px_16px_rgba(212,175,55,0.35)]"
           >
             Start Selling Free
@@ -265,6 +268,8 @@ export default function Seller() {
 
         </div>
       </div>
+
+      <StartSellingModal open={startModalOpen} onOpenChange={setStartModalOpen} />
     </Layout>
   );
 }

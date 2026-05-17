@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, X } from "lucide-react";
+import { Check } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -11,19 +11,6 @@ interface PaywallModalProps {
   onOpenChange: (open: boolean) => void;
   reason?: string;
 }
-
-const MONTHLY_FEATURES = [
-  "Unlimited listings",
-  "Message buyers and sellers",
-  "Safe in-app payments",
-  "Cancel anytime",
-];
-
-const ANNUAL_FEATURES = [
-  "Everything in Monthly",
-  "One simple payment for the whole year",
-  "Our lowest price for unlimited posting",
-];
 
 export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) {
   const [loading, setLoading] = useState<"monthly" | "annual" | null>(null);
@@ -50,92 +37,96 @@ export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[520px] p-0 overflow-hidden rounded-2xl">
-        {/* Header band */}
+      <DialogContent className="sm:max-w-[460px] p-0 overflow-hidden rounded-2xl">
+        {/* Header */}
         <div className="bg-[#0B3954] px-8 py-7 text-white">
           <DialogHeader>
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="h-5 w-5 text-[#D4AF37]" />
-              <Badge className="bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]/30 text-xs">
-                Premium Feature
-              </Badge>
-            </div>
-            <DialogTitle className="font-serif text-2xl text-white text-left">
-              {reason ?? "Pick the plan that works for you."}
+            <DialogTitle className="font-serif text-2xl text-white text-left leading-snug mb-1">
+              {reason ?? "You've reached your free listing limit."}
             </DialogTitle>
-            <DialogDescription className="text-white/65 text-left mt-1">
-              Sell more, stress less — upgrade anytime.
+            <DialogDescription className="text-white/70 text-left text-sm leading-relaxed">
+              Upgrade to keep selling without limits.
             </DialogDescription>
           </DialogHeader>
+          <p className="text-white/55 text-xs mt-3 leading-relaxed">
+            Subscribers can list as many items as they want — plus get a Seller badge, priority support, and more.
+          </p>
         </div>
 
         {/* Plans */}
-        <div className="p-6 grid sm:grid-cols-2 gap-4">
-
+        <div className="p-6 space-y-3">
           {/* Monthly */}
-          <div className="rounded-2xl border border-[#e0e0e0] bg-white p-5 flex flex-col">
-            <p className="font-semibold font-serif text-[#0B3954] mb-1">Monthly</p>
-            <p className="font-serif text-3xl font-bold text-[#0B3954] mb-0.5">$1.99</p>
-            <p className="text-muted-foreground text-xs mb-4">per month · Great for getting started.</p>
-            <ul className="space-y-1.5 mb-5 flex-1">
-              {MONTHLY_FEATURES.map((f) => (
-                <li key={f} className="flex items-start gap-1.5 text-xs text-foreground/70">
-                  <Check className="h-3.5 w-3.5 shrink-0 mt-0.5 text-[#D4AF37]" />
-                  {f}
-                </li>
-              ))}
-            </ul>
+          <div className="rounded-2xl border border-border/60 bg-white p-5 flex items-center justify-between gap-4">
+            <div>
+              <p className="font-semibold text-[#0B3954]">Monthly</p>
+              <p className="text-2xl font-serif font-bold text-[#0B3954]">$1.99<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+            </div>
             <Button
-              className="w-full bg-[#0B3954] text-white font-semibold hover:bg-[#0B3954]/90 border-0 rounded-full"
+              className="shrink-0 rounded-full bg-[#0B3954] text-white hover:bg-[#0B3954]/90 border-0 text-sm px-5"
               onClick={() => handleCheckout("seller_basic")}
               disabled={!!loading}
             >
-              {loading === "monthly" ? "Redirecting…" : "Start Monthly Plan"}
+              {loading === "monthly" ? "Redirecting…" : "Start for $1.99/month"}
             </Button>
-            <p className="text-center text-[10px] text-muted-foreground mt-2">Cancel anytime. No questions asked.</p>
           </div>
 
-          {/* Annual — Featured */}
-          <div className="rounded-2xl border border-[#D4AF37] bg-[#0B3954] p-5 flex flex-col relative">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <Badge className="bg-[#D4AF37] text-[#0B3954] font-bold text-xs shadow-sm whitespace-nowrap">
-                Best Value – Save 37%
+          {/* Yearly — featured */}
+          <div className="rounded-2xl border-2 border-[#D4AF37] bg-[#0B3954] p-5 relative">
+            <div className="absolute -top-3 left-4">
+              <Badge className="bg-[#D4AF37] text-[#0B3954] font-bold text-xs shadow-sm">
+                Best Value – Save 37% 🎉
               </Badge>
             </div>
-            <p className="font-semibold font-serif text-white mb-1 mt-2">Yearly</p>
-            <p className="font-serif text-3xl font-bold text-[#D4AF37] mb-0.5">$14.99</p>
-            <p className="text-white/55 text-xs mb-4">per year · Our best deal.</p>
-            <ul className="space-y-1.5 mb-5 flex-1">
-              {ANNUAL_FEATURES.map((f) => (
-                <li key={f} className="flex items-start gap-1.5 text-xs text-white/80">
-                  <Check className="h-3.5 w-3.5 shrink-0 mt-0.5 text-[#D4AF37]" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Button
-              className="w-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 rounded-full"
-              onClick={() => handleCheckout("seller_annual")}
-              disabled={!!loading}
-            >
-              {loading === "annual" ? "Redirecting…" : "Start Yearly Plan – Best Value"}
-            </Button>
-            <p className="text-center text-[10px] text-white/50 mt-2">Cancel anytime. No questions asked.</p>
+            <div className="flex items-center justify-between gap-4 mt-1">
+              <div>
+                <p className="font-semibold text-white">Yearly</p>
+                <p className="text-2xl font-serif font-bold text-[#D4AF37]">$14.99<span className="text-sm font-normal text-white/55">/year</span></p>
+              </div>
+              <Button
+                className="shrink-0 rounded-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 text-sm px-5"
+                onClick={() => handleCheckout("seller_annual")}
+                disabled={!!loading}
+              >
+                {loading === "annual" ? "Redirecting…" : "Get the Best Deal – $14.99/year"}
+              </Button>
+            </div>
           </div>
+
+          {/* What's included */}
+          <ul className="px-1 space-y-1.5 pt-1">
+            {[
+              "Unlimited item listings",
+              "Seller badge on your profile",
+              "Priority support",
+              "Exclusive seller features",
+            ].map((f) => (
+              <li key={f} className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Check className="h-3.5 w-3.5 text-[#D4AF37] shrink-0" />
+                {f}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* Free tier reminder */}
-        <div className="px-6 pb-5">
-          <div className="rounded-xl bg-muted/50 p-3 flex items-start gap-3 text-sm text-muted-foreground">
-            <X className="h-4 w-4 mt-0.5 shrink-0" />
-            <span>
-              <strong className="text-foreground">Free plan:</strong>{" "}
-              Browse the marketplace, post items, and respond to up to 2 buyers — no subscription needed.
-            </span>
-          </div>
-          <p className="text-center text-xs text-muted-foreground mt-3">
-            Payments secured by Stripe. Cancel anytime.
+        {/* Footer */}
+        <div className="px-6 pb-6 space-y-3 text-center">
+          <p className="text-[11px] text-muted-foreground">
+            Cancel anytime. Billed through your app store.
           </p>
+          <div className="flex items-center justify-center gap-6">
+            <button
+              className="text-xs text-muted-foreground hover:text-[#0B3954] transition-colors underline underline-offset-2"
+              onClick={() => onOpenChange(false)}
+            >
+              Maybe Later
+            </button>
+            <button
+              className="text-xs text-muted-foreground hover:text-[#0B3954] transition-colors underline underline-offset-2"
+              onClick={() => toast.info("Contact support to restore a previous purchase.")}
+            >
+              Restore Purchase
+            </button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

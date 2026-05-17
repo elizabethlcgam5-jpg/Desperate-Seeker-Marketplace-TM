@@ -24,10 +24,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useState, useRef, useEffect } from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Send, MoreVertical, BellOff, Trash2, MailOpen, Archive, ShieldOff } from "lucide-react";
+import { ArrowLeft, Send, MoreVertical, BellOff, Trash2, MailOpen, Archive, ShieldOff, Flag, AlertTriangle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { EscrowPanel } from "@/components/escrow-panel";
+
+const THANKS_TOAST = "Thanks for letting us know. We take all reports seriously and will review this promptly. 💙";
 
 export default function ThreadDetail() {
   const { id } = useParams();
@@ -39,6 +41,8 @@ export default function ThreadDetail() {
   const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
   const [blockDialogOpen, setBlockDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [flagDialogOpen, setFlagDialogOpen] = useState(false);
   const [muted, setMuted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -87,9 +91,19 @@ export default function ThreadDetail() {
     toast.success("Chat deleted.");
   };
 
+  const handleReportConfirm = () => {
+    setReportDialogOpen(false);
+    toast.success(THANKS_TOAST);
+  };
+
   const handleBlockConfirm = () => {
     setBlockDialogOpen(false);
-    toast.success(`${otherParticipant?.name ?? "User"} has been blocked. They can no longer message you.`);
+    toast.success(THANKS_TOAST);
+  };
+
+  const handleFlagConfirm = () => {
+    setFlagDialogOpen(false);
+    toast.success(THANKS_TOAST);
   };
 
   if (isLoading || !thread || !currentUser) {
@@ -140,7 +154,8 @@ export default function ThreadDetail() {
                   <span className="sr-only">Chat options</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52">
+              <DropdownMenuContent align="end" className="w-56">
+                {/* Conversation controls */}
                 <DropdownMenuItem onClick={handleMute} className="gap-2 cursor-pointer">
                   <BellOff className="h-4 w-4" />
                   {muted ? "Unmute conversation" : "Mute conversation"}
@@ -153,10 +168,20 @@ export default function ThreadDetail() {
                   <Archive className="h-4 w-4" />
                   Archive conversation
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleDeleteChat} className="gap-2 cursor-pointer text-destructive focus:text-destructive">
+                <DropdownMenuItem onClick={handleDeleteChat} className="gap-2 cursor-pointer text-muted-foreground">
                   <Trash2 className="h-4 w-4" />
                   Delete chat
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                {/* Safety options */}
+                <DropdownMenuItem
+                  onClick={() => setReportDialogOpen(true)}
+                  className="gap-2 cursor-pointer text-amber-700 focus:text-amber-700"
+                >
+                  <AlertTriangle className="h-4 w-4" />
+                  Report user
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => setBlockDialogOpen(true)}
@@ -164,6 +189,13 @@ export default function ThreadDetail() {
                 >
                   <ShieldOff className="h-4 w-4" />
                   Block user
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setFlagDialogOpen(true)}
+                  className="gap-2 cursor-pointer text-destructive focus:text-destructive"
+                >
+                  <Flag className="h-4 w-4" />
+                  Flag this listing
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -214,7 +246,7 @@ export default function ThreadDetail() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Escrow payment panel — shown to buyer/seller once chat is active */}
+          {/* Escrow payment panel */}
           {currentUser && (
             <EscrowPanel
               role={
@@ -256,13 +288,38 @@ export default function ThreadDetail() {
         </div>
       </div>
 
-      {/* Block confirmation dialog */}
+      {/* Report User dialog */}
+      <AlertDialog open={reportDialogOpen} onOpenChange={setReportDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Report {otherParticipant?.name}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Something feel off? Let us know and we'll look into it right away.
+              <br /><br />
+              Are you sure you want to report this user? Our team will review this report confidentially.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Never Mind</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleReportConfirm}
+              className="bg-amber-600 text-white hover:bg-amber-700"
+            >
+              Yes, Report
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Block User dialog */}
       <AlertDialog open={blockDialogOpen} onOpenChange={setBlockDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Block {otherParticipant?.name}?</AlertDialogTitle>
             <AlertDialogDescription>
-              Blocking this user will prevent them from sending you messages. Their listings will also be hidden from your view. This action can be undone from your account settings.
+              Block this person to stop receiving messages from them.
+              <br /><br />
+              Block this user? They won't be able to contact you or see your listings.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -271,7 +328,30 @@ export default function ThreadDetail() {
               onClick={handleBlockConfirm}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Block user
+              Yes, Block
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Flag Listing dialog */}
+      <AlertDialog open={flagDialogOpen} onOpenChange={setFlagDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Flag this listing?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Think this listing breaks the rules? Flag it and we'll review it.
+              <br /><br />
+              Flag this listing for review? We'll look into it and take action if needed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Go Back</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleFlagConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Yes, Flag It
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

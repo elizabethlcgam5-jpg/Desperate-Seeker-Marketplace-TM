@@ -12,6 +12,7 @@ import { MapPin, Calendar, Edit, Sparkles, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
 import { RequestCard } from "@/components/request-card";
 import { TierBadge } from "@/components/tier-badge";
+import { UserRoleTags } from "@/components/user-role-tags";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -140,6 +141,11 @@ export default function UserProfile() {
                   <TierBadge tier={user.subscriptionTier} />
                 </div>
                 <p className="text-muted-foreground font-medium">@{user.handle}</p>
+                <UserRoleTags
+                  subscriptionTier={user.subscriptionTier}
+                  requestCount={requestCount}
+                  listingCount={responseCount}
+                />
                 <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">
                   {user.location && (
                     <div className="flex items-center gap-1">
