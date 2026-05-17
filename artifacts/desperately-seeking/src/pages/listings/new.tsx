@@ -50,7 +50,22 @@ const CATEGORIES = [
 
 const CONDITIONS = ["New", "Like New", "Good", "Fair"];
 
-const DELIVERY_OPTIONS = ["Local Pickup", "Meet-Up", "Shipping Available"];
+const DELIVERY_OPTIONS = ["Local Pickup", "Porch Pickup", "Meet-Up", "Shipping Available"];
+
+const DELIVERY_TIPS: Record<string, { body: string; tip: string }> = {
+  "Local Pickup": {
+    body: "Meet the buyer in person to hand off the item. Great for larger items or local convenience.",
+    tip: "Tip: Meet in a safe, public spot — like a coffee shop or store parking lot.",
+  },
+  "Porch Pickup": {
+    body: "Leave the item on your porch for a contactless handoff. Easy, flexible, and no need to be home.",
+    tip: "Tip: Snap a quick photo of the item on your porch so the buyer knows it's ready.",
+  },
+  "Meet-Up": {
+    body: "Arrange a convenient meetup location with the buyer through in-app chat.",
+    tip: "Tip: Meet in a safe, public spot — like a coffee shop or store parking lot.",
+  },
+};
 
 const PACKAGE_SIZES = ["Small", "Medium", "Large"];
 
@@ -158,6 +173,7 @@ export default function NewListing() {
     try {
       const availabilityMap: Record<string, string> = {
         "Local Pickup": "local_pickup",
+        "Porch Pickup": "local_pickup",
         "Meet-Up": "local_pickup",
         "Shipping Available": "shipping",
       };
@@ -510,6 +526,14 @@ export default function NewListing() {
                   </FormItem>
                 )}
               />
+
+              {/* Delivery tip — shown for local/porch/meetup options */}
+              {deliveryOption && DELIVERY_TIPS[deliveryOption] && (
+                <div className="rounded-xl border border-[#0B3954]/10 bg-[#f0f5f8] p-4 space-y-1">
+                  <p className="text-sm text-[#0B3954]/75 leading-relaxed">{DELIVERY_TIPS[deliveryOption].body}</p>
+                  <p className="text-xs text-[#D4AF37] font-medium">{DELIVERY_TIPS[deliveryOption].tip}</p>
+                </div>
+              )}
 
               {/* Shipping Details — shown only when Shipping Available is selected */}
               {showShipping && (

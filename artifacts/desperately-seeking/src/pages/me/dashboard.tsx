@@ -33,6 +33,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useListMyCommissions } from "@workspace/api-client-react";
+import { UpgradeNudge } from "@/components/upgrade-nudge";
 import { useState, useEffect } from "react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
@@ -164,6 +165,9 @@ export default function SellerDashboard() {
               </Button>
             </Link>
           </div>
+
+          {/* Upgrade nudge */}
+          <UpgradeNudge variant="listing_limit" />
 
           {/* How it works */}
           <div>

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TierBadge } from "@/components/tier-badge";
+import { UpgradeNudge } from "@/components/upgrade-nudge";
 import {
   useGetCurrentUser,
   useGetSellerAnalytics,
@@ -35,26 +36,22 @@ export default function Analytics() {
   if (!isPro) {
     return (
       <Layout>
-        <div className="container mx-auto max-w-3xl px-4 py-16 md:px-8">
-          <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50">
-            <CardContent className="p-10 text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
-                <Sparkles className="h-6 w-6 text-amber-700" />
-              </div>
-              <h1 className="mb-2 font-serif text-3xl">Analytics is a Pro perk</h1>
-              <p className="mx-auto mb-6 max-w-md text-muted-foreground">
-                See how many buyers viewed each of your offers, your acceptance
-                rate over time, and which categories convert best — available on
-                Seller Pro and Pro Annual.
-              </p>
-              <Link href="/pricing">
-                <Button size="lg" className="gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Upgrade to Pro
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+        <div className="container mx-auto max-w-3xl px-4 py-16 md:px-8 space-y-6">
+          <div>
+            <h1 className="font-serif text-3xl font-bold text-[#0B3954] mb-1">Analytics</h1>
+            <p className="text-sm text-muted-foreground">See how your listings are performing.</p>
+          </div>
+          <UpgradeNudge variant="analytics" />
+          <div className="rounded-2xl border border-border/60 bg-white p-8 text-center">
+            <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#0B3954]/5 flex items-center justify-center">
+              <Sparkles className="h-7 w-7 text-[#D4AF37]" />
+            </div>
+            <h2 className="font-serif text-xl font-semibold text-[#0B3954] mb-2">Upgrade to unlock analytics</h2>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+              View buyer interest, acceptance rates, and your best-performing categories.
+              Available on Premium.
+            </p>
+          </div>
         </div>
       </Layout>
     );

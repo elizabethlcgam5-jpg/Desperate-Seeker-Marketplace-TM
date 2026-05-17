@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useListListings, useGetCurrentUser } from "@workspace/api-client-react";
+import { UpgradeNudge } from "@/components/upgrade-nudge";
 import { MapPin, Search, Tag, X, Star, Camera, Loader2, ShoppingCart } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
@@ -378,6 +379,11 @@ export default function Browse() {
               </div>
             )}
           </div>
+        )}
+
+        {/* Seller upgrade nudge — shown only to free / unauthenticated users */}
+        {(!user || user.subscriptionTier === "free") && (
+          <UpgradeNudge variant="response_limit" className="mb-4" />
         )}
 
         {/* Listings grid */}

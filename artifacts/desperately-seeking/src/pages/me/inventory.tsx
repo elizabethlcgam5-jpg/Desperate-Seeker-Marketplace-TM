@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { UpgradeNudge } from "@/components/upgrade-nudge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -99,24 +100,21 @@ export default function Inventory() {
   if (!isSeller) {
     return (
       <Layout>
-        <div className="container mx-auto max-w-3xl px-4 py-16 md:px-8">
-          <Card className="border-[#D4AF37]/30 bg-gradient-to-br from-[#FDF5E6] to-white">
-            <CardContent className="p-10 text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#D4AF37]/15">
-                <Sparkles className="h-6 w-6 text-[#D4AF37]" />
-              </div>
-              <h1 className="mb-2 font-serif text-3xl text-[#0B3954]">Inventory is a seller feature</h1>
-              <p className="mx-auto mb-6 max-w-md text-muted-foreground">
-                List items in your storage, get matched with buyers looking for exactly what you have — even before you've decided to sell.
-              </p>
-              <Link href="/pricing">
-                <Button className="bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 rounded-full gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Upgrade to seller
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+        <div className="container mx-auto max-w-3xl px-4 py-16 md:px-8 space-y-6">
+          <div>
+            <h1 className="font-serif text-3xl font-bold text-[#0B3954] mb-1">My Inventory</h1>
+            <p className="text-sm text-muted-foreground">Quick-list items and get matched with buyers automatically.</p>
+          </div>
+          <UpgradeNudge variant="feature" />
+          <div className="rounded-2xl border border-border/60 bg-white p-8 text-center">
+            <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#0B3954]/5 flex items-center justify-center">
+              <Package className="h-7 w-7 text-[#D4AF37]" />
+            </div>
+            <h2 className="font-serif text-xl font-semibold text-[#0B3954] mb-2">Inventory is a seller feature</h2>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+              List items in your storage and get matched with buyers looking for exactly what you have — even before you've decided to sell.
+            </p>
+          </div>
         </div>
       </Layout>
     );
