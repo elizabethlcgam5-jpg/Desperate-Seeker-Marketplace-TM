@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 const RULES = [
-  { title: "Only Respond If You Really Have the Item", body: "Buyers post exactly what they need. Please only reply if you actually have the item and it matches what they're asking for." },
-  { title: "Be Honest About Condition", body: "List the real condition — new, like new, good, fair, or needs work. No surprises when the buyer shows up." },
-  { title: "Communicate Clearly", body: "Answer questions, send photos if needed, and keep things simple. Good communication makes the sale faster." },
-  { title: "Use In-App Payments", body: "All sales should be completed inside the app. This protects both sides and makes sure the sale is recorded properly." },
-  { title: "Be On Time for Meet-Ups", body: "If you're doing a local pickup or meet-up, be reliable. Let the buyer know if you're running late or need to reschedule." },
-  { title: "No Spam or Fake Listings", body: "Only post real items you actually have. No scams, no fake posts, no misleading photos." },
-  { title: "Respect the Buyer", body: "Everyone's here to save time. Be polite, be fair, and keep things simple." },
+  "Only list items you actually own and are ready to sell.",
+  "Be honest — describe your items accurately, including any flaws or damage.",
+  "Price your items fairly and update listings when items sell.",
+  "Respond to buyers in a timely manner. A little communication goes a long way.",
+  "Honor your commitments — if you agree to a sale, follow through.",
+  "No prohibited items. See our full list of restricted items in the Help Center.",
+  "Keep it friendly. Treat every buyer the way you'd want to be treated.",
 ];
 
 export default function HelpSellerRules() {
@@ -22,9 +22,9 @@ export default function HelpSellerRules() {
             <ArrowLeft className="h-4 w-4" /> Help Center
           </Link>
           <span className="block text-xs font-semibold uppercase tracking-widest text-[#D4AF37] mb-3">For Sellers</span>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Seller Rules & Expectations</h1>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">A few simple rules to keep our community great.</h1>
           <p className="text-white/70 text-lg leading-relaxed max-w-2xl">
-            Desperately Seeking is built to make selling simple. These quick guidelines help keep things smooth, safe, and fair for everyone using the app.
+            We want buying and selling here to feel safe, fair, and fun for everyone. Here's what we ask of all sellers:
           </p>
         </div>
       </section>
@@ -37,18 +37,19 @@ export default function HelpSellerRules() {
                 <div className="shrink-0 w-9 h-9 rounded-full bg-[#D4AF37]/15 flex items-center justify-center font-serif font-bold text-[#D4AF37] text-sm mt-0.5">
                   {i + 1}
                 </div>
-                <div>
-                  <p className="font-semibold text-[#0B3954] mb-1">{rule.title}</p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{rule.body}</p>
-                </div>
+                <p className="text-sm text-[#0B3954]/80 leading-relaxed self-center">{rule}</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-12 flex flex-col sm:flex-row gap-3 justify-center text-center">
+          <p className="mt-8 text-sm text-center text-muted-foreground leading-relaxed">
+            Sellers who repeatedly violate these rules may have their listings removed or their account suspended. Thanks for being a great community member!
+          </p>
+
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center text-center">
             <Link href="/listings/new">
               <Button className="rounded-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0 px-8">
-                Post a Listing
+                Got It, Let's Sell!
               </Button>
             </Link>
             <Link href="/help">

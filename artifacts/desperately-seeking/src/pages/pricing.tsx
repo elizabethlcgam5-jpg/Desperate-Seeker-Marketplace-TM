@@ -2,19 +2,6 @@ import { Layout } from "@/components/layout";
 import { Check } from "lucide-react";
 import { useLocation } from "wouter";
 
-const MONTHLY_FEATURES = [
-  "Unlimited listings",
-  "Message buyers and sellers",
-  "Safe in-app payments",
-  "Cancel anytime",
-];
-
-const ANNUAL_FEATURES = [
-  "Everything in Monthly",
-  "One simple payment for the whole year",
-  "Our lowest price for unlimited posting",
-];
-
 export default function Pricing() {
   const [_, setLocation] = useLocation();
 
@@ -27,11 +14,11 @@ export default function Pricing() {
             Pricing
           </p>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
-            Honest pricing.{" "}
-            <span className="italic text-[#D4AF37]">No surprises.</span>
+            Pick the plan that{" "}
+            <span className="italic text-[#D4AF37]">works for you.</span>
           </h1>
           <p className="text-white/70 text-base leading-relaxed max-w-lg">
-            Everyone starts with 2 free listings. Upgrade anytime for unlimited posting and a smoother selling experience.
+            Sell more, stress less — upgrade anytime.
           </p>
         </div>
       </section>
@@ -42,56 +29,36 @@ export default function Pricing() {
           {/* Plan cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-            {/* Premium Monthly */}
+            {/* Monthly */}
             <div className="bg-white rounded-2xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 flex flex-col">
-              <div className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#0B3954]/8 text-[#0B3954] font-semibold mb-4 w-fit">
-                Premium Monthly
-              </div>
+              <p className="font-semibold text-[#0B3954] text-base mb-1">Monthly</p>
               <div className="font-serif text-3xl font-bold text-[#0B3954] mb-1">
                 $1.99<span className="text-base font-sans font-normal text-[#0B3954]/50">/month</span>
               </div>
-              <p className="text-sm text-[#0B3954]/60 mb-5">Perfect if you want flexibility.</p>
-              <ul className="space-y-2.5 flex-1">
-                {MONTHLY_FEATURES.map((f) => (
-                  <li key={f} className="flex items-center gap-2.5 text-sm text-[#0B3954]/75">
-                    <Check className="h-3.5 w-3.5 text-[#D4AF37] shrink-0" strokeWidth={3} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+              <p className="text-sm text-[#0B3954]/55 mb-6">Great for getting started. Cancel anytime.</p>
               <button
                 onClick={() => setLocation("/listings/new")}
-                className="mt-6 w-full rounded-full py-2.5 text-sm font-semibold border border-[#0B3954]/20 text-[#0B3954] hover:bg-[#0B3954]/5 transition-colors cursor-pointer"
+                className="mt-auto w-full rounded-full py-2.5 text-sm font-semibold border border-[#0B3954]/20 text-[#0B3954] hover:bg-[#0B3954]/5 transition-colors cursor-pointer"
               >
-                Get started
+                Start Monthly Plan
               </button>
             </div>
 
-            {/* Premium Yearly */}
-            <div className="bg-[#0B3954] rounded-2xl border border-[#0B3954] shadow-[0_6px_20px_rgba(11,57,84,0.25)] p-6 flex flex-col">
-              <div className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-semibold mb-4 w-fit">
-                Premium Yearly
+            {/* Yearly — Featured */}
+            <div className="bg-[#0B3954] rounded-2xl shadow-[0_6px_20px_rgba(11,57,84,0.25)] p-6 flex flex-col">
+              <div className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-semibold mb-3 w-fit">
+                Best Value – Save 37%
               </div>
+              <p className="font-semibold text-white text-base mb-1">Yearly</p>
               <div className="font-serif text-3xl font-bold text-white mb-1">
                 $14.99<span className="text-base font-sans font-normal text-white/50">/year</span>
               </div>
-              <p className="text-sm text-white/60 mb-5">
-                Best value —{" "}
-                <span className="text-[#D4AF37] font-semibold">save 37%</span>
-              </p>
-              <ul className="space-y-2.5 flex-1">
-                {ANNUAL_FEATURES.map((f) => (
-                  <li key={f} className="flex items-center gap-2.5 text-sm text-white/80">
-                    <Check className="h-3.5 w-3.5 text-[#D4AF37] shrink-0" strokeWidth={3} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+              <p className="text-sm text-white/55 mb-6">Our best deal. Pay once, sell all year.</p>
               <button
                 onClick={() => setLocation("/listings/new")}
-                className="mt-6 w-full rounded-full py-2.5 text-sm font-bold bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] transition-colors cursor-pointer shadow-[0_4px_12px_rgba(212,175,55,0.35)]"
+                className="mt-auto w-full rounded-full py-2.5 text-sm font-bold bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] transition-colors cursor-pointer shadow-[0_4px_12px_rgba(212,175,55,0.35)]"
               >
-                Get the best deal
+                Start Yearly Plan – Best Value
               </button>
             </div>
           </div>
@@ -124,9 +91,9 @@ export default function Pricing() {
             </div>
           </div>
 
-          {/* Footer note */}
+          {/* Footer */}
           <p className="text-center text-xs text-muted-foreground pt-2">
-            Payments processed securely by Stripe. Your card details never touch our servers.
+            Subscriptions automatically renew. Cancel anytime in your account settings. Prices shown in USD.
           </p>
 
         </div>

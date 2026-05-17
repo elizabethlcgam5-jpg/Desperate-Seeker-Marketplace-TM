@@ -149,9 +149,9 @@ export default function Seller() {
               {/* Annual */}
               <div className="bg-[#D4AF37] rounded-2xl p-6">
                 <div className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-[#0B3954]/15 text-[#0B3954] font-semibold mb-4">
-                  Save 60%
+                  Best Value – Save 37%
                 </div>
-                <div className="font-serif text-3xl font-bold text-[#0B3954] mb-1">$29.99<span className="text-[#0B3954]/50 text-base font-sans font-normal">/year</span></div>
+                <div className="font-serif text-3xl font-bold text-[#0B3954] mb-1">$14.99<span className="text-[#0B3954]/50 text-base font-sans font-normal">/year</span></div>
                 <ul className="space-y-2 mt-4 mb-6">
                   {["Unlimited item posts", "Respond to all buyer requests", "Full seller features"].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-[#0B3954]/80">

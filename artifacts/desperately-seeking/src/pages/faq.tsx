@@ -21,8 +21,20 @@ const FAQ_ITEMS = [
     a: "Yes. Browsing the marketplace is always free for both buyers and sellers. If you want to message someone, post an item, or respond to a request, you'll need to create a free account so your conversations and sales can be saved to your profile.",
   },
   {
-    q: "How much does it cost to sell?",
-    a: "Sellers can post two items for free. After that, you can choose a monthly or yearly plan if you want to keep selling.",
+    q: "What does the subscription include?",
+    a: "With a subscription, you can list unlimited items, get a Seller badge on your profile, and access exclusive features like promoted listings. It's the best way to sell more, faster.",
+  },
+  {
+    q: "How much does it cost?",
+    a: "You can subscribe for just $1.99/month or save 37% with our yearly plan at $14.99/year. Cancel anytime.",
+  },
+  {
+    q: "Can I try it before I subscribe?",
+    a: "Yes! You can browse and buy for free. When you're ready to start selling, choose the plan that works best for you.",
+  },
+  {
+    q: "How do I cancel my subscription?",
+    a: "You can cancel anytime through your account settings. You'll keep your access until the end of your billing period.",
   },
   {
     q: "Is 5% really the only fee?",
@@ -57,6 +69,22 @@ const FAQ_ITEMS = [
     a: "Yes. We encourage meeting in public places, checking profiles, and trusting your instincts.",
   },
   {
+    q: "Is my payment information safe?",
+    a: "Absolutely. All payments are processed securely through the app — we never store your payment details.",
+  },
+  {
+    q: "What is Local Pickup?",
+    a: "Local Pickup lets you arrange to meet a buyer in person to hand off your item. It's a great option for larger items or when you prefer to skip shipping.",
+  },
+  {
+    q: "What is Porch Pickup?",
+    a: "Porch Pickup lets you leave an item on your porch for the buyer to grab — no need to be home. It's contactless, easy, and convenient.",
+  },
+  {
+    q: "Can I pay inside the app?",
+    a: "Yes! You can send and receive payments right in the app using our secure in-app payment system. No need to exchange cash or use a third-party app.",
+  },
+  {
     q: "Why should I pay through the app instead of cash?",
     a: "Paying through the app creates a digital receipt, timestamps, and a verified payment trail for both sides. It also lets us step in if something goes wrong. Cash sales are allowed but aren't covered by our in-app protections.",
   },
@@ -67,6 +95,14 @@ const FAQ_ITEMS = [
   {
     q: "Should I mark a cash sale as sold in the app?",
     a: "Yes. Marking an item as sold keeps your listings organized and your account accurate, even if the payment was made in person.",
+  },
+  {
+    q: "What are Buyer and Seller tags?",
+    a: "Buyer and Seller tags show up on profiles so everyone knows how active someone is in the community. They help build trust and make it easier to connect with reliable members.",
+  },
+  {
+    q: "What are Chat Safety Options?",
+    a: "Chat Safety Options let you report, block, mute, or flag a user directly from your conversation. Your safety is our priority, and we make it easy to take action if something feels off.",
   },
   {
     q: "Can I delete my posts?",
