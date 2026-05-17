@@ -118,8 +118,8 @@ export function PaywallModal({ open, onOpenChange, reason }: PaywallModalProps) 
               <Crown className="h-4 w-4 text-emerald-600" />
               <p className="font-semibold font-serif text-[#0B3954]">Premium Yearly</p>
             </div>
-            <p className="font-serif text-3xl font-bold text-[#0B3954] mb-1">$29.99</p>
-            <p className="text-muted-foreground text-xs mb-4">per year · save 60%</p>
+            <p className="font-serif text-3xl font-bold text-[#0B3954] mb-1">$14.99</p>
+            <p className="text-muted-foreground text-xs mb-4">per year · save 37%</p>
             <ul className="space-y-1.5 mb-5">
               {ANNUAL_FEATURES.map((f) => (
                 <li key={f} className="flex items-start gap-1.5 text-xs text-foreground/70">

@@ -221,8 +221,8 @@ export default function SellerDashboard() {
               </Link>
               <Link href="/pricing" className="flex-1">
                 <Button variant="outline" className="w-full border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-full gap-2">
-                  $29.99/year
-                  <span className="text-xs opacity-75">(Save 60%)</span>
+                  $14.99/year
+                  <span className="text-xs opacity-75">(Save 37%)</span>
                 </Button>
               </Link>
             </div>

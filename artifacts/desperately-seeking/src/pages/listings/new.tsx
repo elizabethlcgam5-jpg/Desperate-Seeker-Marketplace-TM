@@ -266,8 +266,8 @@ export default function NewListing() {
               className="w-full rounded-full border-[#0B3954]/25 text-[#0B3954] hover:bg-[#0B3954]/5 h-11"
               onClick={() => setLocation("/pricing")}
             >
-              Yearly — $29.99
-              <span className="ml-1.5 text-xs text-[#D4AF37] font-semibold">Save 60%</span>
+              Yearly — $14.99
+              <span className="ml-1.5 text-xs text-[#D4AF37] font-semibold">Save 37%</span>
             </Button>
             <button
               className="w-full text-xs text-muted-foreground hover:text-[#0B3954] transition-colors pt-1"

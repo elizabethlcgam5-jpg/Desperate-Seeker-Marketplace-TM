@@ -231,8 +231,8 @@ export default function Home() {
             <Link href="/pricing">
               <div className="rounded-2xl border border-border/60 p-6 text-center cursor-pointer hover:shadow-md transition-shadow">
                 <p className="font-serif text-xl font-semibold text-[#0B3954] mb-2">Premium Yearly</p>
-                <p className="text-3xl font-bold font-serif text-[#0B3954] mb-1">$29.99</p>
-                <p className="text-sm text-muted-foreground mb-4">per year · save 60%</p>
+                <p className="text-3xl font-bold font-serif text-[#0B3954] mb-1">$14.99</p>
+                <p className="text-sm text-muted-foreground mb-4">per year · save 37%</p>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   Everything in Premium — best value for frequent sellers.
                 </p>
