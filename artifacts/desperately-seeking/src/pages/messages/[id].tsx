@@ -27,6 +27,7 @@ import { format } from "date-fns";
 import { ArrowLeft, Send, MoreVertical, BellOff, Trash2, MailOpen, Archive, ShieldOff } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { EscrowPanel } from "@/components/escrow-panel";
 
 export default function ThreadDetail() {
   const { id } = useParams();
@@ -212,6 +213,28 @@ export default function ThreadDetail() {
             })}
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Escrow payment panel — shown to buyer/seller once chat is active */}
+          {currentUser && (
+            <EscrowPanel
+              role={
+                currentUser.subscriptionTier && currentUser.subscriptionTier !== "free"
+                  ? "seller"
+                  : "buyer"
+              }
+              price={0}
+              sellerName={
+                currentUser.subscriptionTier && currentUser.subscriptionTier !== "free"
+                  ? undefined
+                  : otherParticipant?.name
+              }
+              buyerName={
+                currentUser.subscriptionTier && currentUser.subscriptionTier !== "free"
+                  ? otherParticipant?.name
+                  : undefined
+              }
+            />
+          )}
 
           {/* Input */}
           <div className="p-4 bg-card border-t shrink-0">

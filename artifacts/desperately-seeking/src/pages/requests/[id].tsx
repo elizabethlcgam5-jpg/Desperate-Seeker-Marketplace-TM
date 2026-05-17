@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { PaywallModal } from "@/components/paywall-modal";
+import { EscrowPanel } from "@/components/escrow-panel";
 
 const responseSchema = z.object({
   price: z.coerce.number().min(0),
@@ -452,15 +453,33 @@ export default function RequestDetail() {
 
                     <div className="md:w-48 shrink-0 flex flex-col justify-center items-center gap-3 border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6 border-border/50">
                       {response.status === "accepted" ? (
-                        <div className="text-center">
-                          <div className="inline-flex items-center justify-center p-2 bg-primary/10 text-primary rounded-full mb-2">
-                            <CheckCircle className="w-6 h-6" />
+                        <div className="w-full space-y-3">
+                          <div className="text-center">
+                            <div className="inline-flex items-center justify-center p-2 bg-primary/10 text-primary rounded-full mb-2">
+                              <CheckCircle className="w-6 h-6" />
+                            </div>
+                            <p className="font-medium text-primary">Offer Accepted</p>
+                            {(isBuyer || currentUser?.id === response.seller.id) && response.threadId && (
+                              <Link href={`/messages/${response.threadId}`}>
+                                <Button variant="link" className="mt-1 text-primary text-sm h-auto py-1">Go to Chat</Button>
+                              </Link>
+                            )}
                           </div>
-                          <p className="font-medium text-primary">Offer Accepted</p>
-                          {(isBuyer || currentUser?.id === response.seller.id) && response.threadId && (
-                            <Link href={`/messages/${response.threadId}`}>
-                              <Button variant="link" className="mt-2 text-primary">Go to Messages</Button>
-                            </Link>
+                          {isBuyer && (
+                            <EscrowPanel
+                              role="buyer"
+                              price={response.price}
+                              sellerName={response.seller.name}
+                              compact
+                            />
+                          )}
+                          {currentUser?.id === response.seller.id && (
+                            <EscrowPanel
+                              role="seller"
+                              price={response.price}
+                              buyerName={request.buyer.name}
+                              compact
+                            />
                           )}
                         </div>
                       ) : response.status === "declined" ? (
