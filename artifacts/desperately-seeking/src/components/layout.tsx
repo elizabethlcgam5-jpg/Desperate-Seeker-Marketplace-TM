@@ -12,11 +12,11 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="container mx-auto px-4 py-10 md:py-12">
           <div className="flex flex-col md:flex-row items-start justify-between gap-8">
             <div className="max-w-xs">
-              <p className="font-serif text-lg font-semibold text-white mb-2">Desperately Seeking</p>
+              <p className="font-serif text-lg font-semibold text-white mb-2">Desperately Seeking™</p>
               <p className="text-sm leading-relaxed">
                 Post what you need. Help comes to you. The buyer-first local marketplace.
               </p>
-              <p className="text-xs mt-4">&copy; {new Date().getFullYear()} Desperately Seeking. All rights reserved.</p>
+              <p className="text-xs mt-4">&copy; {new Date().getFullYear()} Desperately Seeking™. All rights reserved.</p>
             </div>
             <nav className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
               <Link href="/about" className="hover:text-white transition-colors">About</Link>

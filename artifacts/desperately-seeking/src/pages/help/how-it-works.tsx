@@ -21,9 +21,9 @@ export default function HelpHowItWorks() {
             <ArrowLeft className="h-4 w-4" /> Help Center
           </Link>
           <span className="block text-xs font-semibold uppercase tracking-widest text-[#D4AF37] mb-3">Step by Step</span>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">How Desperately Seeking Works</h1>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">How Desperately Seeking™ Works</h1>
           <p className="text-white/70 text-lg leading-relaxed max-w-2xl">
-            Desperately Seeking is built to save you time. Instead of scrolling through endless listings, you just post what you need — and sellers come to you. It's simple, fast, and made for people who don't want to waste their day searching.
+            Desperately Seeking™ is built to save you time. Instead of scrolling through endless listings, you just post what you need — and sellers come to you. It's simple, fast, and made for people who don't want to waste their day searching.
           </p>
         </div>
       </section>

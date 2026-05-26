@@ -280,13 +280,13 @@ export default function Home() {
       <section className="bg-white py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-8 max-w-3xl text-center">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#0B3954] mb-6">
-            Welcome to Desperately Seeking
+            Welcome to Desperately Seeking™
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-            Desperately Seeking makes buying and selling easier for everyone. Instead of scrolling through endless listings, you simply post what you need and let the right sellers come to you. It's a faster, cleaner way to find exactly what you're looking for.
+            Desperately Seeking™ makes buying and selling easier for everyone. Instead of scrolling through endless listings, you simply post what you need and let the right sellers come to you. It's a faster, cleaner way to find exactly what you're looking for.
           </p>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            Whether you're searching for something specific or trying to sell items you no longer need, Desperately Seeking keeps things simple, honest, and stress-free. Real people helping each other find what they need without the usual hassle.
+            Whether you're searching for something specific or trying to sell items you no longer need, Desperately Seeking™ keeps things simple, honest, and stress-free. Real people helping each other find what they need without the usual hassle.
           </p>
           <div className="mt-10">
             <Link href="/requests/new">

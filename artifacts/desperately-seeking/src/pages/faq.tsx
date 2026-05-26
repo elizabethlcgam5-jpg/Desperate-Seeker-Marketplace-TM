@@ -59,7 +59,7 @@ export default function FAQ() {
             Frequently Asked Questions
           </h1>
           <p className="text-white/70 text-base max-w-[520px]">
-            Everything you need to know about Desperately Seeking.
+            Everything you need to know about Desperately Seeking™.
           </p>
         </div>
       </section>

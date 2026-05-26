@@ -54,7 +54,7 @@ export function Header() {
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <Search className="h-5 w-5 text-[#D4AF37]" />
           <span className="hidden font-serif text-xl font-bold tracking-tight text-white sm:inline-block">
-            Desperately Seeking
+            Desperately Seeking™
           </span>
         </Link>
         <nav className="flex flex-1 items-center space-x-5 text-sm font-medium">

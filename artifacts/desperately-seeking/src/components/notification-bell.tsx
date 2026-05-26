@@ -272,12 +272,12 @@ export function NotificationBell() {
                   <div className="flex gap-2 text-[11px]">
                     <span className="font-medium w-8 text-[#0B3954]/50">Re:</span>
                     <span className="font-bold text-[#0B3954]">
-                      🔔 {firstUnread ? `Exact match — someone needs your listing` : "Match alert from Desperately Seeking"}
+                      🔔 {firstUnread ? `Exact match — someone needs your listing` : "Match alert from Desperately Seeking™"}
                     </span>
                   </div>
                 </div>
                 <div className="px-5 py-5 space-y-4">
-                  <p className="font-serif font-bold text-[#0B3954]">Desperately Seeking</p>
+                  <p className="font-serif font-bold text-[#0B3954]">Desperately Seeking™</p>
                   <div className="h-px bg-[#e0e0e0]" />
                   <p className="text-sm font-semibold text-[#0B3954]">Hi there,</p>
                   {firstUnread ? (

@@ -72,11 +72,11 @@ const BUYER_RULES = [
 const WHY_DIFFERENT = [
   { icon: Zap, title: "Buyers Don't Search — They Post", body: "Instead of digging through thousands of listings, buyers simply post what they need. Sellers come to them. It's faster, cleaner, and way less stressful." },
   { icon: CheckCircle2, title: "Sellers Only Respond If They Have It", body: "No random listings. No guessing. Sellers reply only when they actually have the item the buyer wants. It cuts out all the noise." },
-  { icon: Clock, title: "No Endless Scrolling", body: "Other marketplaces make you scroll forever. Desperately Seeking flips the script — the right items find you." },
+  { icon: Clock, title: "No Endless Scrolling", body: "Other marketplaces make you scroll forever. Desperately Seeking™ flips the script — the right items find you." },
   { icon: CreditCard, title: "Simple, Safe Payments", body: "All payments go through the app. No cash, no Zelle, no \"meet me at the ATM.\" It keeps things safe and makes every sale trackable." },
   { icon: Package, title: "Local or Shipped — Your Choice", body: "Meet up, porch pickup, or shipping. Whatever works best for you. The app supports all of it." },
   { icon: Star, title: "Built Around Real-Life Complaints", body: "We listened to what people hate about other marketplaces — scams, ghosting, endless scrolling, no-shows — and built something better." },
-  { icon: Users, title: "Designed to Save Time", body: "Everything about Desperately Seeking is made to be quick, simple, and easy. No drama. No confusion. Just results." },
+  { icon: Users, title: "Designed to Save Time", body: "Everything about Desperately Seeking™ is made to be quick, simple, and easy. No drama. No confusion. Just results." },
 ];
 
 const SAFETY_TIPS = [
@@ -133,9 +133,9 @@ export default function HowItWorks() {
       <section className="bg-[#0B3954] text-white py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-8 max-w-3xl text-center">
           <span className="inline-block text-xs font-semibold uppercase tracking-widest text-[#D4AF37] mb-4">The Platform</span>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-5">How Desperately Seeking Works</h1>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold mb-5">How Desperately Seeking™ Works</h1>
           <p className="text-white/70 text-lg leading-relaxed max-w-2xl mx-auto">
-            Desperately Seeking is built to save you time. Instead of scrolling through endless listings, you just post what you need — and sellers come to you. It's simple, fast, and made for people who don't want to waste their day searching.
+            Desperately Seeking™ is built to save you time. Instead of scrolling through endless listings, you just post what you need — and sellers come to you. It's simple, fast, and made for people who don't want to waste their day searching.
           </p>
         </div>
       </section>
@@ -163,9 +163,9 @@ export default function HowItWorks() {
       {/* Why Different */}
       <section className="bg-white py-16 md:py-20">
         <div className="container mx-auto px-4 md:px-8 max-w-4xl">
-          <SectionHeader label="What Sets Us Apart" title="Why Desperately Seeking Is Different" />
+          <SectionHeader label="What Sets Us Apart" title="Why Desperately Seeking™ Is Different" />
           <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Desperately Seeking isn't just another marketplace. It's built for people who are tired of wasting time scrolling, searching, and dealing with dead-end listings.
+            Desperately Seeking™ isn't just another marketplace. It's built for people who are tired of wasting time scrolling, searching, and dealing with dead-end listings.
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
             {WHY_DIFFERENT.map((item, i) => (
@@ -189,7 +189,7 @@ export default function HowItWorks() {
                 <h3 className="font-serif text-xl font-bold text-[#0B3954]">Seller Rules</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                Desperately Seeking is built to make selling simple. These quick guidelines help keep things smooth, safe, and fair for everyone.
+                Desperately Seeking™ is built to make selling simple. These quick guidelines help keep things smooth, safe, and fair for everyone.
               </p>
               <div className="space-y-5">
                 {SELLER_RULES.map((rule, i) => (
@@ -207,7 +207,7 @@ export default function HowItWorks() {
                 <h3 className="font-serif text-xl font-bold text-[#0B3954]">Buyer Rules</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                Desperately Seeking is all about saving time. These quick guidelines help keep things smooth, safe, and easy for everyone.
+                Desperately Seeking™ is all about saving time. These quick guidelines help keep things smooth, safe, and easy for everyone.
               </p>
               <div className="space-y-5">
                 {BUYER_RULES.map((rule, i) => (
@@ -224,7 +224,7 @@ export default function HowItWorks() {
         <div className="container mx-auto px-4 md:px-8 max-w-4xl">
           <SectionHeader label="Stay Safe" title="Local Pickup Safety Tips" />
           <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Most people on Desperately Seeking are just regular buyers and sellers trying to save time. Still, it's always smart to stay safe when meeting someone in person.
+            Most people on Desperately Seeking™ are just regular buyers and sellers trying to save time. Still, it's always smart to stay safe when meeting someone in person.
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
             {SAFETY_TIPS.map((tip, i) => (

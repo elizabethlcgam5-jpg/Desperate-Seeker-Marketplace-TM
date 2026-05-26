@@ -47,7 +47,7 @@ export default function LoginPage() {
       await qc.invalidateQueries();
       toast.success(
         mode === "register"
-          ? `Welcome to Desperately Seeking, ${data.name}!`
+          ? `Welcome to Desperately Seeking™, ${data.name}!`
           : `Welcome back, ${data.name}!`,
       );
       setLocation("/");
@@ -216,7 +216,7 @@ export default function LoginPage() {
       </Card>
 
       <p className="mt-6 text-white/40 text-xs text-center">
-        © {new Date().getFullYear()} Desperately Seeking. All rights reserved.
+        © {new Date().getFullYear()} Desperately Seeking™. All rights reserved.
       </p>
     </div>
   );

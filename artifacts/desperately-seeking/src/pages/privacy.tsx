@@ -23,7 +23,7 @@ export default function Privacy() {
           </div>
 
           <div className="bg-white rounded-xl border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.05)] p-6 md:p-8 space-y-6 text-sm text-[#0B3954]/75 leading-relaxed">
-            <p>Your privacy matters to us. This policy explains how Desperately Seeking collects and uses your information.</p>
+            <p>Your privacy matters to us. This policy explains how Desperately Seeking™ collects and uses your information.</p>
 
             <div>
               <p className="font-semibold text-[#0B3954] mb-2">1. Information We Collect</p>

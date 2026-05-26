@@ -35,7 +35,7 @@ const SECTIONS = [
   {
     href: "/help/why-different",
     icon: ShieldCheck,
-    label: "Why Desperately Seeking Is Different",
+    label: "Why Desperately Seeking™ Is Different",
     desc: "What sets this platform apart from every other marketplace — and why that matters for you.",
     color: "bg-purple-50",
   },
@@ -63,7 +63,7 @@ export default function HelpCenter() {
           <span className="inline-block text-xs font-semibold uppercase tracking-widest text-[#D4AF37] mb-4">Support</span>
           <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Help Center</h1>
           <p className="text-white/70 text-lg leading-relaxed max-w-xl mx-auto">
-            Everything you need to know about using Desperately Seeking — for buyers, sellers, and everyone in between.
+            Everything you need to know about using Desperately Seeking™ — for buyers, sellers, and everyone in between.
           </p>
         </div>
       </section>

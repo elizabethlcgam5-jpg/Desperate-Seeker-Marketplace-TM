@@ -135,7 +135,7 @@ export default function SellerDashboard() {
               Welcome, Seller!
             </h1>
             <p className="mt-3 max-w-2xl text-white/70 text-base leading-relaxed">
-              Desperately Seeking gives each seller <span className="text-[#D4AF37] font-semibold">2 free active listings</span> to get started.
+              Desperately Seeking™ gives each seller <span className="text-[#D4AF37] font-semibold">2 free active listings</span> to get started.
               After that, upgrade to Premium for unlimited listings and full marketplace tools.
             </p>
           </div>
@@ -289,7 +289,7 @@ export default function SellerDashboard() {
                     Commission Model
                   </h2>
                   <p className="mt-0.5 text-sm text-muted-foreground max-w-md">
-                    Desperately Seeking charges a simple{" "}
+                    Desperately Seeking™ charges a simple{" "}
                     <span className="font-semibold text-[#0B3954]">5% commission</span>{" "}
                     on completed sales. Posting is always free. Upgrade to Premium to
                     respond to buyer requests and match instantly.

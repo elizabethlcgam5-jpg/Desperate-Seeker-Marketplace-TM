@@ -24,7 +24,7 @@ export default function HelpBuyerRules() {
           <span className="block text-xs font-semibold uppercase tracking-widest text-[#D4AF37] mb-3">For Buyers</span>
           <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Buyer Rules & Expectations</h1>
           <p className="text-white/70 text-lg leading-relaxed max-w-2xl">
-            Desperately Seeking is all about saving time. These quick guidelines help keep things smooth, safe, and easy for everyone using the app.
+            Desperately Seeking™ is all about saving time. These quick guidelines help keep things smooth, safe, and easy for everyone using the app.
           </p>
         </div>
       </section>

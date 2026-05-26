@@ -66,7 +66,7 @@ export default function Seller() {
             Your items. Your earnings. Your space to shine.
           </p>
           <p className="text-white/55 text-sm max-w-[560px] mb-8 leading-relaxed">
-            Desperately Seeking is built around one simple truth: without sellers, there is no
+            Desperately Seeking™ is built around one simple truth: without sellers, there is no
             marketplace. You're the heart of this platform — and we treat you that way.
           </p>
           <button
@@ -179,7 +179,7 @@ export default function Seller() {
               Why Sellers Love It Here
             </h2>
             <p className="text-sm text-muted-foreground max-w-[520px] mb-6">
-              We built Desperately Seeking around the things sellers are tired of dealing with on other platforms.
+              We built Desperately Seeking™ around the things sellers are tired of dealing with on other platforms.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
