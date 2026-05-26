@@ -17,6 +17,12 @@ export function Layout({ children }: { children: ReactNode }) {
                 Post what you need. Help comes to you. The buyer-first local marketplace.
               </p>
               <p className="text-xs mt-4">&copy; {new Date().getFullYear()} Desperately Seeking™. All rights reserved.</p>
+              <a
+                href="mailto:support@desperatelyseekingmarketplace.com"
+                className="text-xs mt-2 inline-block text-white/50 hover:text-white transition-colors"
+              >
+                support@desperatelyseekingmarketplace.com
+              </a>
             </div>
             <nav className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
               <Link href="/about" className="hover:text-white transition-colors">About</Link>
