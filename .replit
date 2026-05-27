@@ -50,3 +50,8 @@ externalPort = 3000
 
 [nix]
 channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+ADMIN_USER_IDS = "8b61e437-9a69-4d16-8c78-b2fef368c685"
