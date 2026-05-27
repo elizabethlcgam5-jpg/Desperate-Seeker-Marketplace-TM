@@ -23,6 +23,7 @@ import Browse from "@/pages/browse";
 import Login from "@/pages/login";
 import Seller from "@/pages/seller";
 import NewListing from "@/pages/listings/new";
+import ListingDetail from "@/pages/listings/[id]";
 import About from "@/pages/about";
 import FAQ from "@/pages/faq";
 import HowItWorks from "@/pages/how-it-works";
@@ -71,6 +72,7 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/seller" component={Seller} />
       <Route path="/listings/new" component={NewListing} />
+      <Route path="/listings/:id" component={ListingDetail} />
       <Route path="/about" component={About} />
       <Route path="/how-it-works" component={HowItWorks} />
       <Route path="/help" component={HelpCenter} />

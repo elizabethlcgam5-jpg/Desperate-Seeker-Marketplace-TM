@@ -1,12 +1,12 @@
 import { useState, useRef } from "react";
+import { Link } from "wouter";
 import { Layout } from "@/components/layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useListListings, useGetCurrentUser } from "@workspace/api-client-react";
-import { UpgradeNudge } from "@/components/upgrade-nudge";
-import { MapPin, Search, Tag, X, Star, Camera, Loader2, ShoppingCart } from "lucide-react";
+import { MapPin, Search, Tag, X, Star, Camera, Loader2, ShoppingCart, MessageCircle, HandCoins } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -55,6 +55,7 @@ function ListingCard({
           : "border-border/60 shadow-sm"
       }`}
     >
+      <Link href={`/listings/${listing.id}`} className="block">
       {listing.imageUrl ? (
         <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
           <img
@@ -62,7 +63,7 @@ function ListingCard({
             alt={listing.title}
             className="w-full h-full object-cover"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${listing.id}/400/300`;
+              (e.target as HTMLImageElement).style.display = "none";
             }}
           />
           {listing.isFeatured && (
@@ -87,7 +88,9 @@ function ListingCard({
           )}
         </div>
       )}
+      </Link>
       <div className="p-4 flex flex-col flex-1">
+        <Link href={`/listings/${listing.id}`} className="block">
         <div className="flex items-center gap-1.5 mb-2">
           <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#0B3954]">
             For Sale
@@ -97,7 +100,7 @@ function ListingCard({
           </Badge>
         </div>
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-serif font-semibold text-[#0B3954] leading-snug line-clamp-2">
+          <h3 className="font-serif font-semibold text-[#0B3954] leading-snug line-clamp-2 hover:underline">
             {listing.title}
           </h3>
           <span className="text-[#D4AF37] font-bold font-serif text-lg shrink-0">
@@ -107,6 +110,7 @@ function ListingCard({
         <p className="text-sm text-muted-foreground line-clamp-2 mb-3 flex-1">
           {listing.description}
         </p>
+        </Link>
         <div className="flex items-center justify-between mt-auto">
           <Badge
             variant="outline"
@@ -379,11 +383,6 @@ export default function Browse() {
               </div>
             )}
           </div>
-        )}
-
-        {/* Seller upgrade nudge — shown only to free / unauthenticated users */}
-        {(!user || user.subscriptionTier === "free") && (
-          <UpgradeNudge variant="response_limit" className="mb-4" />
         )}
 
         {/* Listings grid */}

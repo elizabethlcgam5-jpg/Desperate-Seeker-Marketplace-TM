@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, listingsTable, usersTable } from "@workspace/db";
+import { db, listingsTable, usersTable, notificationsTable } from "@workspace/db";
 import { eq, desc, and } from "drizzle-orm";
 import { instantMatchOnListing } from "../lib/matchEngine";
 import { generateAndSaveListingKeywords } from "../lib/keywordGenerator";
@@ -224,6 +224,111 @@ router.post("/listings/:listingId/repost", withCurrentUser, async (req, res) => 
   }
 
   res.json(serializeListing(row));
+});
+
+// POST /listings/:listingId/offer — buyer submits an offer to the seller
+router.post("/listings/:listingId/offer", withCurrentUser, async (req, res) => {
+  const buyerId = req.currentUserId!;
+  const { listingId } = req.params;
+  const { amount, note } = (req.body ?? {}) as {
+    amount?: number;
+    note?: string;
+  };
+
+  if (!amount || typeof amount !== "number" || amount <= 0) {
+    res.status(400).json({ error: "Invalid offer amount" });
+    return;
+  }
+
+  const [listing] = await db
+    .select()
+    .from(listingsTable)
+    .where(eq(listingsTable.id, listingId))
+    .limit(1);
+  if (!listing) {
+    res.status(404).json({ error: "Listing not found" });
+    return;
+  }
+  if (!listing.sellerId) {
+    res.status(400).json({ error: "Listing has no seller" });
+    return;
+  }
+  if (listing.sellerId === buyerId) {
+    res.status(400).json({ error: "Can't offer on your own listing" });
+    return;
+  }
+  if (!listing.isAvailable || listing.status === "sold") {
+    res.status(400).json({ error: "Listing is no longer available" });
+    return;
+  }
+
+  const [buyer] = await db
+    .select({ name: usersTable.name })
+    .from(usersTable)
+    .where(eq(usersTable.id, buyerId))
+    .limit(1);
+
+  await db.insert(notificationsTable).values({
+    id: randomUUID(),
+    userId: listing.sellerId,
+    type: "offer",
+    title: `New offer: $${amount} for ${listing.title}`,
+    message: `${buyer?.name ?? "A buyer"} offered $${amount}${note ? ` — "${note}"` : ""}`,
+    listingId: listing.id,
+  });
+
+  res.json({ ok: true });
+});
+
+// POST /listings/:listingId/message — buyer sends a quick message to the seller
+router.post("/listings/:listingId/message", withCurrentUser, async (req, res) => {
+  const buyerId = req.currentUserId!;
+  const { listingId } = req.params;
+  const { body } = (req.body ?? {}) as { body?: string };
+
+  if (!body || typeof body !== "string" || !body.trim()) {
+    res.status(400).json({ error: "Message body required" });
+    return;
+  }
+
+  const [listing] = await db
+    .select()
+    .from(listingsTable)
+    .where(eq(listingsTable.id, listingId))
+    .limit(1);
+  if (!listing) {
+    res.status(404).json({ error: "Listing not found" });
+    return;
+  }
+  if (!listing.sellerId) {
+    res.status(400).json({ error: "Listing has no seller" });
+    return;
+  }
+  if (listing.sellerId === buyerId) {
+    res.status(400).json({ error: "Can't message yourself" });
+    return;
+  }
+  if (!listing.isAvailable || listing.status === "sold") {
+    res.status(400).json({ error: "Listing is no longer available" });
+    return;
+  }
+
+  const [buyer] = await db
+    .select({ name: usersTable.name })
+    .from(usersTable)
+    .where(eq(usersTable.id, buyerId))
+    .limit(1);
+
+  await db.insert(notificationsTable).values({
+    id: randomUUID(),
+    userId: listing.sellerId,
+    type: "message",
+    title: `New message about ${listing.title}`,
+    message: `${buyer?.name ?? "A buyer"}: ${body.slice(0, 200)}`,
+    listingId: listing.id,
+  });
+
+  res.json({ ok: true });
 });
 
 export default router;
