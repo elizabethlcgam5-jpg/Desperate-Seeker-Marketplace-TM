@@ -7,8 +7,10 @@ import {
   messagesTable,
   notificationsTable,
   commissionsTable,
+  responsesTable,
+  threadsTable,
 } from "@workspace/db";
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
 import { readCurrentUserId } from "../lib/session";
 import type { Request, Response, NextFunction } from "express";
 
@@ -186,6 +188,73 @@ router.get("/admin/commissions", requireAdmin, async (_req, res) => {
       createdAt: r.createdAt.toISOString(),
     })),
   );
+});
+
+router.get("/admin/requests", requireAdmin, async (_req, res) => {
+  const rows = await db
+    .select({
+      id: requestsTable.id,
+      title: requestsTable.title,
+      category: requestsTable.category,
+      status: requestsTable.status,
+      urgency: requestsTable.urgency,
+      buyerId: requestsTable.buyerId,
+      createdAt: requestsTable.createdAt,
+    })
+    .from(requestsTable)
+    .orderBy(desc(requestsTable.createdAt))
+    .limit(100);
+  res.json(
+    rows.map((r) => ({
+      ...r,
+      createdAt: r.createdAt.toISOString(),
+    })),
+  );
+});
+
+router.delete("/admin/listings/all", requireAdmin, async (_req, res) => {
+  const ids = (
+    await db.select({ id: listingsTable.id }).from(listingsTable)
+  ).map((r) => r.id);
+  if (ids.length === 0) {
+    res.json({ deleted: 0 });
+    return;
+  }
+  await db
+    .delete(commissionsTable)
+    .where(inArray(commissionsTable.listingId, ids));
+  await db
+    .delete(notificationsTable)
+    .where(
+      and(
+        isNotNull(notificationsTable.listingId),
+        inArray(notificationsTable.listingId, ids),
+      ),
+    );
+  const result = await db.delete(listingsTable);
+  res.json({ deleted: ids.length, rows: result.rowCount ?? ids.length });
+});
+
+router.delete("/admin/requests/all", requireAdmin, async (_req, res) => {
+  const ids = (
+    await db.select({ id: requestsTable.id }).from(requestsTable)
+  ).map((r) => r.id);
+  if (ids.length === 0) {
+    res.json({ deleted: 0 });
+    return;
+  }
+  await db.delete(responsesTable).where(inArray(responsesTable.requestId, ids));
+  await db.delete(threadsTable).where(inArray(threadsTable.requestId, ids));
+  await db
+    .delete(notificationsTable)
+    .where(
+      and(
+        isNotNull(notificationsTable.requestId),
+        inArray(notificationsTable.requestId, ids),
+      ),
+    );
+  const result = await db.delete(requestsTable);
+  res.json({ deleted: ids.length, rows: result.rowCount ?? ids.length });
 });
 
 export default router;

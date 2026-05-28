@@ -1,6 +1,8 @@
 import { Layout } from "@/components/layout";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -69,9 +71,30 @@ const NAV_SECTIONS = [
   { id: "overview", label: "Overview", icon: Activity },
   { id: "users", label: "Users", icon: Users },
   { id: "listings", label: "Listings", icon: Package },
+  { id: "requests", label: "Requests", icon: MessageSquare },
   { id: "messages", label: "Messages", icon: MessageSquare },
   { id: "payments", label: "Payments", icon: DollarSign },
 ];
+
+type AdminRequest = {
+  id: string;
+  title: string;
+  category: string;
+  status: string;
+  urgency: string;
+  buyerId: string;
+  createdAt: string;
+};
+
+async function adminDeleteAll(path: string): Promise<number> {
+  const res = await fetch(getApiUrl(`admin/${path}/all`), {
+    method: "DELETE",
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Delete failed");
+  const data = (await res.json()) as { deleted: number };
+  return data.deleted;
+}
 
 function useAdmin<T>(path: string) {
   return useQuery<T>({
@@ -133,6 +156,7 @@ function SectionHeader({ children }: { children: React.ReactNode }) {
 
 export default function AdminDashboard() {
   const [section, setSection] = useState("overview");
+  const queryClient = useQueryClient();
   const { data: user } = useGetCurrentUser();
   const { data: stats, isLoading: statsLoading } =
     useAdmin<Stats>("stats");
@@ -140,10 +164,31 @@ export default function AdminDashboard() {
     useAdmin<AdminUser[]>("users");
   const { data: listings, isLoading: listingsLoading } =
     useAdmin<AdminListing[]>("listings");
+  const { data: requests, isLoading: requestsLoading } =
+    useAdmin<AdminRequest[]>("requests");
   const { data: messages, isLoading: messagesLoading } =
     useAdmin<AdminMessage[]>("messages");
   const { data: commissions, isLoading: commissionsLoading } =
     useAdmin<AdminCommission[]>("commissions");
+
+  async function handleClearAll(
+    kind: "listings" | "requests",
+    label: string,
+  ): Promise<void> {
+    if (
+      !window.confirm(
+        `Delete ALL ${label}? This cannot be undone.`,
+      )
+    )
+      return;
+    try {
+      const n = await adminDeleteAll(kind);
+      window.alert(`Deleted ${n} ${label}.`);
+      await queryClient.invalidateQueries({ queryKey: ["admin"] });
+    } catch {
+      window.alert("Delete failed. Check console.");
+    }
+  }
 
   if (!user) {
     return (
@@ -312,9 +357,20 @@ export default function AdminDashboard() {
 
             {section === "listings" && (
               <div>
-                <SectionHeader>
-                  Listings ({listings?.length ?? 0})
-                </SectionHeader>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-serif text-xl font-bold text-[#0B3954]">
+                    Listings ({listings?.length ?? 0})
+                  </h2>
+                  {listings && listings.length > 0 && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleClearAll("listings", "listings")}
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" /> Clear All
+                    </Button>
+                  )}
+                </div>
                 {listingsLoading ? (
                   <Skeleton className="h-64 rounded-2xl" />
                 ) : !listings || listings.length === 0 ? (
@@ -358,6 +414,61 @@ export default function AdminDashboard() {
                               >
                                 {l.status}
                               </Badge>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {section === "requests" && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-serif text-xl font-bold text-[#0B3954]">
+                    Buyer Requests ({requests?.length ?? 0})
+                  </h2>
+                  {requests && requests.length > 0 && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleClearAll("requests", "requests")}
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" /> Clear All
+                    </Button>
+                  )}
+                </div>
+                {requestsLoading ? (
+                  <Skeleton className="h-64 rounded-2xl" />
+                ) : !requests || requests.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">
+                    No buyer requests yet.
+                  </p>
+                ) : (
+                  <div className="bg-white rounded-2xl border border-border/60 shadow-sm overflow-hidden">
+                    <table className="w-full text-sm">
+                      <thead className="bg-[#0B3954]/5 text-[#0B3954]">
+                        <tr>
+                          <th className="text-left p-3 font-semibold">Title</th>
+                          <th className="text-left p-3 font-semibold">Category</th>
+                          <th className="text-left p-3 font-semibold">Status</th>
+                          <th className="text-left p-3 font-semibold">Urgency</th>
+                          <th className="text-left p-3 font-semibold">Created</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {requests.map((r) => (
+                          <tr key={r.id} className="border-t border-border/40">
+                            <td className="p-3 font-medium">{r.title}</td>
+                            <td className="p-3 text-muted-foreground capitalize">
+                              {r.category}
+                            </td>
+                            <td className="p-3 capitalize">{r.status}</td>
+                            <td className="p-3 capitalize">{r.urgency}</td>
+                            <td className="p-3 text-muted-foreground">
+                              {new Date(r.createdAt).toLocaleDateString()}
                             </td>
                           </tr>
                         ))}
