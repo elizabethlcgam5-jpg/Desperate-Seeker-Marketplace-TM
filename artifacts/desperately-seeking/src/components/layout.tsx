@@ -30,6 +30,7 @@ export function Layout({ children }: { children: ReactNode }) {
               <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
               <Link href="/faq" className="hover:text-white transition-colors">FAQ</Link>
               <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+              <Link href="/help/prohibited-items" className="hover:text-white transition-colors">Prohibited Items</Link>
               <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             </nav>
