@@ -8,6 +8,7 @@ import {
   MapPin,
   CreditCard,
   ArrowRight,
+  Ban,
 } from "lucide-react";
 
 const SECTIONS = [
@@ -52,6 +53,13 @@ const SECTIONS = [
     label: "Safety & Payments",
     desc: "How payments work, what protections apply, and what to know about cash sales.",
     color: "bg-amber-50",
+  },
+  {
+    href: "/help/prohibited-items",
+    icon: Ban,
+    label: "Prohibited Items",
+    desc: "Items that are not allowed on Desperately Seeking™ — keeping our community safe, legal, and welcoming.",
+    color: "bg-red-50",
   },
 ];
 

@@ -34,6 +34,7 @@ import HelpBuyerRules from "@/pages/help/buyer-rules";
 import HelpWhyDifferent from "@/pages/help/why-different";
 import HelpSafetyTips from "@/pages/help/safety-tips";
 import HelpSafetyPayments from "@/pages/help/safety-payments";
+import HelpProhibitedItems from "@/pages/help/prohibited-items";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import Contact from "@/pages/contact";
@@ -82,6 +83,7 @@ function Router() {
       <Route path="/help/why-different" component={HelpWhyDifferent} />
       <Route path="/help/safety-tips" component={HelpSafetyTips} />
       <Route path="/help/safety-payments" component={HelpSafetyPayments} />
+      <Route path="/help/prohibited-items" component={HelpProhibitedItems} />
       <Route path="/faq" component={FAQ} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
