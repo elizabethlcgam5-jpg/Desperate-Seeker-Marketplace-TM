@@ -139,18 +139,26 @@ function ListingCard({
             Sold
           </div>
         ) : onBuy ? (
-          <button
-            onClick={onBuy}
-            disabled={buyLoading}
-            className="mt-3 w-full flex items-center justify-center gap-2 rounded-full py-2 text-xs font-bold bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] disabled:opacity-60 transition-colors cursor-pointer border-0"
-          >
-            {buyLoading ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <ShoppingCart className="h-3.5 w-3.5" />
-            )}
-            {buyLoading ? "Loading…" : "Buy Now"}
-          </button>
+          <>
+            <button
+              onClick={onBuy}
+              disabled={buyLoading}
+              className="mt-3 w-full flex items-center justify-center gap-2 rounded-full py-2 text-xs font-bold bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] disabled:opacity-60 transition-colors cursor-pointer border-0"
+            >
+              {buyLoading ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <ShoppingCart className="h-3.5 w-3.5" />
+              )}
+              {buyLoading ? "Loading…" : "Buy Now"}
+            </button>
+            <Link
+              href={`/listings/${listing.id}`}
+              className="mt-2 block text-center text-xs font-semibold text-[#0B3954]/70 hover:text-[#D4AF37] transition-colors"
+            >
+              or Make an Offer
+            </Link>
+          </>
         ) : null}
       </div>
     </div>
