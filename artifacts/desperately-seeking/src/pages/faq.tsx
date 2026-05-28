@@ -26,7 +26,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Is my payment info safe?",
-    a: "Absolutely. All payments are processed securely through your app store — we never store your payment details.",
+    a: "Absolutely. All payments are processed securely through Stripe — we never store your payment details.",
   },
   {
     q: "What is Local Pickup?",
