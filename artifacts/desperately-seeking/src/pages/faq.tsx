@@ -22,7 +22,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "How do I cancel?",
-    a: "Cancel anytime through your App Store or Google Play account settings. You'll keep access until the end of your billing period.",
+    a: "You can cancel anytime from your Desperately Seeking™ account settings. Your subscription will stay active until the end of your current billing period.",
   },
   {
     q: "Is my payment info safe?",
