@@ -4,7 +4,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AISearch } from "@/components/ai-search";
 import {
   useListRequests,
-  useGetOverviewStats,
   useGetCurrentUser,
 } from "@workspace/api-client-react";
 import { Link } from "wouter";
@@ -62,7 +61,6 @@ const DIFFERENTIATORS = [
 ];
 
 export default function Home() {
-  const { data: stats } = useGetOverviewStats();
   const { data: currentUser } = useGetCurrentUser();
   const { data: requests, isLoading: requestsLoading } = useListRequests({
     status: "open",
@@ -127,16 +125,6 @@ export default function Home() {
               </div>
             </Link>
           </div>
-
-          {/* Stats bar */}
-          {stats && (
-            <div className="flex flex-wrap justify-center gap-8 md:gap-16 pt-12 mt-10 border-t border-white/10">
-              <StatPill value={stats.openRequests} label="Open Requests" />
-              <StatPill value={stats.totalResponses} label="Offers Made" />
-              <StatPill value={stats.fulfilledThisWeek} label="Matches This Week" />
-              <StatPill value={stats.activeSellers} label="Active Sellers" />
-            </div>
-          )}
         </div>
       </section>
 
@@ -354,14 +342,5 @@ export default function Home() {
         </section>
       )}
     </Layout>
-  );
-}
-
-function StatPill({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="text-center">
-      <div className="font-serif text-3xl font-bold text-[#D4AF37]">{value}</div>
-      <div className="text-xs text-white/60 mt-1 uppercase tracking-wide">{label}</div>
-    </div>
   );
 }
