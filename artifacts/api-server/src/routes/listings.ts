@@ -11,6 +11,7 @@ import {
 } from "@workspace/api-zod";
 import { randomUUID } from "node:crypto";
 import { withCurrentUser } from "../lib/session";
+import { isTwilioConfigured } from "../lib/twilioVerify";
 
 const router: IRouter = Router();
 
@@ -150,6 +151,19 @@ router.post("/listings", withCurrentUser, async (req, res) => {
   if (user) {
     isFeatured = PREMIUM_TIERS.has(user.subscriptionTier ?? "");
     sellerName = user.name;
+  }
+
+  // Mandatory SMS phone verification before posting — enforced ONLY for
+  // free-tier sellers (the abuse vector is multi-account farming of the free
+  // listing limit; paying sellers are exempt). Only active once Twilio is
+  // configured, so the app keeps working until verification is activated.
+  const isPremium = !!user && PREMIUM_TIERS.has(user.subscriptionTier ?? "");
+  if (isTwilioConfigured() && !isPremium && (!user || !user.phoneVerified)) {
+    res.status(403).json({
+      error: "phone_not_verified",
+      message: "Please verify your phone number before posting an item.",
+    });
+    return;
   }
 
   // Free sellers may post up to 2 items; the 3rd and beyond require a subscription.

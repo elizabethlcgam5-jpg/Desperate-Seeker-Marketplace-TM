@@ -14,6 +14,7 @@ import ThreadDetail from "@/pages/messages/[id]";
 import UserProfile from "@/pages/profile/[id]";
 import MyRequests from "@/pages/me/requests";
 import MyPosts from "@/pages/me/posts";
+import VerifyPhone from "@/pages/me/verify-phone";
 import Analytics from "@/pages/me/analytics";
 import Inventory from "@/pages/me/inventory";
 import SellerDashboard from "@/pages/me/dashboard";
@@ -65,6 +66,7 @@ function Router() {
       <Route path="/profile" component={UserProfile} />
       <Route path="/profile/:id" component={UserProfile} />
       <Route path="/me/posts" component={MyPosts} />
+      <Route path="/verify-phone" component={VerifyPhone} />
       <Route path="/me/requests" component={MyRequests} />
       <Route path="/me/analytics" component={Analytics} />
       <Route path="/me/inventory" component={Inventory} />

@@ -21,6 +21,8 @@ export const usersTable = pgTable("users", {
     .notNull()
     .default(false),
   instantMatch: boolean("instant_match").notNull().default(false),
+  phoneNumber: text("phone_number"),
+  phoneVerified: boolean("phone_verified").notNull().default(false),
 });
 
 export type User = typeof usersTable.$inferSelect;

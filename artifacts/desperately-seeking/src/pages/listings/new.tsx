@@ -214,6 +214,11 @@ export default function NewListing() {
           setLimitOpen(true);
           return;
         }
+        if (err.error === "phone_not_verified") {
+          toast.error("Please verify your phone number before posting.");
+          setLocation("/verify-phone");
+          return;
+        }
         throw new Error(err.error ?? "Failed to post item");
       }
       toast.success("Item posted successfully!");

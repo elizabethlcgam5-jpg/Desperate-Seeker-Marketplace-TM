@@ -61,6 +61,38 @@ export async function withCurrentUser(
   }
 }
 
+// Strict guard: requires an EXISTING authenticated user (valid cookie that maps
+// to a real user). Unlike `withCurrentUser`, it never auto-assigns the first
+// seeded user — use this for sensitive/cost-incurring endpoints (e.g. sending
+// SMS) so unauthenticated callers are rejected with 401 instead of silently
+// acting as someone else.
+export async function requireCurrentUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const userId = readCurrentUserId(req);
+    if (!userId) {
+      res.status(401).json({ error: "unauthorized", message: "You must be signed in." });
+      return;
+    }
+    const [existing] = await db
+      .select({ id: usersTable.id })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1);
+    if (!existing) {
+      res.status(401).json({ error: "unauthorized", message: "You must be signed in." });
+      return;
+    }
+    (req as Request & { currentUserId: string }).currentUserId = existing.id;
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
 declare global {
   namespace Express {
     interface Request {
