@@ -32,6 +32,7 @@ export const GetCurrentUserResponse = zod.object({
     "seller_annual",
   ]),
   subscriptionRenewsAt: zod.coerce.date().nullish(),
+  online: zod.boolean().optional(),
 });
 
 /**
@@ -59,6 +60,7 @@ export const UpdateCurrentUserResponse = zod.object({
     "seller_annual",
   ]),
   subscriptionRenewsAt: zod.coerce.date().nullish(),
+  online: zod.boolean().optional(),
 });
 
 /**
@@ -79,6 +81,7 @@ export const ListUsersResponseItem = zod.object({
     "seller_annual",
   ]),
   subscriptionRenewsAt: zod.coerce.date().nullish(),
+  online: zod.boolean().optional(),
 });
 export const ListUsersResponse = zod.array(ListUsersResponseItem);
 
@@ -104,6 +107,7 @@ export const SubscribeCurrentUserResponse = zod.object({
     "seller_annual",
   ]),
   subscriptionRenewsAt: zod.coerce.date().nullish(),
+  online: zod.boolean().optional(),
 });
 
 /**
@@ -166,6 +170,7 @@ export const SwitchUserResponse = zod.object({
     "seller_annual",
   ]),
   subscriptionRenewsAt: zod.coerce.date().nullish(),
+  online: zod.boolean().optional(),
 });
 
 /**
@@ -191,6 +196,7 @@ export const GetUserResponse = zod.object({
       "seller_annual",
     ]),
     subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
   }),
   requestCount: zod.number(),
   responseCount: zod.number(),
@@ -229,6 +235,7 @@ export const GetUserResponse = zod.object({
             "seller_annual",
           ]),
           subscriptionRenewsAt: zod.coerce.date().nullish(),
+          online: zod.boolean().optional(),
         }),
         responseCount: zod.number(),
       }),
@@ -283,6 +290,7 @@ export const ListRequestsResponseItem = zod.object({
       "seller_annual",
     ]),
     subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
   }),
   responseCount: zod.number(),
 });
@@ -349,6 +357,7 @@ export const GetRequestResponse = zod
         "seller_annual",
       ]),
       subscriptionRenewsAt: zod.coerce.date().nullish(),
+      online: zod.boolean().optional(),
     }),
     responseCount: zod.number(),
   })
@@ -375,6 +384,7 @@ export const GetRequestResponse = zod
                 "seller_annual",
               ]),
               subscriptionRenewsAt: zod.coerce.date().nullish(),
+              online: zod.boolean().optional(),
             }),
             price: zod.number(),
             condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -443,6 +453,7 @@ export const UpdateRequestResponse = zod
         "seller_annual",
       ]),
       subscriptionRenewsAt: zod.coerce.date().nullish(),
+      online: zod.boolean().optional(),
     }),
     responseCount: zod.number(),
   })
@@ -469,6 +480,7 @@ export const UpdateRequestResponse = zod
                 "seller_annual",
               ]),
               subscriptionRenewsAt: zod.coerce.date().nullish(),
+              online: zod.boolean().optional(),
             }),
             price: zod.number(),
             condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -520,6 +532,7 @@ export const ListResponsesForRequestResponseItem = zod.object({
       "seller_annual",
     ]),
     subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
   }),
   price: zod.number(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -573,6 +586,7 @@ export const GetResponseResponse = zod.object({
       "seller_annual",
     ]),
     subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
   }),
   price: zod.number(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -613,6 +627,7 @@ export const UpdateResponseStatusResponse = zod.object({
       "seller_annual",
     ]),
     subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
   }),
   price: zod.number(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]),
@@ -646,6 +661,7 @@ export const ListThreadsResponseItem = zod.object({
       "seller_annual",
     ]),
     subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
   }),
   lastMessage: zod.string(),
   updatedAt: zod.coerce.date(),
@@ -698,6 +714,7 @@ export const GetThreadResponse = zod.object({
         "seller_annual",
       ]),
       subscriptionRenewsAt: zod.coerce.date().nullish(),
+      online: zod.boolean().optional(),
     }),
     responseCount: zod.number(),
   }),
@@ -717,6 +734,7 @@ export const GetThreadResponse = zod.object({
         "seller_annual",
       ]),
       subscriptionRenewsAt: zod.coerce.date().nullish(),
+      online: zod.boolean().optional(),
     }),
   ),
   messages: zod.array(
@@ -738,6 +756,7 @@ export const GetThreadResponse = zod.object({
           "seller_annual",
         ]),
         subscriptionRenewsAt: zod.coerce.date().nullish(),
+        online: zod.boolean().optional(),
       }),
       body: zod.string(),
       createdAt: zod.coerce.date(),
@@ -803,6 +822,7 @@ export const GetRecentActivityResponseItem = zod.object({
       "seller_annual",
     ]),
     subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
   }),
   summary: zod.string(),
   requestId: zod.string().nullish(),
@@ -846,6 +866,7 @@ export const GetTrendingRequestsResponseItem = zod.object({
       "seller_annual",
     ]),
     subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
   }),
   responseCount: zod.number(),
 });
@@ -955,6 +976,7 @@ export const GetInventoryMatchesResponseItem = zod.object({
         "seller_annual",
       ]),
       subscriptionRenewsAt: zod.coerce.date().nullish(),
+      online: zod.boolean().optional(),
     }),
     responseCount: zod.number(),
   }),
@@ -1000,6 +1022,7 @@ export const GetProspectingFeedResponseItem = zod.object({
       "seller_annual",
     ]),
     subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
   }),
   responseCount: zod.number(),
 });

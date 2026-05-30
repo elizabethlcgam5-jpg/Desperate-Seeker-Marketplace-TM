@@ -224,10 +224,19 @@ export default function ThreadDetail() {
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
               </Link>
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={otherParticipant?.avatarUrl} alt={otherParticipant?.name} />
-                <AvatarFallback>{otherParticipant?.name.charAt(0)}</AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={otherParticipant?.avatarUrl} alt={otherParticipant?.name} />
+                  <AvatarFallback>{otherParticipant?.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                {otherParticipant?.online && (
+                  <span
+                    className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 ring-2 ring-card"
+                    aria-label="Online"
+                    title="Online"
+                  />
+                )}
+              </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h2 className="font-semibold text-base">{otherParticipant?.name}</h2>
@@ -238,9 +247,13 @@ export default function ThreadDetail() {
                     />
                   )}
                 </div>
-                <Link href={`/requests/${thread.request.id}`} className="text-xs text-primary hover:underline line-clamp-1">
-                  Re: {thread.request.title}
-                </Link>
+                {otherParticipant?.online ? (
+                  <span className="text-xs text-green-600 font-medium">Online</span>
+                ) : (
+                  <Link href={`/requests/${thread.request.id}`} className="text-xs text-primary hover:underline line-clamp-1">
+                    Re: {thread.request.title}
+                  </Link>
+                )}
               </div>
             </div>
 

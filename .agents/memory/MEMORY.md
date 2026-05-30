@@ -1,2 +1,3 @@
 - [Thread access control](thread-idor.md) — message thread reads/actions must be participant-gated; a prior GET /threads/:id leaked any conversation by ID.
+- [Online presence](online-presence.md) — last-seen-derived `online` boolean only (never expose raw `lastSeenAt` via shared serializeUser); throttle writes both in-memory + conditional UPDATE for autoscale.
 - [Codegen baseline noise](codegen-baseline-noise.md) — repo typecheck has known pre-existing failures unrelated to changes; don't chase them.

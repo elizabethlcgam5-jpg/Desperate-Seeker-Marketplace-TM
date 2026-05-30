@@ -29,6 +29,7 @@ export interface User {
   location: string;
   subscriptionTier: UserSubscriptionTier;
   subscriptionRenewsAt?: string | null;
+  online?: boolean;
 }
 
 export type AnalyticsOfferStatus =

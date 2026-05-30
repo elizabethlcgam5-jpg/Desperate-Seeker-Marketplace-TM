@@ -17,4 +17,5 @@ export interface User {
   location: string;
   subscriptionTier: UserSubscriptionTier;
   subscriptionRenewsAt?: Date | null;
+  online?: boolean;
 }

@@ -41,6 +41,7 @@ export const usersTable = pgTable("users", {
   instantMatch: boolean("instant_match").notNull().default(false),
   phoneNumber: text("phone_number"),
   phoneVerified: boolean("phone_verified").notNull().default(false),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
   notificationSettings: jsonb("notification_settings")
     .$type<NotificationSettings>()
     .notNull()

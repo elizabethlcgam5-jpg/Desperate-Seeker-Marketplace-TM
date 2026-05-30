@@ -1,6 +1,12 @@
 import type { User } from "@workspace/db";
 
+// A user counts as "online" if they've made an authenticated request within
+// this window. Presence is refreshed (throttled) on every authenticated request
+// in the session middleware.
+const ONLINE_THRESHOLD_MS = 2 * 60 * 1000;
+
 export function serializeUser(u: User) {
+  const lastSeenMs = u.lastSeenAt ? u.lastSeenAt.getTime() : null;
   return {
     id: u.id,
     name: u.name,
@@ -19,6 +25,10 @@ export function serializeUser(u: User) {
       ? u.subscriptionRenewsAt.toISOString()
       : null,
     instantMatch: u.instantMatch,
+    // Coarse presence only. We intentionally do NOT expose the exact
+    // `lastSeenAt` timestamp on the wire to avoid leaking activity history.
+    online:
+      lastSeenMs !== null && Date.now() - lastSeenMs < ONLINE_THRESHOLD_MS,
   };
 }
 
