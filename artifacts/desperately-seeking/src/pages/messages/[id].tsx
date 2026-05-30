@@ -229,7 +229,15 @@ export default function ThreadDetail() {
                 <AvatarFallback>{otherParticipant?.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="font-semibold text-base">{otherParticipant?.name}</h2>
+                <div className="flex items-center gap-1.5">
+                  <h2 className="font-semibold text-base">{otherParticipant?.name}</h2>
+                  {muted && (
+                    <BellOff
+                      className="h-3.5 w-3.5 text-muted-foreground shrink-0"
+                      aria-label="Conversation muted"
+                    />
+                  )}
+                </div>
                 <Link href={`/requests/${thread.request.id}`} className="text-xs text-primary hover:underline line-clamp-1">
                   Re: {thread.request.title}
                 </Link>
