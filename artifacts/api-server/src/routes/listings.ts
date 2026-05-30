@@ -225,7 +225,7 @@ router.post("/listings/:listingId/repost", withCurrentUser, async (req, res) => 
 
   const [row] = await db
     .update(listingsTable)
-    .set({ status: "active", isAvailable: true, keywords: null })
+    .set({ status: "active", isAvailable: true, keywords: [] })
     .where(eq(listingsTable.id, listingId))
     .returning();
 
@@ -238,6 +238,55 @@ router.post("/listings/:listingId/repost", withCurrentUser, async (req, res) => 
   } else {
     generateAndSaveListingKeywords(row.id, row.title, row.description, row.category);
   }
+
+  res.json(serializeListing(row));
+});
+
+// PATCH /listings/:listingId — owner edits a listing
+router.patch("/listings/:listingId", withCurrentUser, async (req, res) => {
+  const { listingId } = req.params;
+  const sellerId = req.currentUserId!;
+  const body = (req.body ?? {}) as Record<string, unknown>;
+
+  const [existing] = await db
+    .select()
+    .from(listingsTable)
+    .where(eq(listingsTable.id, listingId))
+    .limit(1);
+  if (!existing) {
+    res.status(404).json({ error: "Listing not found" });
+    return;
+  }
+  if (existing.sellerId !== sellerId) {
+    res.status(403).json({ error: "Not your listing" });
+    return;
+  }
+
+  const updates: Record<string, unknown> = {};
+  if (typeof body.title === "string") updates.title = body.title;
+  if (typeof body.description === "string") updates.description = body.description;
+  if (typeof body.category === "string") updates.category = body.category;
+  if (typeof body.zipCode === "string") updates.zipCode = body.zipCode;
+  if (typeof body.brandName === "string") updates.brandName = body.brandName;
+  if (typeof body.condition === "string") updates.condition = body.condition;
+  if (typeof body.availability === "string") updates.availability = body.availability;
+  if (typeof body.imageUrl === "string") updates.imageUrl = body.imageUrl;
+  if (typeof body.price === "number" && Number.isFinite(body.price))
+    updates.price = body.price.toString();
+  if (body.shippingPrice === null) updates.shippingPrice = null;
+  else if (typeof body.shippingPrice === "number" && Number.isFinite(body.shippingPrice))
+    updates.shippingPrice = body.shippingPrice.toString();
+
+  if (Object.keys(updates).length === 0) {
+    res.json(serializeListing(existing));
+    return;
+  }
+
+  const [row] = await db
+    .update(listingsTable)
+    .set(updates)
+    .where(eq(listingsTable.id, listingId))
+    .returning();
 
   res.json(serializeListing(row));
 });

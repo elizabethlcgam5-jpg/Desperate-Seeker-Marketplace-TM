@@ -1350,6 +1350,18 @@ components:
           type: string
         zipCode:
           type: string
+        brandName:
+          type: string
+        condition:
+          type: string
+        availability:
+          type: string
+          description: Fulfillment method (local_pickup, delivery, shipping)
+        shippingPrice:
+          type: number
+          nullable: true
+        instantMatchOn:
+          type: boolean
 
     MarkListingSoldBody:
       type: object

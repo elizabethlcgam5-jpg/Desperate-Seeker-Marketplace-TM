@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MicButton } from "@/components/mic-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   useGetCurrentUser,
@@ -15,13 +16,11 @@ import {
   Search,
   MapPin,
   Clock,
-  Lock,
   Sparkles,
   MessageSquare,
   Filter,
   Inbox,
 } from "lucide-react";
-import { PaywallModal } from "@/components/paywall-modal";
 
 const CATEGORIES = [
   "All",
@@ -46,14 +45,11 @@ const URGENCY_COLORS: Record<string, string> = {
 
 export default function BuyerRequests() {
   const { data: user } = useGetCurrentUser();
-  const isSeller =
-    user && user.subscriptionTier && user.subscriptionTier !== "free";
 
   const { data: allRequests, isLoading } = useListRequests();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [paywallOpen, setPaywallOpen] = useState(false);
 
   const openRequests = useMemo(() => {
     let requests = allRequests?.filter((r) => r.status === "open") ?? [];
@@ -95,18 +91,10 @@ export default function BuyerRequests() {
             Buyers tell you exactly what they want. If you have it, respond and
             close the deal.
           </p>
-          {!isSeller && (
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-4 py-2 text-sm text-[#D4AF37]">
-              <Lock className="h-4 w-4" />
-              You can respond while your first two free items are active.{" "}
-              <button
-                onClick={() => setPaywallOpen(true)}
-                className="underline underline-offset-2 font-semibold hover:text-[#c9a430]"
-              >
-                Upgrade anytime to unlock unlimited selling.
-              </button>
-            </div>
-          )}
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-4 py-2 text-sm text-[#D4AF37]">
+            <Sparkles className="h-4 w-4" />
+            Responding to buyers is always free &amp; unlimited.
+          </div>
         </div>
       </div>
 
@@ -116,11 +104,18 @@ export default function BuyerRequests() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              className="pl-9 rounded-full border-[#0B3954]/20"
+              className="pl-9 pr-12 rounded-full border-[#0B3954]/20"
               placeholder="Search by keyword or tag…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            <div className="absolute right-1.5 top-1/2 -translate-y-1/2">
+              <MicButton
+                title="Search by voice"
+                className="h-7 w-7"
+                onResult={(text) => setSearchQuery(text)}
+              />
+            </div>
           </div>
           <div className="flex items-center gap-1.5">
             <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -263,27 +258,15 @@ export default function BuyerRequests() {
                       </div>
                     </Link>
 
-                    {/* Respond button */}
-                    {isSeller ? (
-                      <Link href={`/requests/${req.id}`}>
-                        <Button
-                          size="sm"
-                          className="rounded-full bg-[#D4AF37] text-[#0B3954] font-semibold hover:bg-[#c9a430] border-0"
-                        >
-                          I have this!
-                        </Button>
-                      </Link>
-                    ) : (
+                    {/* Respond button — responding is always free */}
+                    <Link href={`/requests/${req.id}`}>
                       <Button
                         size="sm"
-                        variant="outline"
-                        className="rounded-full border-[#D4AF37]/40 text-[#0B3954] gap-1.5"
-                        onClick={() => setPaywallOpen(true)}
+                        className="rounded-full bg-[#D4AF37] text-[#0B3954] font-semibold hover:bg-[#c9a430] border-0"
                       >
-                        <Lock className="h-3.5 w-3.5" />
-                        Respond
+                        I have this!
                       </Button>
-                    )}
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -292,11 +275,6 @@ export default function BuyerRequests() {
         )}
       </div>
 
-      <PaywallModal
-        open={paywallOpen}
-        onOpenChange={setPaywallOpen}
-        reason="Upgrade to respond to buyer requests"
-      />
     </Layout>
   );
 }

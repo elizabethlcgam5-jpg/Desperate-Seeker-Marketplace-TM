@@ -13,4 +13,10 @@ export interface CreateListingBody {
   imageUrl: string;
   category: string;
   zipCode: string;
+  brandName?: string;
+  condition?: string;
+  /** Fulfillment method (local_pickup, delivery, shipping) */
+  availability?: string;
+  shippingPrice?: number | null;
+  instantMatchOn?: boolean;
 }

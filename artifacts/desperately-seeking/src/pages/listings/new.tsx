@@ -2,6 +2,7 @@ import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { MicButton } from "@/components/mic-button";
 import { Badge } from "@/components/ui/badge";
 import {
   Form,
@@ -457,9 +458,19 @@ export default function NewListing() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold text-[#0B3954]">
-                      Description *
-                    </FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-base font-semibold text-[#0B3954]">
+                        Description *
+                      </FormLabel>
+                      <MicButton
+                        title="Dictate the description"
+                        onResult={(text) =>
+                          field.onChange(
+                            field.value ? `${field.value} ${text}` : text,
+                          )
+                        }
+                      />
+                    </div>
                     <FormControl>
                       <Textarea
                         placeholder="Describe the item — condition details, dimensions, any flaws, reason for selling..."

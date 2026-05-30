@@ -18,7 +18,9 @@ import {
   Package,
   Inbox,
   ShoppingBag,
+  ClipboardList,
   PenSquare,
+  Menu,
   LogIn,
   LogOut,
   User as UserIcon,
@@ -57,8 +59,51 @@ export function Header() {
             Desperately Seeking™
           </span>
         </Link>
+        {/* Mobile hamburger menu */}
+        <div className="md:hidden mr-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open menu"
+                className="text-white/90 hover:text-white hover:bg-white/10"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-52 rounded-2xl shadow-xl">
+              <DropdownMenuItem asChild>
+                <Link href="/browse" className="cursor-pointer">Browse</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/buyer-requests" className="cursor-pointer">Requests</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/requests/new" className="cursor-pointer">Post Request</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/seller" className="cursor-pointer">Sell</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/pricing" className="cursor-pointer">Pricing</Link>
+              </DropdownMenuItem>
+              {user && (
+                <DropdownMenuItem asChild>
+                  <Link href="/me/posts" className="cursor-pointer">My Posts</Link>
+                </DropdownMenuItem>
+              )}
+              {isSubscribed && (
+                <DropdownMenuItem asChild>
+                  <Link href="/me/dashboard" className="cursor-pointer">Dashboard</Link>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         <nav className="flex flex-1 items-center space-x-5 text-sm font-medium">
-          <Link href="/browse" className="text-white/80 transition-colors hover:text-white">
+          <Link href="/browse" className="text-white/80 transition-colors hover:text-white hidden md:block">
             Browse
           </Link>
           <Link href="/buyer-requests" className="text-white/80 transition-colors hover:text-white hidden sm:block">
@@ -180,6 +225,12 @@ export function Header() {
                   <Link href="/me/dashboard" className="cursor-pointer">
                     <UserIcon className="mr-2 h-4 w-4" />
                     My Account
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/me/posts" className="cursor-pointer">
+                    <ClipboardList className="mr-2 h-4 w-4" />
+                    My Posts
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

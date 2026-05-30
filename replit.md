@@ -28,6 +28,13 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ## Recent Features Added
 
+- **Paywall rework** — Responding to buyer requests is now UNLIMITED & FREE for everyone (all response-tied paywalls removed, frontend + backend). The paywall now triggers ONLY when a free-tier seller posts listing #3+ (first 2 listings free): `POST /listings` counts the seller's listings and returns `403 free_limit_reached` when count >= 2 for non-premium users; `listings/new.tsx` catches it and opens an upgrade dialog.
+- **Listing edit/delete** — `PATCH /listings/:listingId` and `DELETE /listings/:listingId` (both owner-gated via `withCurrentUser`). Used by the combined My Posts page.
+- **My Posts page** (`/me/posts`, linked in header dropdown + mobile menu) — FB-Marketplace-style combined view: tabs for Requests and Items, each with Edit / Delete / Repost actions.
+- **Photo upload (listings)** — `listings/new.tsx` reads the file via FileReader to base64, shows a preview with remove, enforces a 10MB guard, submits `imageUrl`.
+- **Voice (Web Speech API, no backend)** — `hooks/use-speech-recognition.ts` + `components/mic-button.tsx`. Voice-to-text dictation in request/listing description fields; voice search in browse + buyer-requests.
+- **Mobile** — header has a hamburger menu (`md:hidden`) exposing all nav links on small screens.
+
 - **AI Photo Search** — `POST /api/ai/analyze-image` (requires auth, uses GPT vision). Used in both browse (Photo Search button) and request form (auto-fill from photo).
 - **Seller Match Notifications** — `notifications` DB table. After `POST /api/requests`, the server asynchronously matches the new request against active listings and creates notifications for matching sellers. REST: `GET /api/notifications`, `PATCH /api/notifications/:id/read`, `PATCH /api/notifications/read-all`.
 - **Notification Bell** — in `header.tsx`, polls every 30s, shows unread badge, dropdown with read/mark-all controls.

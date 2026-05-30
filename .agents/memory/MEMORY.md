@@ -1,0 +1,1 @@
+- [Zod/OpenAPI field stripping](zod-openapi-field-stripping.md) — new request-body fields must be added to openapi.yaml + codegen re-run, else Zod .parse silently drops them at runtime; also lists pre-existing typecheck noise.

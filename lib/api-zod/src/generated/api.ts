@@ -1051,6 +1051,14 @@ export const CreateListingBody = zod.object({
   imageUrl: zod.string(),
   category: zod.string(),
   zipCode: zod.string(),
+  brandName: zod.string().optional(),
+  condition: zod.string().optional(),
+  availability: zod
+    .string()
+    .optional()
+    .describe("Fulfillment method (local_pickup, delivery, shipping)"),
+  shippingPrice: zod.number().nullish(),
+  instantMatchOn: zod.boolean().optional(),
 });
 
 /**

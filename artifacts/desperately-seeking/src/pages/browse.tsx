@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MicButton } from "@/components/mic-button";
 import { useListListings, useGetCurrentUser } from "@workspace/api-client-react";
 import { MapPin, Search, Tag, X, Star, Camera, Loader2, ShoppingCart, MessageCircle, HandCoins } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
@@ -205,8 +206,10 @@ export default function Browse() {
     }
   }
 
-  function applyZip() {
-    setActiveZip(zipInput.trim());
+  function applyZip(value?: string) {
+    const next = (value ?? zipInput).trim();
+    setZipInput(next);
+    setActiveZip(next);
   }
 
   function clearZip() {
@@ -298,6 +301,13 @@ export default function Browse() {
                 onChange={(e) => setZipInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && applyZip()}
               />
+              <MicButton
+                title="Search by voice"
+                className="h-7 w-7"
+                onResult={(text) => {
+                  applyZip(text);
+                }}
+              />
             </div>
             <button
               onClick={() => photoInputRef.current?.click()}
@@ -317,7 +327,7 @@ export default function Browse() {
               )}
             </button>
             <Button
-              onClick={applyZip}
+              onClick={() => applyZip()}
               className="bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] font-bold border-0"
             >
               Go

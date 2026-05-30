@@ -2,6 +2,7 @@ import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { MicButton } from "@/components/mic-button";
 import {
   Form,
   FormControl,
@@ -352,12 +353,22 @@ export default function NewRequest() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold text-[#0B3954]">
-                      The Details *
-                    </FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-base font-semibold text-[#0B3954]">
+                        The Details *
+                      </FormLabel>
+                      <MicButton
+                        title="Dictate the details"
+                        onResult={(text) =>
+                          field.onChange(
+                            field.value ? `${field.value} ${text}` : text,
+                          )
+                        }
+                      />
+                    </div>
                     <FormDescription>
                       Preferred brands, acceptable condition, deal-breakers, and
-                      any other specifics.
+                      any other specifics. Tap the mic to dictate.
                     </FormDescription>
                     <FormControl>
                       <Textarea
