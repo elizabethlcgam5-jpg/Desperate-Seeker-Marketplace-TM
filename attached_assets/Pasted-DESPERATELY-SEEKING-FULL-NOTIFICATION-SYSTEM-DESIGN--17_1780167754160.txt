@@ -1,0 +1,159 @@
+DESPERATELY SEEKING™ — FULL NOTIFICATION SYSTEM DESIGN
+
+===========================================
+GLOBAL NOTIFICATION SETTINGS (UI LAYOUT)
+===========================================
+
+Location:
+Profile → Settings → Notifications
+
+Layout:
+- Page Title: “Notification Settings”
+- Subtitle: “Control how you receive alerts and messages.”
+
+Toggles (each with ON/OFF switch):
+1. Enable Notifications
+   Icon: 🔔
+   Description: “Turn all notifications on or off.”
+
+2. Message Alerts
+   Icon: 💬
+   Description: “Show alerts when you receive a new message.”
+
+3. Sound
+   Icon: 🔊
+   Description: “Play a sound when a new message arrives.”
+
+4. Vibration
+   Icon: 📳
+   Description: “Vibrate on new messages (mobile only).”
+
+5. Email Notifications
+   Icon: ✉️
+   Description: “Receive an email when someone messages you.”
+
+6. Push Notifications
+   Icon: 📱
+   Description: “Enable push notifications for real-time alerts.”
+
+
+===========================================
+PER-CONVERSATION SETTINGS (CHAT HEADER)
+===========================================
+
+Location:
+Inside each chat → Tap the “⋯” menu
+
+Options:
+1. Mute Conversation
+   Icon: 🔕
+   Behavior: No notifications for this chat only.
+
+2. Unmute Conversation
+   Icon: 🔔
+   Behavior: Re-enable notifications for this chat.
+
+3. Block User
+   Icon: 🚫
+   Behavior: Prevent this user from messaging again.
+
+4. Report User
+   Icon: ⚠️
+   Behavior: Report for scams, harassment, or suspicious activity.
+
+5. Delete Chat
+   Icon: 🗑️
+   Behavior: Remove conversation from inbox.
+
+
+===========================================
+CHAT HEADER DESIGN
+===========================================
+
+Header Layout:
+- User’s profile picture (circle)
+- User’s name (bold)
+- Online indicator (green dot)
+- “⋯” menu on right side
+
+When muted:
+- Show a small 🔕 icon next to the user’s name
+
+
+===========================================
+MESSAGE SOUND SYSTEM
+===========================================
+
+Sound file:
+- Soft “ding” (Messenger-style)
+- File format: .mp3 or .wav
+- Volume: low and pleasant
+
+Sound plays ONLY if:
+- Global Sound = ON
+- Notifications = ON
+- Conversation is NOT muted
+
+Sound does NOT play if:
+- Sound = OFF
+- Conversation is muted
+- Notifications are disabled
+
+
+===========================================
+VISUAL INDICATORS FOR NEW MESSAGES
+===========================================
+
+1. Red badge on Messages icon
+   Example: “Messages (1)”
+
+2. Dot indicator next to unread conversations
+   Example: ● next to the chat
+
+3. “New message” banner inside chat list
+
+4. Highlight unread messages inside the conversation
+   Example: light blue background
+
+
+===========================================
+USER FEEDBACK (TOAST MESSAGES)
+===========================================
+
+Show small pop-up messages for actions:
+
+- “Notifications turned off”
+- “Notifications turned on”
+- “Conversation muted”
+- “Conversation unmuted”
+- “User blocked”
+- “User reported”
+- “Chat deleted”
+
+
+===========================================
+REQUIRED SAFETY FEATURES
+===========================================
+
+- Block user
+- Report user
+- Mute conversation
+- Delete conversation
+- Hide conversation (optional)
+
+
+===========================================
+ICONS TO USE (UNIVERSAL EMOJI OR SVG)
+===========================================
+
+🔔 Notifications  
+💬 Message alerts  
+🔊 Sound  
+📳 Vibration  
+✉️ Email  
+📱 Push notifications  
+🔕 Mute  
+🚫 Block  
+⚠️ Report  
+🗑️ Delete  
+● Unread indicator  

@@ -1214,6 +1214,8 @@ components:
           format: date-time
         unread:
           type: integer
+        muted:
+          type: boolean
 
     ThreadDetail:
       type: object
@@ -1221,6 +1223,12 @@ components:
       properties:
         id:
           type: string
+        muted:
+          type: boolean
+        blocked:
+          type: boolean
+        blockedBy:
+          type: boolean
         request:
           $ref: "#/components/schemas/RequestSummary"
         participants:

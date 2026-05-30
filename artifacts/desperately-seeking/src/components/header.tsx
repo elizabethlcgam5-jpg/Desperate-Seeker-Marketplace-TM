@@ -11,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  MessageSquare,
   Search,
   Sparkles,
   BarChart3,
@@ -23,6 +22,7 @@ import {
   Menu,
   LogIn,
   LogOut,
+  Bell,
   User as UserIcon,
 } from "lucide-react";
 import { useGetCurrentUser } from "@workspace/api-client-react";
@@ -30,6 +30,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
 import { NotificationBell } from "./notification-bell";
+import { MessagesNavButton } from "./messages-nav-button";
 
 export function Header() {
   const { data: user } = useGetCurrentUser();
@@ -188,17 +189,7 @@ export function Header() {
               </Button>
             </Link>
           )}
-          {user && (
-            <Link href="/messages">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative text-white/80 hover:text-white hover:bg-white/10"
-              >
-                <MessageSquare className="h-5 w-5" />
-              </Button>
-            </Link>
-          )}
+          {user && <MessagesNavButton />}
           {user && <NotificationBell />}
           {/* Auth controls */}
           {isAuthenticated ? (
@@ -237,6 +228,12 @@ export function Header() {
                   <Link href="/me/listings" className="cursor-pointer">
                     <ShoppingBag className="mr-2 h-4 w-4" />
                     My Listings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings/notifications" className="cursor-pointer">
+                    <Bell className="mr-2 h-4 w-4" />
+                    Notifications
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

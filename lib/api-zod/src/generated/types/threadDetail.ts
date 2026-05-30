@@ -11,6 +11,9 @@ import type { User } from "./user";
 
 export interface ThreadDetail {
   id: string;
+  muted?: boolean;
+  blocked?: boolean;
+  blockedBy?: boolean;
   request: RequestSummary;
   participants: User[];
   messages: Message[];

@@ -5,9 +5,11 @@ import {
   requestsTable,
   responsesTable,
   threadsTable,
+  threadStateTable,
+  blockedUsersTable,
   usersTable,
 } from "@workspace/db";
-import { and, desc, eq, or, asc, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, or, asc, inArray, sql, ne, gt } from "drizzle-orm";
 import {
   ListThreadsResponse,
   GetThreadParams,
@@ -42,39 +44,69 @@ router.get("/threads", withCurrentUser, async (req, res) => {
     )
     .orderBy(desc(threadsTable.updatedAt));
 
-  const threads = await Promise.all(
-    rows.map(async (row) => {
-      const otherUserId =
-        row.r.buyerId === userId ? row.resp.sellerId : row.r.buyerId;
-      const [otherUser] = await db
-        .select()
-        .from(usersTable)
-        .where(eq(usersTable.id, otherUserId))
-        .limit(1);
+  const threads = (
+    await Promise.all(
+      rows.map(async (row) => {
+        const otherUserId =
+          row.r.buyerId === userId ? row.resp.sellerId : row.r.buyerId;
+        const [otherUser] = await db
+          .select()
+          .from(usersTable)
+          .where(eq(usersTable.id, otherUserId))
+          .limit(1);
 
-      const [last] = await db
-        .select()
-        .from(messagesTable)
-        .where(eq(messagesTable.threadId, row.t.id))
-        .orderBy(desc(messagesTable.createdAt))
-        .limit(1);
+        const [last] = await db
+          .select()
+          .from(messagesTable)
+          .where(eq(messagesTable.threadId, row.t.id))
+          .orderBy(desc(messagesTable.createdAt))
+          .limit(1);
 
-      return {
-        id: row.t.id,
-        requestId: row.r.id,
-        requestTitle: row.r.title,
-        otherUser: serializeUser(otherUser),
-        lastMessage: last?.body ?? "Conversation started",
-        updatedAt: row.t.updatedAt.toISOString(),
-        unread: 0,
-      };
-    }),
-  );
+        const [state] = await db
+          .select()
+          .from(threadStateTable)
+          .where(
+            and(
+              eq(threadStateTable.userId, userId),
+              eq(threadStateTable.threadId, row.t.id),
+            ),
+          )
+          .limit(1);
+
+        // Per-user soft delete: hidden threads drop out of this user's inbox.
+        if (state?.hiddenAt) return null;
+
+        const lastReadAt = state?.lastReadAt ?? new Date(0);
+        const [unreadRow] = await db
+          .select({ c: sql<number>`count(*)::int` })
+          .from(messagesTable)
+          .where(
+            and(
+              eq(messagesTable.threadId, row.t.id),
+              ne(messagesTable.senderId, userId),
+              gt(messagesTable.createdAt, lastReadAt),
+            ),
+          );
+
+        return {
+          id: row.t.id,
+          requestId: row.r.id,
+          requestTitle: row.r.title,
+          otherUser: serializeUser(otherUser),
+          lastMessage: last?.body ?? "Conversation started",
+          updatedAt: row.t.updatedAt.toISOString(),
+          unread: unreadRow?.c ?? 0,
+          muted: state?.muted ?? false,
+        };
+      }),
+    )
+  ).filter((t): t is NonNullable<typeof t> => t !== null);
 
   res.json(ListThreadsResponse.parse(threads));
 });
 
 router.get("/threads/:threadId", withCurrentUser, async (req, res) => {
+  const userId = req.currentUserId!;
   const params = GetThreadParams.parse(req.params);
   const [row] = await db
     .select({
@@ -94,6 +126,12 @@ router.get("/threads/:threadId", withCurrentUser, async (req, res) => {
     return;
   }
 
+  // Access control: only the buyer or the seller on this thread may read it.
+  if (row.r.buyerId !== userId && row.resp.sellerId !== userId) {
+    res.status(404).json({ error: "Thread not found" });
+    return;
+  }
+
   const [seller] = await db
     .select()
     .from(usersTable)
@@ -107,9 +145,46 @@ router.get("/threads/:threadId", withCurrentUser, async (req, res) => {
     .where(eq(messagesTable.threadId, row.t.id))
     .orderBy(asc(messagesTable.createdAt));
 
+  const otherUserId =
+    row.r.buyerId === userId ? row.resp.sellerId : row.r.buyerId;
+
+  const [state] = await db
+    .select()
+    .from(threadStateTable)
+    .where(
+      and(
+        eq(threadStateTable.userId, userId),
+        eq(threadStateTable.threadId, row.t.id),
+      ),
+    )
+    .limit(1);
+
+  // Block state in both directions: `blocked` = current user blocked the other
+  // (can unblock); `blockedBy` = the other user blocked current user.
+  const blockRows = await db
+    .select()
+    .from(blockedUsersTable)
+    .where(
+      or(
+        and(
+          eq(blockedUsersTable.blockerId, userId),
+          eq(blockedUsersTable.blockedId, otherUserId),
+        ),
+        and(
+          eq(blockedUsersTable.blockerId, otherUserId),
+          eq(blockedUsersTable.blockedId, userId),
+        ),
+      ),
+    );
+  const blocked = blockRows.some((b) => b.blockerId === userId);
+  const blockedBy = blockRows.some((b) => b.blockerId === otherUserId);
+
   res.json(
     GetThreadResponse.parse({
       id: row.t.id,
+      muted: state?.muted ?? false,
+      blocked,
+      blockedBy,
       request: {
         id: row.r.id,
         title: row.r.title,
@@ -160,6 +235,37 @@ router.post(
       thread.resp.sellerId !== userId
     ) {
       res.status(403).json({ error: "Not a participant in this thread" });
+      return;
+    }
+
+    const otherUserId =
+      thread.r.buyerId === userId ? thread.resp.sellerId : thread.r.buyerId;
+
+    // A block in either direction prevents messaging between the two users.
+    const [block] = await db
+      .select()
+      .from(blockedUsersTable)
+      .where(
+        or(
+          and(
+            eq(blockedUsersTable.blockerId, userId),
+            eq(blockedUsersTable.blockedId, otherUserId),
+          ),
+          and(
+            eq(blockedUsersTable.blockerId, otherUserId),
+            eq(blockedUsersTable.blockedId, userId),
+          ),
+        ),
+      )
+      .limit(1);
+    if (block) {
+      res.status(403).json({
+        error: "blocked",
+        message:
+          block.blockerId === userId
+            ? "You've blocked this user. Unblock them to send messages."
+            : "You can no longer send messages in this conversation.",
+      });
       return;
     }
 

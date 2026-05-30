@@ -1,4 +1,22 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
+
+export type NotificationSettings = {
+  enabled: boolean;
+  messageAlerts: boolean;
+  sound: boolean;
+  vibration: boolean;
+  email: boolean;
+  push: boolean;
+};
+
+export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
+  enabled: true,
+  messageAlerts: true,
+  sound: true,
+  vibration: true,
+  email: false,
+  push: false,
+};
 
 export const usersTable = pgTable("users", {
   id: text("id").primaryKey(),
@@ -23,6 +41,10 @@ export const usersTable = pgTable("users", {
   instantMatch: boolean("instant_match").notNull().default(false),
   phoneNumber: text("phone_number"),
   phoneVerified: boolean("phone_verified").notNull().default(false),
+  notificationSettings: jsonb("notification_settings")
+    .$type<NotificationSettings>()
+    .notNull()
+    .default(DEFAULT_NOTIFICATION_SETTINGS),
 });
 
 export type User = typeof usersTable.$inferSelect;

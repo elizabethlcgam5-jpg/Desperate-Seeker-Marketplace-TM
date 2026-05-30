@@ -15,4 +15,5 @@ export interface Thread {
   lastMessage: string;
   updatedAt: Date;
   unread: number;
+  muted?: boolean;
 }

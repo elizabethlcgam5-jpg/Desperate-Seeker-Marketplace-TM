@@ -1,10 +1,12 @@
 import { Layout } from "@/components/layout";
 import { useGetThread, useSendMessage, useGetCurrentUser } from "@workspace/api-client-react";
-import { useParams, Link } from "wouter";
+import { useParams, Link, useLocation } from "wouter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getApiUrl } from "@/lib/api";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,12 +26,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useState, useRef, useEffect } from "react";
 import { format } from "date-fns";
-import { ArrowLeft, Send, MoreVertical, BellOff, Trash2, MailOpen, Archive, ShieldOff, Flag, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Send, MoreVertical, BellOff, Bell, Trash2, ShieldOff, ShieldCheck, AlertTriangle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { EscrowPanel } from "@/components/escrow-panel";
-
-const THANKS_TOAST = "Thanks for letting us know. We take all reports seriously and will review this promptly. 💙";
 
 export default function ThreadDetail() {
   const { id } = useParams();
@@ -39,12 +39,20 @@ export default function ThreadDetail() {
   });
   const sendMessage = useSendMessage();
   const queryClient = useQueryClient();
+  const [, navigate] = useLocation();
   const [message, setMessage] = useState("");
   const [blockDialogOpen, setBlockDialogOpen] = useState(false);
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
-  const [flagDialogOpen, setFlagDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("");
   const [muted, setMuted] = useState(false);
+  const [blocked, setBlocked] = useState(false);
+  const [blockedBy, setBlockedBy] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const otherParticipant =
+    thread?.participants.find((p) => p.id !== currentUser?.id) ||
+    thread?.participants[0];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,6 +61,25 @@ export default function ThreadDetail() {
   useEffect(() => {
     scrollToBottom();
   }, [thread?.messages]);
+
+  // Sync local mute/block state from the loaded thread.
+  useEffect(() => {
+    if (!thread) return;
+    setMuted(Boolean(thread.muted));
+    setBlocked(Boolean(thread.blocked));
+    setBlockedBy(Boolean(thread.blockedBy));
+  }, [thread?.muted, thread?.blocked, thread?.blockedBy]);
+
+  // Mark the thread read on open and whenever a new message arrives.
+  useEffect(() => {
+    if (!id || !thread) return;
+    fetch(getApiUrl(`threads/${id}/read`), {
+      method: "POST",
+      credentials: "include",
+    })
+      .then(() => queryClient.invalidateQueries())
+      .catch(() => {});
+  }, [id, thread?.messages?.length]);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,42 +95,105 @@ export default function ThreadDetail() {
           setMessage("");
           queryClient.invalidateQueries();
         },
+        onError: () => {
+          toast.error(
+            "Message couldn't be sent. You may have blocked or been blocked by this user.",
+          );
+        },
       }
     );
   };
 
-  const otherParticipant = thread?.participants.find(p => p.id !== currentUser?.id) || thread?.participants[0];
-
-  const handleMute = () => {
-    setMuted(!muted);
-    toast.success(muted ? "Conversation unmuted." : "Conversation muted. You won't receive notifications for this chat.");
+  const handleMute = async () => {
+    const next = !muted;
+    setMuted(next);
+    try {
+      const res = await fetch(getApiUrl(`threads/${id}/mute`), {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ muted: next }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success(next ? "Conversation muted." : "Conversation unmuted.");
+      queryClient.invalidateQueries();
+    } catch {
+      setMuted(!next);
+      toast.error("Couldn't update mute setting. Please try again.");
+    }
   };
 
-  const handleMarkUnread = () => {
-    toast.success("Marked as unread.");
+  const handleDeleteChat = async () => {
+    setDeleteDialogOpen(false);
+    try {
+      const res = await fetch(getApiUrl(`threads/${id}`), {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error();
+      toast.success("Chat deleted.");
+      queryClient.invalidateQueries();
+      navigate("/messages");
+    } catch {
+      toast.error("Couldn't delete this chat. Please try again.");
+    }
   };
 
-  const handleArchive = () => {
-    toast.success("Conversation archived.");
-  };
-
-  const handleDeleteChat = () => {
-    toast.success("Chat deleted.");
-  };
-
-  const handleReportConfirm = () => {
+  const handleReportConfirm = async () => {
     setReportDialogOpen(false);
-    toast.success(THANKS_TOAST);
+    if (!otherParticipant) return;
+    try {
+      const res = await fetch(
+        getApiUrl(`users/${otherParticipant.id}/report`),
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            reason: reportReason.trim() || "No details provided",
+            threadId: id,
+          }),
+        },
+      );
+      if (!res.ok) throw new Error();
+      setReportReason("");
+      toast.success("Report received. Our team will review it confidentially.");
+    } catch {
+      toast.error("Couldn't submit your report. Please try again.");
+    }
   };
 
-  const handleBlockConfirm = () => {
+  const handleBlockConfirm = async () => {
     setBlockDialogOpen(false);
-    toast.success(THANKS_TOAST);
+    if (!otherParticipant) return;
+    try {
+      const res = await fetch(getApiUrl(`users/${otherParticipant.id}/block`), {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error();
+      setBlocked(true);
+      toast.success("User blocked. They can no longer message you.");
+      queryClient.invalidateQueries();
+    } catch {
+      toast.error("Couldn't block this user. Please try again.");
+    }
   };
 
-  const handleFlagConfirm = () => {
-    setFlagDialogOpen(false);
-    toast.success(THANKS_TOAST);
+  const handleUnblock = async () => {
+    if (!otherParticipant) return;
+    try {
+      const res = await fetch(getApiUrl(`users/${otherParticipant.id}/block`), {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error();
+      setBlocked(false);
+      toast.success("User unblocked.");
+      queryClient.invalidateQueries();
+    } catch {
+      toast.error("Couldn't unblock this user. Please try again.");
+    }
   };
 
   if (isLoading || !thread || !currentUser) {
@@ -157,18 +247,13 @@ export default function ThreadDetail() {
               <DropdownMenuContent align="end" className="w-56">
                 {/* Conversation controls */}
                 <DropdownMenuItem onClick={handleMute} className="gap-2 cursor-pointer">
-                  <BellOff className="h-4 w-4" />
+                  {muted ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
                   {muted ? "Unmute conversation" : "Mute conversation"}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleMarkUnread} className="gap-2 cursor-pointer">
-                  <MailOpen className="h-4 w-4" />
-                  Mark as unread
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleArchive} className="gap-2 cursor-pointer">
-                  <Archive className="h-4 w-4" />
-                  Archive conversation
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleDeleteChat} className="gap-2 cursor-pointer text-muted-foreground">
+                <DropdownMenuItem
+                  onClick={() => setDeleteDialogOpen(true)}
+                  className="gap-2 cursor-pointer text-muted-foreground"
+                >
                   <Trash2 className="h-4 w-4" />
                   Delete chat
                 </DropdownMenuItem>
@@ -183,20 +268,23 @@ export default function ThreadDetail() {
                   <AlertTriangle className="h-4 w-4" />
                   Report user
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setBlockDialogOpen(true)}
-                  className="gap-2 cursor-pointer text-destructive focus:text-destructive"
-                >
-                  <ShieldOff className="h-4 w-4" />
-                  Block user
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setFlagDialogOpen(true)}
-                  className="gap-2 cursor-pointer text-destructive focus:text-destructive"
-                >
-                  <Flag className="h-4 w-4" />
-                  Flag this listing
-                </DropdownMenuItem>
+                {blocked ? (
+                  <DropdownMenuItem
+                    onClick={handleUnblock}
+                    className="gap-2 cursor-pointer"
+                  >
+                    <ShieldCheck className="h-4 w-4" />
+                    Unblock user
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    onClick={() => setBlockDialogOpen(true)}
+                    className="gap-2 cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <ShieldOff className="h-4 w-4" />
+                    Block user
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -270,19 +358,37 @@ export default function ThreadDetail() {
 
           {/* Input */}
           <div className="p-4 bg-card border-t shrink-0">
-            <form onSubmit={handleSend} className="flex items-center gap-2">
-              <Input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type a message..."
-                className="flex-1 rounded-full bg-muted/50 border-transparent focus-visible:bg-background"
-                disabled={sendMessage.isPending}
-              />
-              <Button type="submit" size="icon" className="rounded-full shrink-0" disabled={sendMessage.isPending || !message.trim()}>
-                <Send className="h-4 w-4" />
-                <span className="sr-only">Send</span>
-              </Button>
-            </form>
+            {blocked ? (
+              <div className="flex items-center justify-between gap-3 rounded-2xl bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+                <span>You've blocked this user. Unblock to send messages.</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full shrink-0"
+                  onClick={handleUnblock}
+                >
+                  Unblock
+                </Button>
+              </div>
+            ) : blockedBy ? (
+              <div className="rounded-2xl bg-muted/50 px-4 py-3 text-sm text-center text-muted-foreground">
+                You can no longer message this user.
+              </div>
+            ) : (
+              <form onSubmit={handleSend} className="flex items-center gap-2">
+                <Input
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Type a message..."
+                  className="flex-1 rounded-full bg-muted/50 border-transparent focus-visible:bg-background"
+                  disabled={sendMessage.isPending}
+                />
+                <Button type="submit" size="icon" className="rounded-full shrink-0" disabled={sendMessage.isPending || !message.trim()}>
+                  <Send className="h-4 w-4" />
+                  <span className="sr-only">Send</span>
+                </Button>
+              </form>
+            )}
           </div>
 
         </div>
@@ -294,18 +400,23 @@ export default function ThreadDetail() {
           <AlertDialogHeader>
             <AlertDialogTitle>Report {otherParticipant?.name}?</AlertDialogTitle>
             <AlertDialogDescription>
-              Something feel off? Let us know and we'll look into it right away.
-              <br /><br />
-              Are you sure you want to report this user? Our team will review this report confidentially.
+              Something feel off? Tell us what happened and we'll review this
+              report confidentially.
             </AlertDialogDescription>
           </AlertDialogHeader>
+          <Textarea
+            value={reportReason}
+            onChange={(e) => setReportReason(e.target.value)}
+            placeholder="Describe the issue (optional)…"
+            className="min-h-24 resize-none"
+          />
           <AlertDialogFooter>
             <AlertDialogCancel>Never Mind</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleReportConfirm}
               className="bg-amber-600 text-white hover:bg-amber-700"
             >
-              Yes, Report
+              Submit Report
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -317,9 +428,8 @@ export default function ThreadDetail() {
           <AlertDialogHeader>
             <AlertDialogTitle>Block {otherParticipant?.name}?</AlertDialogTitle>
             <AlertDialogDescription>
-              Block this person to stop receiving messages from them.
-              <br /><br />
-              Block this user? They won't be able to contact you or see your listings.
+              They won't be able to message you, and you won't be able to message
+              them until you unblock.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -334,24 +444,23 @@ export default function ThreadDetail() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Flag Listing dialog */}
-      <AlertDialog open={flagDialogOpen} onOpenChange={setFlagDialogOpen}>
+      {/* Delete chat dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Flag this listing?</AlertDialogTitle>
+            <AlertDialogTitle>Delete this chat?</AlertDialogTitle>
             <AlertDialogDescription>
-              Think this listing breaks the rules? Flag it and we'll review it.
-              <br /><br />
-              Flag this listing for review? We'll look into it and take action if needed.
+              This removes the conversation from your inbox. The other person
+              keeps their copy, and a new message will bring it back.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Go Back</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleFlagConfirm}
+              onClick={handleDeleteChat}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Yes, Flag It
+              Yes, Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

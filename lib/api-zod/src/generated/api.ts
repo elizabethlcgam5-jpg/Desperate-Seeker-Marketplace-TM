@@ -650,6 +650,7 @@ export const ListThreadsResponseItem = zod.object({
   lastMessage: zod.string(),
   updatedAt: zod.coerce.date(),
   unread: zod.number(),
+  muted: zod.boolean().optional(),
 });
 export const ListThreadsResponse = zod.array(ListThreadsResponseItem);
 
@@ -662,6 +663,9 @@ export const GetThreadParams = zod.object({
 
 export const GetThreadResponse = zod.object({
   id: zod.string(),
+  muted: zod.boolean().optional(),
+  blocked: zod.boolean().optional(),
+  blockedBy: zod.boolean().optional(),
   request: zod.object({
     id: zod.string(),
     title: zod.string(),

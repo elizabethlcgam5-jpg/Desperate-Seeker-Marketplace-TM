@@ -1,2 +1,2 @@
-- [Zod/OpenAPI field stripping](zod-openapi-field-stripping.md) — new request-body fields must be added to openapi.yaml + codegen re-run, else Zod .parse silently drops them at runtime; also lists pre-existing typecheck noise.
-- [Twilio SMS verification](twilio-sms-verification.md) — dormant-until-activated gating, connector dismissed (env-secret path), drizzle push is interactive (use executeSql), rebuild lib/db before consumers typecheck.
+- [Thread access control](thread-idor.md) — message thread reads/actions must be participant-gated; a prior GET /threads/:id leaked any conversation by ID.
+- [Codegen baseline noise](codegen-baseline-noise.md) — repo typecheck has known pre-existing failures unrelated to changes; don't chase them.

@@ -350,6 +350,7 @@ export interface Thread {
   lastMessage: string;
   updatedAt: string;
   unread: number;
+  muted?: boolean;
 }
 
 export interface Message {
@@ -362,6 +363,9 @@ export interface Message {
 
 export interface ThreadDetail {
   id: string;
+  muted?: boolean;
+  blocked?: boolean;
+  blockedBy?: boolean;
   request: RequestSummary;
   participants: User[];
   messages: Message[];

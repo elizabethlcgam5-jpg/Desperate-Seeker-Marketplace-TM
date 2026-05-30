@@ -16,6 +16,7 @@ import commissionsRouter from "./commissions";
 import aiSearchRouter from "./openai/search";
 import analyzeImageRouter from "./openai/analyze-image";
 import notificationsRouter from "./notifications";
+import messagingPrefsRouter from "./messaging-prefs";
 import adminRouter from "./admin";
 
 const router: IRouter = Router();
@@ -37,6 +38,7 @@ router.use(commissionsRouter);
 router.use(aiSearchRouter);
 router.use(analyzeImageRouter);
 router.use(notificationsRouter);
+router.use(messagingPrefsRouter);
 router.use(adminRouter);
 
 export default router;
