@@ -6,11 +6,6 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface CreateListingBody {
-  title: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  category: string;
-  zipCode: string;
-}
+export type DeleteRequest200 = {
+  success: boolean;
+};

@@ -21,6 +21,7 @@ export * from "./createRequestBodyUrgency";
 export * from "./createResponseBody";
 export * from "./createResponseBodyCondition";
 export * from "./createSellerFeedbackBody";
+export * from "./deleteRequest200";
 export * from "./healthStatus";
 export * from "./inventoryItem";
 export * from "./inventoryItemCondition";

@@ -50,7 +50,7 @@ export default function LoginPage() {
           ? `Welcome to Desperately Seeking™, ${data.name}!`
           : `Welcome back, ${data.name}!`,
       );
-      setLocation("/");
+      setLocation(mode === "register" ? "/welcome" : "/");
     } catch {
       toast.error("Connection error. Please try again.");
     } finally {

@@ -375,8 +375,18 @@ router.patch("/requests/:requestId", withCurrentUser, async (req, res) => {
     .set({
       ...(body.title !== undefined && { title: body.title }),
       ...(body.description !== undefined && { description: body.description }),
+      ...(body.category !== undefined && { category: body.category }),
+      ...(body.style !== undefined && { style: body.style }),
       ...(body.status !== undefined && { status: body.status }),
       ...(body.urgency !== undefined && { urgency: body.urgency }),
+      ...(body.location !== undefined && { location: body.location }),
+      ...(body.budgetMin !== undefined && {
+        budgetMin: body.budgetMin === null ? null : body.budgetMin.toString(),
+      }),
+      ...(body.budgetMax !== undefined && {
+        budgetMax: body.budgetMax === null ? null : body.budgetMax.toString(),
+      }),
+      ...(body.tags !== undefined && { tags: body.tags }),
     })
     .where(eq(requestsTable.id, params.requestId));
 
@@ -452,6 +462,29 @@ router.post("/requests/:requestId/repost", withCurrentUser, async (req, res) => 
 
   const summary = await loadSummary(requestId);
   res.json(summary);
+});
+
+router.delete("/requests/:requestId", withCurrentUser, async (req, res) => {
+  const { requestId } = req.params;
+
+  const [existing] = await db
+    .select()
+    .from(requestsTable)
+    .where(eq(requestsTable.id, requestId))
+    .limit(1);
+  if (!existing) {
+    res.status(404).json({ error: "Request not found" });
+    return;
+  }
+  if (existing.buyerId !== req.currentUserId) {
+    res.status(403).json({ error: "Only the buyer can delete this request" });
+    return;
+  }
+
+  // Responses, threads and messages cascade-delete via FK constraints.
+  await db.delete(requestsTable).where(eq(requestsTable.id, requestId));
+
+  res.json({ success: true });
 });
 
 export default router;

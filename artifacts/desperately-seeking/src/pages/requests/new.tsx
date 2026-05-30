@@ -178,6 +178,7 @@ export default function NewRequest() {
           .map((t) => t.trim())
           .filter(Boolean),
       }),
+      ...(photoPreview && { photos: [photoPreview] }),
     };
 
     createRequest.mutate(

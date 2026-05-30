@@ -25,6 +25,7 @@ import type {
   CreateRequestBody,
   CreateResponseBody,
   CreateSellerFeedbackBody,
+  DeleteRequest200,
   HealthStatus,
   InventoryItem,
   InventoryMatch,
@@ -1112,6 +1113,90 @@ export const useUpdateRequest = <
   TContext
 > => {
   return useMutation(getUpdateRequestMutationOptions(options));
+};
+
+/**
+ * @summary Delete a buyer request (buyer only)
+ */
+export const getDeleteRequestUrl = (requestId: string) => {
+  return `/api/requests/${requestId}`;
+};
+
+export const deleteRequest = async (
+  requestId: string,
+  options?: RequestInit,
+): Promise<DeleteRequest200> => {
+  return customFetch<DeleteRequest200>(getDeleteRequestUrl(requestId), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteRequestMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteRequest>>,
+    TError,
+    { requestId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteRequest>>,
+  TError,
+  { requestId: string },
+  TContext
+> => {
+  const mutationKey = ["deleteRequest"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteRequest>>,
+    { requestId: string }
+  > = (props) => {
+    const { requestId } = props ?? {};
+
+    return deleteRequest(requestId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteRequestMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteRequest>>
+>;
+
+export type DeleteRequestMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Delete a buyer request (buyer only)
+ */
+export const useDeleteRequest = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteRequest>>,
+    TError,
+    { requestId: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteRequest>>,
+  TError,
+  { requestId: string },
+  TContext
+> => {
+  return useMutation(getDeleteRequestMutationOptions(options));
 };
 
 /**

@@ -11,6 +11,12 @@ import type { UpdateRequestBodyUrgency } from "./updateRequestBodyUrgency";
 export interface UpdateRequestBody {
   title?: string;
   description?: string;
+  category?: string;
+  style?: string;
   status?: UpdateRequestBodyStatus;
   urgency?: UpdateRequestBodyUrgency;
+  location?: string;
+  budgetMin?: number | null;
+  budgetMax?: number | null;
+  tags?: string[];
 }

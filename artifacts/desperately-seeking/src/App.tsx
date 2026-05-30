@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 
 import Home from "@/pages/home";
 import NewRequest from "@/pages/requests/new";
+import EditRequest from "@/pages/requests/edit";
 import Post from "@/pages/post";
 import RequestDetail from "@/pages/requests/[id]";
 import Messages from "@/pages/messages/index";
@@ -56,6 +57,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/browse" component={Browse} />
       <Route path="/requests/new" component={NewRequest} />
+      <Route path="/requests/:id/edit" component={EditRequest} />
       <Route path="/requests/:id" component={RequestDetail} />
       <Route path="/messages" component={Messages} />
       <Route path="/messages/:id" component={ThreadDetail} />

@@ -268,6 +268,18 @@ export default function RequestDetail() {
                 ))}
               </div>
             )}
+            {request.photos && request.photos.length > 0 && (
+              <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {request.photos.map((photo, i) => (
+                  <img
+                    key={i}
+                    src={photo}
+                    alt={`Reference ${i + 1}`}
+                    className="w-full h-32 object-cover rounded-xl border border-border"
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="mt-8 flex items-center justify-between">

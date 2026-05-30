@@ -400,8 +400,14 @@ export const UpdateRequestParams = zod.object({
 export const UpdateRequestBody = zod.object({
   title: zod.string().optional(),
   description: zod.string().optional(),
+  category: zod.string().optional(),
+  style: zod.string().optional(),
   status: zod.enum(["open", "fulfilled", "closed"]).optional(),
   urgency: zod.enum(["low", "normal", "high"]).optional(),
+  location: zod.string().optional(),
+  budgetMin: zod.number().nullish(),
+  budgetMax: zod.number().nullish(),
+  tags: zod.array(zod.string()).optional(),
 });
 
 export const UpdateRequestResponse = zod
@@ -477,6 +483,17 @@ export const UpdateRequestResponse = zod
         .optional(),
     }),
   );
+
+/**
+ * @summary Delete a buyer request (buyer only)
+ */
+export const DeleteRequestParams = zod.object({
+  requestId: zod.coerce.string(),
+});
+
+export const DeleteRequestResponse = zod.object({
+  success: zod.boolean(),
+});
 
 /**
  * @summary List seller responses for a request
@@ -1034,10 +1051,6 @@ export const CreateListingBody = zod.object({
   imageUrl: zod.string(),
   category: zod.string(),
   zipCode: zod.string(),
-  brandName: zod.string().optional(),
-  condition: zod.string(),
-  availability: zod.string(),
-  shippingPrice: zod.number().nullable().optional(),
 });
 
 /**

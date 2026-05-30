@@ -313,8 +313,14 @@ export const UpdateRequestBodyUrgency = {
 export interface UpdateRequestBody {
   title?: string;
   description?: string;
+  category?: string;
+  style?: string;
   status?: UpdateRequestBodyStatus;
   urgency?: UpdateRequestBodyUrgency;
+  location?: string;
+  budgetMin?: number | null;
+  budgetMax?: number | null;
+  tags?: string[];
 }
 
 export type CreateResponseBodyCondition =
@@ -496,6 +502,10 @@ export const ListRequestsSort = {
   most_responses: "most_responses",
   urgent: "urgent",
 } as const;
+
+export type DeleteRequest200 = {
+  success: boolean;
+};
 
 export type UpdateResponseStatusBodyStatus =
   (typeof UpdateResponseStatusBodyStatus)[keyof typeof UpdateResponseStatusBodyStatus];

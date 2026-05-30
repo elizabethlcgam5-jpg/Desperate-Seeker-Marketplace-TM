@@ -274,6 +274,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RequestDetail"
+    delete:
+      operationId: deleteRequest
+      tags: [requests]
+      summary: Delete a buyer request (buyer only)
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success]
+                properties:
+                  success:
+                    type: boolean
 
   /requests/{requestId}/responses:
     get:
@@ -1088,12 +1109,28 @@ components:
           type: string
         description:
           type: string
+        category:
+          type: string
+        style:
+          type: string
         status:
           type: string
           enum: [open, fulfilled, closed]
         urgency:
           type: string
           enum: [low, normal, high]
+        location:
+          type: string
+        budgetMin:
+          type: number
+          nullable: true
+        budgetMax:
+          type: number
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
 
     SellerResponse:
       type: object

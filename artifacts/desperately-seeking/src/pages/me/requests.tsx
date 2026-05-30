@@ -1,16 +1,86 @@
 import { Layout } from "@/components/layout";
-import { useListRequests, useGetCurrentUser } from "@workspace/api-client-react";
+import {
+  useListRequests,
+  useGetCurrentUser,
+  useDeleteRequest,
+} from "@workspace/api-client-react";
 import { RequestCard } from "@/components/request-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ClipboardList, Zap, RefreshCw, MapPin, Clock } from "lucide-react";
+import { ClipboardList, Zap, RefreshCw, MapPin, Clock, Pencil, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
+
+function RequestActions({
+  requestId,
+  onDelete,
+  deleting,
+}: {
+  requestId: string;
+  onDelete: (id: string) => void;
+  deleting: boolean;
+}) {
+  return (
+    <div className="flex gap-2">
+      <Link href={`/requests/${requestId}/edit`} className="flex-1">
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full rounded-full border-[#0B3954]/30 text-[#0B3954] hover:bg-[#0B3954]/5 text-xs font-semibold gap-1.5"
+        >
+          <Pencil className="h-3.5 w-3.5" /> Edit
+        </Button>
+      </Link>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={deleting}
+            className="flex-1 rounded-full border-destructive/30 text-destructive hover:bg-destructive/5 text-xs font-semibold gap-1.5"
+          >
+            <Trash2 className="h-3.5 w-3.5" /> Delete
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this request?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This permanently removes your request and any offers sellers have
+              made on it. This can&apos;t be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => onDelete(requestId)}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
 
 export default function MyRequests() {
   const { data: currentUser } = useGetCurrentUser();
@@ -23,6 +93,22 @@ export default function MyRequests() {
   const [instantMatch, setInstantMatch] = useState<boolean | null>(null);
   const [instantMatchLoading, setInstantMatchLoading] = useState(false);
   const [repostingId, setRepostingId] = useState<string | null>(null);
+  const deleteRequest = useDeleteRequest();
+
+  const handleDelete = (requestId: string) => {
+    deleteRequest.mutate(
+      { requestId },
+      {
+        onSuccess: () => {
+          toast.success("Request deleted.");
+          qc.invalidateQueries();
+        },
+        onError: () => {
+          toast.error("Couldn't delete the request. Please try again.");
+        },
+      },
+    );
+  };
 
   useEffect(() => {
     if (currentUser) setInstantMatch((currentUser as any).instantMatch ?? false);
@@ -161,7 +247,14 @@ export default function MyRequests() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {openRequests.map(req => (
-                  <RequestCard key={req.id} request={req} />
+                  <div key={req.id} className="flex flex-col gap-2">
+                    <RequestCard request={req} />
+                    <RequestActions
+                      requestId={req.id}
+                      onDelete={handleDelete}
+                      deleting={deleteRequest.isPending}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -213,6 +306,13 @@ export default function MyRequests() {
                       <RefreshCw className={`h-3.5 w-3.5 ${repostingId === req.id ? "animate-spin" : ""}`} />
                       {repostingId === req.id ? "Reposting…" : "Repost Request"}
                     </Button>
+                    <div className="mt-2">
+                      <RequestActions
+                        requestId={req.id}
+                        onDelete={handleDelete}
+                        deleting={deleteRequest.isPending}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
