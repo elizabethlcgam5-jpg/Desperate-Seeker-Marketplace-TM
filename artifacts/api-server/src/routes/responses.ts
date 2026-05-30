@@ -83,25 +83,7 @@ router.post(
       return;
     }
 
-    // Free-tier sellers can only respond to 2 buyers total
-    const [seller] = await db
-      .select({ subscriptionTier: usersTable.subscriptionTier })
-      .from(usersTable)
-      .where(eq(usersTable.id, req.currentUserId!))
-      .limit(1);
-
-    if (!seller || seller.subscriptionTier === "free") {
-      const [{ responseCount }] = await db
-        .select({ responseCount: sql<number>`count(*)::int` })
-        .from(responsesTable)
-        .where(eq(responsesTable.sellerId, req.currentUserId!));
-
-      if (responseCount >= 2) {
-        res.status(403).json({ error: "free_limit_reached", message: "Free plan limit reached. Upgrade to respond to more buyers." });
-        return;
-      }
-    }
-
+    // Responding to buyer requests is always free and unlimited for all sellers.
     const id = randomUUID();
     await db.insert(responsesTable).values({
       id,
