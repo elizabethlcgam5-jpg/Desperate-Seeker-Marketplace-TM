@@ -39,6 +39,8 @@ import { getApiUrl } from "@/lib/api";
 
 const FREE_LISTING_LIMIT = 2;
 
+const PREMIUM_TIERS = new Set(["seller_basic", "seller_pro", "seller_annual"]);
+
 const CATEGORIES = [
   "Furniture",
   "Clothing",
@@ -119,16 +121,19 @@ export default function NewListing() {
   const { data: user } = useGetCurrentUser();
   const { data: listings } = useListMyListings({ query: { enabled: !!user } });
 
+  const isPremium = PREMIUM_TIERS.has((user as any)?.subscriptionTier ?? "");
   const activeListings = listings?.filter((l: any) => l.status === "active") ?? [];
   const soldListings = listings?.filter((l: any) => l.status === "sold") ?? [];
   const freeListingsUsed = listings?.length ?? 0;
 
-  // Show the subscription popup once we know the user has hit their free limit
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // Show the subscription popup once a free seller has hit their free limit
   useEffect(() => {
-    if (listings !== undefined && freeListingsUsed >= FREE_LISTING_LIMIT) {
+    if (listings !== undefined && !isPremium && freeListingsUsed >= FREE_LISTING_LIMIT) {
       setLimitOpen(true);
     }
-  }, [listings]);
+  }, [listings, isPremium, freeListingsUsed]);
 
   const [shippingWeight, setShippingWeight] = useState("");
   const [packageSize, setPackageSize] = useState("Small");
@@ -198,16 +203,21 @@ export default function NewListing() {
           availability: availabilityMap[values.deliveryOption] ?? "local_pickup",
           shippingPrice: showShipping && estimatedShipping != null ? estimatedShipping : null,
           zipCode: values.zipCode,
-          imageUrl: "",
+          imageUrl: imagePreview ?? "",
           instantMatchOn: values.instantMatchOn,
         }),
       });
       if (!res.ok) {
         const err = await res.json();
+        if (err.error === "free_limit_reached") {
+          setLimitOpen(true);
+          return;
+        }
         throw new Error(err.error ?? "Failed to post item");
       }
       toast.success("Item posted successfully!");
       form.reset();
+      setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
       setEstimatedShipping(null);
       setShippingWeight("");
@@ -640,30 +650,60 @@ export default function NewListing() {
                 <label className="text-sm font-medium text-[#0B3954]">
                   Upload Photos
                 </label>
-                <div
-                  className="border-2 border-dashed border-[#0B3954]/20 rounded-xl p-6 text-center cursor-pointer hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/5 transition-colors"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <p className="text-sm text-muted-foreground">
-                    Click to upload photos — multiple allowed
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    JPG, PNG, WEBP up to 10MB each
-                  </p>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    onChange={(e) => {
-                      const count = e.target.files?.length ?? 0;
-                      if (count > 0) {
-                        toast.success(`${count} photo${count > 1 ? "s" : ""} selected`);
-                      }
-                    }}
-                  />
-                </div>
+                {imagePreview ? (
+                  <div className="relative inline-block">
+                    <img
+                      src={imagePreview}
+                      alt="Item preview"
+                      className="w-full max-h-[260px] object-cover rounded-xl border border-[#0B3954]/10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImagePreview(null);
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                      className="absolute top-2 right-2 h-8 w-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/75 transition-colors"
+                      aria-label="Remove photo"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className="border-2 border-dashed border-[#0B3954]/20 rounded-xl p-6 text-center cursor-pointer hover:border-[#D4AF37]/60 hover:bg-[#D4AF37]/5 transition-colors"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <p className="text-sm text-muted-foreground">
+                      Click to upload a photo
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      JPG, PNG, WEBP up to 10MB
+                    </p>
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (file.size > 10 * 1024 * 1024) {
+                      toast.error("That image is too large. Please pick one under 10MB.");
+                      e.target.value = "";
+                      return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      setImagePreview(reader.result as string);
+                      toast.success("Photo added.");
+                    };
+                    reader.onerror = () => toast.error("Couldn't read that image. Try another.");
+                    reader.readAsDataURL(file);
+                  }}
+                />
               </div>
 
               {/* InstantMatch toggle */}

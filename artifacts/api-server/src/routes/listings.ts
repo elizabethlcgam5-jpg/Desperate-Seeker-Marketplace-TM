@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db, listingsTable, usersTable, notificationsTable } from "@workspace/db";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { instantMatchOnListing } from "../lib/matchEngine";
 import { generateAndSaveListingKeywords } from "../lib/keywordGenerator";
 import {
@@ -150,6 +150,22 @@ router.post("/listings", withCurrentUser, async (req, res) => {
   if (user) {
     isFeatured = PREMIUM_TIERS.has(user.subscriptionTier ?? "");
     sellerName = user.name;
+  }
+
+  // Free sellers may post up to 2 items; the 3rd and beyond require a subscription.
+  if (!user || !PREMIUM_TIERS.has(user.subscriptionTier ?? "")) {
+    const [{ listingCount }] = await db
+      .select({ listingCount: sql<number>`count(*)::int` })
+      .from(listingsTable)
+      .where(eq(listingsTable.sellerId, sellerId));
+
+    if (listingCount >= 2) {
+      res.status(403).json({
+        error: "free_limit_reached",
+        message: "Free plan limit reached. Upgrade to post more items.",
+      });
+      return;
+    }
   }
 
   const instantMatchOn = typeof body.instantMatchOn === "boolean" ? body.instantMatchOn : false;
