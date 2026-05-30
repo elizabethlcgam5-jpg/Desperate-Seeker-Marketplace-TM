@@ -6,6 +6,7 @@ import {
   isTwilioConfigured,
   sendVerification,
   checkVerification,
+  lookupLineType,
 } from "../lib/twilioVerify";
 
 const router: IRouter = Router();
@@ -76,6 +77,20 @@ router.post("/auth/send-phone-code", requireCurrentUser, async (req, res) => {
     });
     return;
   }
+
+  // Only allow real mobile numbers — block VoIP / landline via Twilio Lookup.
+  const lineType = await lookupLineType(normalized);
+  if (!lineType.allowed) {
+    res.status(400).json({
+      error: "unsupported_number",
+      message:
+        lineType.error === "invalid_number"
+          ? "That doesn't look like a valid phone number."
+          : "Please use a real mobile number. VoIP and landline numbers aren't accepted.",
+    });
+    return;
+  }
+
   lastSendByUser.set(userId, Date.now());
 
   const result = await sendVerification(normalized);

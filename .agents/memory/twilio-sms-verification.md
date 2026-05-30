@@ -60,3 +60,18 @@ callers, incurring real Twilio cost.
 The phone-verification gate on POST /listings applies ONLY to non-premium
 sellers (premium = seller_basic/seller_pro/seller_annual). The abuse vector is
 multi-account farming of the 2-free-listing limit; paying sellers are exempt.
+
+# Custom SMS body is set in Twilio, not in code
+
+The verification SMS text ("Your Desperately Seeking™ verification code is:
+{{CODE}}. Do not share this code with anyone.") is governed by the Twilio Verify
+SERVICE template (Twilio Console → Verify → Services → Templates), NOT by the
+/Verifications API call. The API only chooses channel (sms) + To. To customize
+the body, edit/approve a template in the console and attach it to the service.
+
+# Only mobile numbers allowed (Lookup)
+
+send-phone-code calls Twilio Lookup v2 (Fields=line_type_intelligence) and blocks
+type in {voip, nonFixedVoip, fixedVoip, landline}. Fails OPEN on non-404 Lookup
+errors / network errors so transient issues never block legit users; 404 → treated
+as invalid number.

@@ -3,6 +3,7 @@ const AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const VERIFY_SERVICE_SID = process.env.TWILIO_VERIFY_SERVICE_SID;
 
 const BASE_URL = "https://verify.twilio.com/v2";
+const LOOKUP_URL = "https://lookups.twilio.com/v2";
 
 export function isTwilioConfigured(): boolean {
   return Boolean(ACCOUNT_SID && AUTH_TOKEN && VERIFY_SERVICE_SID);
@@ -32,6 +33,37 @@ async function postForm(
     body = null;
   }
   return { ok: res.ok, status: res.status, body };
+}
+
+// Twilio Lookup (Line Type Intelligence) — block VoIP / landline so only real
+// mobile numbers can verify. Fails OPEN on Lookup errors so transient API
+// issues never hard-block a legitimate user.
+export async function lookupLineType(
+  phoneNumber: string,
+): Promise<{ allowed: boolean; type?: string; error?: string }> {
+  try {
+    const res = await fetch(
+      `${LOOKUP_URL}/PhoneNumbers/${encodeURIComponent(
+        phoneNumber,
+      )}?Fields=line_type_intelligence`,
+      { headers: { Authorization: authHeader() } },
+    );
+    if (!res.ok) {
+      if (res.status === 404) {
+        return { allowed: false, error: "invalid_number" };
+      }
+      // Unknown Lookup failure → fail open (don't block legitimate users).
+      return { allowed: true };
+    }
+    const body: any = await res.json();
+    const type: string | undefined = body?.line_type_intelligence?.type;
+    if (!type) return { allowed: true };
+    const blocked = new Set(["voip", "nonFixedVoip", "fixedVoip", "landline"]);
+    return { allowed: !blocked.has(type), type };
+  } catch {
+    // Network error → fail open.
+    return { allowed: true };
+  }
 }
 
 export async function sendVerification(
