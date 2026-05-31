@@ -171,7 +171,7 @@ export function RequestCard({ request, showResponses = true, teaser = false }: R
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5 text-[#D4AF37]" />
-              <span>{request.location || "Anywhere"}</span>
+              <span>{request.location ? `Near ${request.location}` : "Anywhere"}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" />
