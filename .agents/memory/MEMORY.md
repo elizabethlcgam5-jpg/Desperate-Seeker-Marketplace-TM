@@ -1,1 +1,2 @@
 - [api-spec codegen typecheck](api-codegen-typecheck.md) — `api-spec run codegen` exits non-zero on pre-existing lib errors even when orval succeeds; verify generated output directly.
+- [Orval react-query version](orval-react-query-version.md) — catalog: dep hides version so orval makes queryKey required; pin `override.query.version: 5`; rebuild lib dist after regen.
