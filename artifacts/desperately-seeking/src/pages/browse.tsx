@@ -111,7 +111,7 @@ function ListingCard({
         <Link href={`/listings/${listing.id}`} className="block">
           <div className="flex items-center gap-1.5 mb-2">
             <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#0B3954]">
-              For Sale
+              Seller Listing
             </span>
             <Badge
               variant="outline"
@@ -146,8 +146,8 @@ function ListingCard({
         </div>
         {listing.sellerName && (
           <p className="mt-2 text-xs text-muted-foreground">
-            by{" "}
-            <span className={listing.isFeatured ? "text-[#D4AF37] font-medium" : ""}>
+            Posted by{" "}
+            <span className={listing.isFeatured ? "text-[#D4AF37] font-medium" : "font-medium"}>
               {listing.sellerName}
             </span>
             {listing.isFeatured && (
@@ -177,10 +177,17 @@ function ListingCard({
               href={`/listings/${listing.id}`}
               className="mt-2 block text-center text-xs font-semibold text-[#0B3954]/70 hover:text-[#D4AF37] transition-colors"
             >
-              or Make an Offer
+              View Listing
             </Link>
           </>
-        ) : null}
+        ) : (
+          <Link
+            href={`/listings/${listing.id}`}
+            className="mt-3 block w-full rounded-full py-2 text-center text-xs font-bold bg-[#0B3954] text-white hover:bg-[#0B3954]/90 transition-colors"
+          >
+            View Listing
+          </Link>
+        )}
       </div>
     </div>
   );

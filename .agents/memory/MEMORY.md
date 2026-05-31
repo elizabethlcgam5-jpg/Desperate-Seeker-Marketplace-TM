@@ -1,1 +1,1 @@
-- [SellerResponse serializer sync](response-serializer-sync.md) — offers are serialized in TWO route files (responses.ts + requests.ts aggregate); both must match the OpenAPI schema or request-detail 400s on requests that have offers.
+- [api-spec codegen typecheck](api-codegen-typecheck.md) — `api-spec run codegen` exits non-zero on pre-existing lib errors even when orval succeeds; verify generated output directly.

@@ -14,7 +14,7 @@ import {
   useUpdateRequest
 } from "@workspace/api-client-react";
 import { useLocation, useParams, Link } from "wouter";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import { MapPin, Clock, MessageSquare, CheckCircle, XCircle, Eye } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -239,6 +239,9 @@ export default function RequestDetail() {
         <div className="container max-w-4xl mx-auto px-4 py-8 md:py-12">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div className="space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                Buyer Request Details
+              </p>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className="font-normal capitalize bg-background">
                   {request.category}
@@ -262,7 +265,7 @@ export default function RequestDetail() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Clock className="h-4 w-4" />
-                  <span>{formatDistanceToNow(new Date(request.createdAt), { addSuffix: true })}</span>
+                  <span>Posted on {format(new Date(request.createdAt), "PP")}</span>
                 </div>
               </div>
             </div>
@@ -282,6 +285,9 @@ export default function RequestDetail() {
           </div>
 
           <div className="mt-8 bg-card border rounded-2xl p-6 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+              Description
+            </p>
             <p className="text-lg leading-relaxed whitespace-pre-wrap">
               {request.description}
             </p>
@@ -315,10 +321,10 @@ export default function RequestDetail() {
                 <AvatarFallback>{request.buyer.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div>
+                <p className="text-xs text-muted-foreground">Requested by</p>
                 <p className="text-sm font-medium group-hover:text-primary transition-colors">
                   {request.buyer.name}
                 </p>
-                <p className="text-xs text-muted-foreground">Looking For</p>
               </div>
             </Link>
 
@@ -463,7 +469,7 @@ export default function RequestDetail() {
       <div className="container max-w-4xl mx-auto px-4 py-12">
         <h2 className="text-2xl font-serif font-bold mb-6 flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-secondary" />
-          Offers ({request.responseCount})
+          Seller Responses ({request.responseCount})
         </h2>
 
         {responsesLoading ? (
@@ -473,7 +479,7 @@ export default function RequestDetail() {
           </div>
         ) : responses?.length === 0 ? (
           <div className="text-center py-12 bg-muted/30 rounded-xl border border-dashed">
-            <p className="text-muted-foreground">No offers yet. Check back later!</p>
+            <p className="text-muted-foreground">No seller responses yet. Check back later!</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -482,13 +488,25 @@ export default function RequestDetail() {
                 <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row gap-6">
                     <div className="flex-1 space-y-4">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                        Seller Response
+                      </p>
                       <div className="flex justify-between items-start">
                         <Link href={`/profile/${response.seller.id}`} className="flex items-center gap-2 group">
                           <Avatar className="h-8 w-8">
                             <AvatarImage src={response.seller.avatarUrl} alt={response.seller.name} />
                             <AvatarFallback>{response.seller.name.charAt(0)}</AvatarFallback>
                           </Avatar>
-                          <span className="font-medium group-hover:text-primary transition-colors">{response.seller.name}</span>
+                          <span className="font-medium group-hover:text-primary transition-colors">
+                            Seller: {response.seller.name}
+                          </span>
+                          {response.seller.subscriptionTier &&
+                            response.seller.subscriptionTier !== "free" && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                                <CheckCircle className="h-3 w-3" />
+                                Verified
+                              </span>
+                            )}
                           <TierBadge tier={response.seller.subscriptionTier} size="xs" />
                           {currentUser?.id === response.seller.id && (
                             <span
@@ -516,7 +534,17 @@ export default function RequestDetail() {
                         {RESPONSE_TYPE_LABELS[response.responseType] ?? "I have this"}
                       </Badge>
 
-                      <p className="text-sm leading-relaxed">{response.message}</p>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Message from Seller:
+                        </p>
+                        <p className="text-sm leading-relaxed">{response.message}</p>
+                      </div>
+
+                      <p className="text-sm">
+                        <span className="font-medium text-muted-foreground">Status: </span>
+                        <span className="capitalize">{response.status}</span>
+                      </p>
 
                       {response.photos && response.photos.length > 0 && (
                         <div className="flex gap-2 overflow-x-auto pb-2">

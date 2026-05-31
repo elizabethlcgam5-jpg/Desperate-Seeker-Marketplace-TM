@@ -120,7 +120,7 @@ export function RequestCard({ request, showResponses = true, teaser = false }: R
             <div>
               <div className="flex flex-wrap items-center gap-1.5 mb-2">
                 <Badge className="font-semibold rounded-full bg-[#0B3954] text-white border-0 text-[10px]">
-                  Looking For
+                  Buyer Request
                 </Badge>
                 <Badge
                   variant="outline"
@@ -200,14 +200,22 @@ export function RequestCard({ request, showResponses = true, teaser = false }: R
               <AvatarImage src={request.buyer.avatarUrl} alt={request.buyer.name} />
               <AvatarFallback>{request.buyer.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            <span className="text-sm font-medium text-[#0B3954]">{request.buyer.name}</span>
+            <span className="text-sm text-[#0B3954]">
+              <span className="text-muted-foreground">Requested by </span>
+              <span className="font-medium">{request.buyer.name}</span>
+            </span>
           </div>
-          {showResponses && (
-            <div className="flex items-center gap-1.5 text-sm font-medium text-[#D4AF37]">
-              <MessageSquare className="h-4 w-4" />
-              <span>{request.responseCount} {request.responseCount === 1 ? "offer" : "offers"}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            {showResponses && (
+              <div className="flex items-center gap-1.5 text-sm font-medium text-[#D4AF37]">
+                <MessageSquare className="h-4 w-4" />
+                <span>{request.responseCount} {request.responseCount === 1 ? "response" : "responses"}</span>
+              </div>
+            )}
+            <span className="text-sm font-semibold text-[#0B3954] group-hover:text-[#D4AF37] transition-colors">
+              View Request →
+            </span>
+          </div>
         </CardFooter>
       </Card>
     </Link>
