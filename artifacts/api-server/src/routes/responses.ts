@@ -85,7 +85,10 @@ router.post(
     }
 
     // Responding to buyer requests is always free and unlimited for all sellers.
+    // Create the conversation thread eagerly so the buyer and this seller can
+    // message each other inline from the request page before any acceptance.
     const id = randomUUID();
+    const threadId = randomUUID();
     await db.insert(responsesTable).values({
       id,
       requestId: params.requestId,
@@ -96,6 +99,12 @@ router.post(
       message: body.message,
       photos: body.photos,
       status: "pending",
+      threadId,
+    });
+    await db.insert(threadsTable).values({
+      id: threadId,
+      requestId: params.requestId,
+      responseId: id,
     });
 
     const [row] = await db
@@ -184,14 +193,18 @@ router.patch(
       return;
     }
 
+    // Threads are created eagerly when a response is posted, but keep this
+    // fallback for any legacy responses that predate that behavior.
     let threadId: string | null = existing.r.threadId;
-    if (body.status === "accepted" && !threadId) {
-      threadId = randomUUID();
-      await db.insert(threadsTable).values({
-        id: threadId,
-        requestId: existing.r.requestId,
-        responseId: existing.r.id,
-      });
+    if (body.status === "accepted") {
+      if (!threadId) {
+        threadId = randomUUID();
+        await db.insert(threadsTable).values({
+          id: threadId,
+          requestId: existing.r.requestId,
+          responseId: existing.r.id,
+        });
+      }
       await db
         .update(requestsTable)
         .set({ status: "fulfilled" })

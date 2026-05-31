@@ -62,6 +62,13 @@ router.get("/threads", withCurrentUser, async (req, res) => {
           .orderBy(desc(messagesTable.createdAt))
           .limit(1);
 
+        // Threads are created eagerly for every response, so keep the inbox
+        // clean: skip ones with no messages yet unless the offer was accepted
+        // (an accepted deal is worth surfacing even before anyone has written).
+        // The per-response inline conversation fetches threads by id directly,
+        // so it is unaffected by this list-level filter.
+        if (!last && row.resp.status !== "accepted") return null;
+
         const [state] = await db
           .select()
           .from(threadStateTable)
@@ -195,6 +202,7 @@ router.get("/threads/:threadId", withCurrentUser, async (req, res) => {
         status: row.r.status,
         urgency: row.r.urgency,
         location: row.r.location,
+        isPrivate: row.r.isPrivate,
         createdAt: row.r.createdAt.toISOString(),
         buyer: serializeUser(row.buyer),
         responseCount: 1,

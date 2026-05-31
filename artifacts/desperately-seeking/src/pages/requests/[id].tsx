@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { EscrowPanel } from "@/components/escrow-panel";
+import { ResponseConversation } from "@/components/response-conversation";
 
 const RESPONSE_TYPES = [
   { value: "have", label: "I have this" },
@@ -553,6 +554,16 @@ export default function RequestDetail() {
                           ))}
                         </div>
                       )}
+
+                      {currentUser &&
+                        response.threadId &&
+                        (isBuyer || currentUser.id === response.seller.id) && (
+                          <ResponseConversation
+                            threadId={response.threadId}
+                            buyerId={request.buyer.id}
+                            currentUserId={currentUser.id}
+                          />
+                        )}
                     </div>
 
                     <div className="md:w-48 shrink-0 flex flex-col justify-center items-center gap-3 border-t md:border-t-0 md:border-l pt-4 md:pt-0 md:pl-6 border-border/50">

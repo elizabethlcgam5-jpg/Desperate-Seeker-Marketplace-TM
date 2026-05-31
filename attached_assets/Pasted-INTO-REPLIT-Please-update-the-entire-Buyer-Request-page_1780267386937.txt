@@ -1,0 +1,116 @@
+INTO REPLIT
+Please update the entire Buyer Request page and Marketplace flow using the following structure:
+
+1) BUYER REQUEST PAGE — COMPLETE REWRITE
+
+Page Title:
+Buyer Request Details
+
+Request Information:
+- Requested by: [Buyer Name]
+- Category: [Category]
+- Description: [Request Description]
+- Posted on: [Date]
+
+2) SELLER RESPONSES (REPLACE “OFFERS”)
+
+Section title:
+Seller Responses ([Count])
+
+For each response, display:
+- Seller: [Seller Name] (Verified)
+- Message from Seller:
+  [Seller’s message text]
+- Status: [Pending / Accepted / Declined]
+
+3) CONVERSATION THREAD (FIX NAME ISSUE)
+
+Inside each response, show a conversation thread.
+
+When the logged-in user (buyer) replies, display:
+- You (Linda): [Your message]
+
+When the seller replies, display:
+- Seller: [Seller Name] (Verified): [Their message]
+
+Important:
+Do NOT show the seller’s name where the buyer’s name should be.
+The logged-in user’s replies must always be labeled as “You (Linda)” (or the correct logged-in buyer name).
+
+4) RESPONSE OPTIONS (REPLACE “I HAVE THIS”)
+
+When a seller responds to a buyer request, show multiple options instead of only “I have this”:
+
+Buttons:
+- I have this
+- I can get this
+- I can help you find it
+- I can make this
+- I offer this as a service
+
+These options should be stored with the response so the buyer can see which one the seller chose.
+
+5) COMBINE BROWSE PAGES INTO ONE “BROWSE MARKETPLACE” PAGE
+
+Rename the existing browse pages into a single page:
+
+Page Title:
+Browse Marketplace
+
+This page should show BOTH:
+- Buyer Requests
+- Seller Listings
+
+in one unified feed.
+
+6) FILTERS AT THE TOP OF BROWSE MARKETPLACE
+
+Add filters at the top of the page:
+
+Filters:
+- All
+- Buyer Requests
+- Seller Listings
+- Nearby
+- Newest
+- Categories
+
+“All” shows everything.
+“Buyer Requests” shows only buyer requests.
+“Seller Listings” shows only seller listings.
+
+7) FEED ITEM LAYOUT
+
+For a Buyer Request item in the feed, display:
+- Label: Buyer Request
+- Requested by: [Buyer Name]
+- Description: [Request Description]
+- Category: [Category]
+- Button: View Request
+
+For a Seller Listing item in the feed, display:
+- Label: Seller Listing
+- Posted by: [Seller Name]
+- Item Description: [Listing Description]
+- Price: [Price, if available]
+- Button: View Listing
+
+8) NAME & LABEL CLARITY (CRITICAL FIX)
+
+The current layout makes it look like the buyer’s name is being replaced by the seller’s name.
+
+Please ensure:
+- Seller names are always labeled as: “Seller: [Name] (Verified)”
+- Buyer replies are always labeled as: “You (Linda)” (or the correct logged-in buyer name)
+- The Buyer Request page clearly separates:
+  - Request Information (buyer)
+  - Seller Responses (sellers)
+  - Conversation thread (between buyer and each seller)
+
+9) SUMMARY FOR IMPLEMENTATION
+
+- Replace “Offers” with “Seller Responses”.
+- Add multiple response options for sellers (I have this, I can get this, I can help you find it, I can make this, I offer this as a service).
+- Combine the separate browse pages into one “Browse Marketplace” page with filters for All, Buyer Requests, Seller Listings, Nearby, Newest, and Categories.
+- Fix the conversation thread so the logged-in user’s replies show as “You (Linda)” and seller replies show as “Seller: [Name] (Verified)”.
+- Make sure the UI never makes it look like the buyer’s name is being replaced by the seller’s name.
