@@ -47,6 +47,7 @@ import {
   MapPin,
   RefreshCw,
   Pencil,
+  Trash2,
 } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
@@ -127,6 +128,8 @@ export default function MyListingsPage() {
   const [createLoading, setCreateLoading] = useState(false);
   const [repostingId, setRepostingId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deletingListing, setDeletingListing] = useState<{ id: string; title: string } | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const handleRepost = async (listingId: string) => {
     setRepostingId(listingId);
@@ -222,6 +225,28 @@ export default function MyListingsPage() {
       toast.error(err.message ?? "Couldn't save listing. Try again.");
     } finally {
       setCreateLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deletingListing) return;
+    setDeleteLoading(true);
+    try {
+      const res = await fetch(getApiUrl(`listings/${deletingListing.id}`), {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok && res.status !== 204) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message ?? err.error ?? "Failed to delete listing");
+      }
+      toast.success("Listing deleted.");
+      setDeletingListing(null);
+      qc.invalidateQueries();
+    } catch (err: any) {
+      toast.error(err.message ?? "Couldn't delete listing. Try again.");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -412,6 +437,15 @@ export default function MyListingsPage() {
                           >
                             <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
                             Mark as Sold
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="rounded-full border-red-200 text-red-600 text-xs hover:bg-red-50 hover:text-red-700"
+                            onClick={() => setDeletingListing({ id: listing.id, title: listing.title })}
+                          >
+                            <Trash2 className="h-3.5 w-3.5 mr-1" />
+                            Delete
                           </Button>
                         </div>
                       </div>
@@ -749,6 +783,37 @@ export default function MyListingsPage() {
                 {markingLoading ? "Saving…" : "Confirm Sale"}
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={!!deletingListing} onOpenChange={(o) => !o && setDeletingListing(null)}>
+        <DialogContent className="sm:max-w-[400px] rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-[#0B3954]">Delete listing?</DialogTitle>
+            <DialogDescription>
+              {deletingListing
+                ? `"${deletingListing.title}" will be permanently removed from the marketplace. This can't be undone.`
+                : ""}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 pt-1">
+            <Button
+              variant="outline"
+              className="flex-1 rounded-full"
+              onClick={() => setDeletingListing(null)}
+              disabled={deleteLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="flex-1 rounded-full bg-red-600 text-white font-bold hover:bg-red-700 border-0"
+              onClick={handleDelete}
+              disabled={deleteLoading}
+            >
+              {deleteLoading ? "Deleting…" : "Delete"}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
