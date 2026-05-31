@@ -315,17 +315,27 @@ export default function ThreadDetail() {
             {thread.messages.map((msg, index) => {
               const isMe = msg.sender.id === currentUser.id;
               const showHeader = index === 0 || thread.messages[index - 1].sender.id !== msg.sender.id;
+              const senderIsBuyer = msg.sender.id === thread.request.buyer.id;
+              const senderVerified =
+                msg.sender.subscriptionTier != null &&
+                msg.sender.subscriptionTier !== "free";
+              const myFirstName = currentUser.name.split(" ")[0] || currentUser.name;
+              const senderLabel = isMe
+                ? `You (${myFirstName})`
+                : senderIsBuyer
+                ? `Buyer: ${msg.sender.name}`
+                : `Seller: ${msg.sender.name}${senderVerified ? " (Verified)" : ""}`;
 
               return (
                 <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
                   {showHeader && !isMe && (
                     <span className="text-xs text-muted-foreground ml-12 mb-1">
-                      {msg.sender.name} &middot; {format(new Date(msg.createdAt), 'h:mm a')}
+                      {senderLabel} &middot; {format(new Date(msg.createdAt), 'h:mm a')}
                     </span>
                   )}
                   {showHeader && isMe && (
                     <span className="text-xs text-muted-foreground mr-2 mb-1">
-                      {format(new Date(msg.createdAt), 'h:mm a')}
+                      {senderLabel} &middot; {format(new Date(msg.createdAt), 'h:mm a')}
                     </span>
                   )}
 
