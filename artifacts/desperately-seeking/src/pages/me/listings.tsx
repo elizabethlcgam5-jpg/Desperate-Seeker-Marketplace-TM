@@ -46,6 +46,7 @@ import {
   Truck,
   MapPin,
   RefreshCw,
+  Pencil,
 } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
@@ -125,6 +126,7 @@ export default function MyListingsPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [repostingId, setRepostingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const handleRepost = async (listingId: string) => {
     setRepostingId(listingId);
@@ -164,33 +166,60 @@ export default function MyListingsPage() {
   const watchAvailability = form.watch("availability");
   const showShipping = watchAvailability === "shipping" || watchAvailability === "both";
 
-  const handleCreateListing = async (data: CreateListingData) => {
+  const openEdit = (listing: any) => {
+    setEditingId(listing.id);
+    form.reset({
+      title: listing.title ?? "",
+      description: listing.description ?? "",
+      category: listing.category ?? "",
+      brandName: listing.brandName ?? "",
+      condition: listing.condition ?? "",
+      price: Number(listing.price) || undefined,
+      availability: listing.availability ?? "",
+      shippingPrice:
+        listing.shippingPrice != null ? Number(listing.shippingPrice) : undefined,
+      zipCode: listing.zipCode ?? "",
+    });
+    setShowCreateDialog(true);
+  };
+
+  const handleSubmitListing = async (data: CreateListingData) => {
     setCreateLoading(true);
     try {
-      const res = await fetch(getApiUrl("listings"), {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: data.title,
-          description: data.description,
-          category: data.category,
-          brandName: data.brandName || "",
-          condition: data.condition,
-          price: data.price,
-          availability: data.availability,
-          shippingPrice: showShipping ? (data.shippingPrice ?? null) : null,
-          zipCode: data.zipCode,
-          imageUrl: "",
-        }),
-      });
-      if (!res.ok) throw new Error((await res.json()).error ?? "Failed to create listing");
-      toast.success("Listing created!");
+      const payload: Record<string, unknown> = {
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        brandName: data.brandName || "",
+        condition: data.condition,
+        price: data.price,
+        availability: data.availability,
+        shippingPrice: showShipping ? (data.shippingPrice ?? null) : null,
+        zipCode: data.zipCode,
+      };
+      // Only send imageUrl when creating; omit on edit so the existing photo is kept.
+      if (!editingId) payload.imageUrl = "";
+
+      const res = await fetch(
+        editingId ? getApiUrl(`listings/${editingId}`) : getApiUrl("listings"),
+        {
+          method: editingId ? "PATCH" : "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message ?? err.error ?? "Failed to save listing");
+      }
+      toast.success(editingId ? "Listing updated!" : "Listing created!");
       setShowCreateDialog(false);
+      setEditingId(null);
       form.reset();
       qc.invalidateQueries();
     } catch (err: any) {
-      toast.error(err.message ?? "Couldn't create listing. Try again.");
+      toast.error(err.message ?? "Couldn't save listing. Try again.");
     } finally {
       setCreateLoading(false);
     }
@@ -358,22 +387,33 @@ export default function MyListingsPage() {
                       <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
                         {listing.description}
                       </p>
-                      <div className="mt-3 flex items-center justify-between">
-                        <p className="text-xs text-muted-foreground">
+                      <div className="mt-3 flex items-center justify-between gap-2">
+                        <p className="text-xs text-muted-foreground shrink-0">
                           Listed {formatDate(listing.createdAt)}
                         </p>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="rounded-full border-[#D4AF37]/40 text-[#0B3954] text-xs hover:bg-[#D4AF37]/10"
-                          onClick={() => {
-                            setSoldDialogId(listing.id);
-                            setSalePrice(Number(listing.price).toFixed(2));
-                          }}
-                        >
-                          <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
-                          Mark as Sold
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="rounded-full border-[#0B3954]/30 text-[#0B3954] text-xs hover:bg-[#0B3954]/5"
+                            onClick={() => openEdit(listing)}
+                          >
+                            <Pencil className="h-3.5 w-3.5 mr-1" />
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="rounded-full border-[#D4AF37]/40 text-[#0B3954] text-xs hover:bg-[#D4AF37]/10"
+                            onClick={() => {
+                              setSoldDialogId(listing.id);
+                              setSalePrice(Number(listing.price).toFixed(2));
+                            }}
+                          >
+                            <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+                            Mark as Sold
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -438,17 +478,21 @@ export default function MyListingsPage() {
       </div>
 
       {/* Create Listing Dialog */}
-      <Dialog open={showCreateDialog} onOpenChange={(o) => { setShowCreateDialog(o); if (!o) form.reset(); }}>
+      <Dialog open={showCreateDialog} onOpenChange={(o) => { setShowCreateDialog(o); if (!o) { form.reset(); setEditingId(null); } }}>
         <DialogContent className="sm:max-w-[520px] rounded-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-serif text-[#0B3954]">Create a New Listing</DialogTitle>
+            <DialogTitle className="font-serif text-[#0B3954]">
+              {editingId ? "Edit Listing" : "Create a New Listing"}
+            </DialogTitle>
             <DialogDescription>
-              Fill in the details below. Your listing will appear in the marketplace immediately.
+              {editingId
+                ? "Update the details below and save your changes."
+                : "Fill in the details below. Your listing will appear in the marketplace immediately."}
             </DialogDescription>
           </DialogHeader>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleCreateListing)} className="space-y-4 pt-2">
+            <form onSubmit={form.handleSubmit(handleSubmitListing)} className="space-y-4 pt-2">
               {/* Title */}
               <FormField
                 control={form.control}
@@ -499,7 +543,10 @@ export default function MyListingsPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {CATEGORIES.map((c) => (
+                          {(field.value && !CATEGORIES.includes(field.value)
+                            ? [field.value, ...CATEGORIES]
+                            : CATEGORIES
+                          ).map((c) => (
                             <SelectItem key={c} value={c}>{c}</SelectItem>
                           ))}
                         </SelectContent>
@@ -629,7 +676,7 @@ export default function MyListingsPage() {
                   type="button"
                   variant="outline"
                   className="flex-1 rounded-full"
-                  onClick={() => { setShowCreateDialog(false); form.reset(); }}
+                  onClick={() => { setShowCreateDialog(false); form.reset(); setEditingId(null); }}
                 >
                   Cancel
                 </Button>
@@ -638,7 +685,11 @@ export default function MyListingsPage() {
                   disabled={createLoading}
                   className="flex-1 rounded-full bg-[#D4AF37] text-[#0B3954] font-bold hover:bg-[#c9a430] border-0"
                 >
-                  {createLoading ? "Creating…" : "Create Listing"}
+                  {createLoading
+                    ? "Saving…"
+                    : editingId
+                      ? "Save Changes"
+                      : "Create Listing"}
                 </Button>
               </div>
             </form>
