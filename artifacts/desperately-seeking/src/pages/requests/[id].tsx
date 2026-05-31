@@ -332,7 +332,7 @@ export default function RequestDetail() {
               <Dialog open={isResponseDialogOpen} onOpenChange={setIsResponseDialogOpen}>
                 <DialogTrigger asChild>
                   <Button size="lg" className="rounded-full shadow-lg shadow-primary/20">
-                    I have this!
+                    Respond
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[500px]">

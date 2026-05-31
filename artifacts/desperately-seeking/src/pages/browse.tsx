@@ -23,6 +23,7 @@ import {
   Loader2,
   ShoppingCart,
   Inbox,
+  ArrowDownWideNarrow,
 } from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
@@ -191,6 +192,7 @@ export default function Browse() {
   const [searchQuery, setSearchQuery] = useState("");
   const [zipInput, setZipInput] = useState("");
   const [activeZip, setActiveZip] = useState("");
+  const [showNearby, setShowNearby] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [feedFilter, setFeedFilter] = useState<FeedFilter>("all");
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
@@ -260,6 +262,15 @@ export default function Browse() {
   function clearZip() {
     setZipInput("");
     setActiveZip("");
+  }
+
+  function toggleNearby() {
+    if (activeZip) {
+      clearZip();
+      setShowNearby(false);
+    } else {
+      setShowNearby((s) => !s);
+    }
   }
 
   async function handlePhotoSearch(file: File) {
@@ -447,34 +458,6 @@ export default function Browse() {
             </Button>
           </div>
 
-          {/* Nearby ZIP */}
-          <div className="mt-3 flex gap-2 max-w-2xl flex-wrap items-center">
-            <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-3 py-2">
-              <MapPin className="h-4 w-4 text-[#D4AF37] shrink-0" />
-              <input
-                className="w-32 text-sm text-white placeholder:text-white/40 bg-transparent focus:outline-none"
-                placeholder="Nearby ZIP"
-                value={zipInput}
-                onChange={(e) => setZipInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && applyZip()}
-              />
-              <button
-                onClick={() => applyZip()}
-                className="text-xs font-bold text-[#D4AF37] hover:text-white"
-              >
-                Go
-              </button>
-              {activeZip && (
-                <button
-                  onClick={clearZip}
-                  className="text-white/50 hover:text-white"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
-
           {/* Photo search status line */}
           {photoPreview && (
             <div className="mt-3 flex items-center gap-1.5">
@@ -487,46 +470,79 @@ export default function Browse() {
               </button>
             </div>
           )}
-
-          {activeZip && (
-            <p className="text-white/60 text-sm mt-2">
-              Showing items near <strong className="text-white">{activeZip}</strong>
-              .
-            </p>
-          )}
         </div>
       </section>
 
       <div className="container mx-auto px-4 md:px-8 max-w-5xl py-8">
-        {/* Feed type tabs + sort */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-          <div className="inline-flex rounded-full border border-[#0B3954]/15 bg-white p-1">
-            {FILTER_TABS.map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => setFeedFilter(tab.value)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  feedFilter === tab.value
-                    ? "bg-[#0B3954] text-white"
-                    : "text-[#0B3954]/70 hover:text-[#0B3954]"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Sort:</span>
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-              className="rounded-full border border-[#0B3954]/20 bg-white px-3 py-1.5 text-sm font-medium text-[#0B3954] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40"
+        {/* Unified quick-filter bar: All / Buyer Requests / Seller Listings / Nearby / Newest */}
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          {FILTER_TABS.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setFeedFilter(tab.value)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                feedFilter === tab.value
+                  ? "bg-[#0B3954] text-white border-[#0B3954]"
+                  : "bg-white text-[#0B3954]/70 border-[#0B3954]/20 hover:text-[#0B3954] hover:border-[#0B3954]/50"
+              }`}
             >
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-            </select>
-          </div>
+              {tab.label}
+            </button>
+          ))}
+
+          <span className="mx-1 h-6 w-px bg-[#0B3954]/15" aria-hidden />
+
+          {/* Nearby — reveals the ZIP input; active when a ZIP is applied */}
+          <button
+            onClick={toggleNearby}
+            className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+              activeZip || showNearby
+                ? "bg-[#0B3954] text-white border-[#0B3954]"
+                : "bg-white text-[#0B3954]/70 border-[#0B3954]/20 hover:text-[#0B3954] hover:border-[#0B3954]/50"
+            }`}
+          >
+            <MapPin className="h-3.5 w-3.5" />
+            {activeZip ? `Nearby: ${activeZip}` : "Nearby"}
+            {activeZip && <X className="h-3.5 w-3.5" />}
+          </button>
+
+          {/* Newest — toggles sort newest/oldest */}
+          <button
+            onClick={() =>
+              setSortOrder((s) => (s === "newest" ? "oldest" : "newest"))
+            }
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border bg-white text-[#0B3954] border-[#0B3954]/20 hover:border-[#0B3954]/50 transition-colors"
+          >
+            <ArrowDownWideNarrow className="h-3.5 w-3.5" />
+            {sortOrder === "newest" ? "Newest" : "Oldest"}
+          </button>
         </div>
+
+        {/* Nearby ZIP input — revealed by the Nearby chip */}
+        {(showNearby || activeZip) && (
+          <div className="mb-4 flex items-center gap-2 bg-white border border-[#0B3954]/20 rounded-xl px-3 py-2 w-fit">
+            <MapPin className="h-4 w-4 text-[#D4AF37] shrink-0" />
+            <input
+              autoFocus
+              className="w-32 text-sm text-[#0B3954] placeholder:text-[#0B3954]/35 bg-transparent focus:outline-none"
+              placeholder="Enter ZIP code"
+              value={zipInput}
+              onChange={(e) => setZipInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && applyZip()}
+            />
+            <button
+              onClick={() => applyZip()}
+              className="text-xs font-bold text-[#0B3954] hover:text-[#D4AF37]"
+            >
+              Go
+            </button>
+            {activeZip && (
+              <button onClick={clearZip} className="text-[#0B3954]/40 hover:text-[#0B3954]">
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Category pills */}
         <div className="flex gap-2 flex-wrap mb-6">
