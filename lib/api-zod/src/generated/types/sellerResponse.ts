@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { SellerResponseCondition } from "./sellerResponseCondition";
+import type { SellerResponseResponseType } from "./sellerResponseResponseType";
 import type { SellerResponseStatus } from "./sellerResponseStatus";
 import type { User } from "./user";
 
@@ -13,8 +14,9 @@ export interface SellerResponse {
   id: string;
   requestId: string;
   seller: User;
+  responseType: SellerResponseResponseType;
   price: number;
-  condition: SellerResponseCondition;
+  condition?: SellerResponseCondition;
   message: string;
   photos: string[];
   status: SellerResponseStatus;

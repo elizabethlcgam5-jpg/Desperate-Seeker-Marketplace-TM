@@ -6,10 +6,12 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { CreateResponseBodyCondition } from "./createResponseBodyCondition";
+import type { CreateResponseBodyResponseType } from "./createResponseBodyResponseType";
 
 export interface CreateResponseBody {
+  responseType: CreateResponseBodyResponseType;
   price: number;
-  condition: CreateResponseBodyCondition;
+  condition?: CreateResponseBodyCondition;
   /** @minLength 1 */
   message: string;
   photos: string[];

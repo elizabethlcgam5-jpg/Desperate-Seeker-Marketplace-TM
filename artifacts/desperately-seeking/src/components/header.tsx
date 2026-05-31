@@ -78,7 +78,7 @@ export function Header() {
                 <Link href="/browse" className="cursor-pointer">Browse</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/buyer-requests" className="cursor-pointer">Requests</Link>
+                <Link href="/browse?filter=requests" className="cursor-pointer">Requests</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/requests/new" className="cursor-pointer">Post Request</Link>
@@ -107,7 +107,7 @@ export function Header() {
           <Link href="/browse" className="text-white/80 transition-colors hover:text-white hidden md:block">
             Browse
           </Link>
-          <Link href="/buyer-requests" className="text-white/80 transition-colors hover:text-white hidden sm:block">
+          <Link href="/browse?filter=requests" className="text-white/80 transition-colors hover:text-white hidden sm:block">
             Requests
           </Link>
           <Link href="/requests/new" className="text-white/80 transition-colors hover:text-white hidden md:block">
@@ -140,7 +140,7 @@ export function Header() {
           )}
 
           {/* Buyer Requests inbox */}
-          <Link href="/buyer-requests">
+          <Link href="/browse?filter=requests">
             <Button
               variant="ghost"
               size="icon"

@@ -49,9 +49,22 @@ import {
 import { useState } from "react";
 import { EscrowPanel } from "@/components/escrow-panel";
 
+const RESPONSE_TYPES = [
+  { value: "have", label: "I have this" },
+  { value: "can_get", label: "I can get this" },
+  { value: "can_find", label: "I can help you find it" },
+  { value: "can_make", label: "I can make this" },
+  { value: "service", label: "I offer this as a service" },
+] as const;
+
+const RESPONSE_TYPE_LABELS: Record<string, string> = Object.fromEntries(
+  RESPONSE_TYPES.map((t) => [t.value, t.label]),
+);
+
 const responseSchema = z.object({
+  responseType: z.enum(["have", "can_get", "can_find", "can_make", "service"]),
   price: z.coerce.number().min(0),
-  condition: z.enum(["new", "like_new", "good", "fair", "used"]),
+  condition: z.enum(["new", "like_new", "good", "fair", "used"]).optional(),
   message: z.string().min(10, "Please provide a more detailed message"),
   photos: z.string().optional(), // comma separated
 });
@@ -78,12 +91,15 @@ export default function RequestDetail() {
   const form = useForm<z.infer<typeof responseSchema>>({
     resolver: zodResolver(responseSchema),
     defaultValues: {
+      responseType: "have",
       price: 0,
       condition: "good",
       message: "",
       photos: "",
     },
   });
+
+  const responseType = form.watch("responseType");
 
   const onResponseSubmit = (values: z.infer<typeof responseSchema>) => {
     const photosList = values.photos
@@ -94,8 +110,9 @@ export default function RequestDetail() {
       {
         requestId: id as string,
         data: {
+          responseType: values.responseType,
           price: values.price,
-          condition: values.condition,
+          condition: values.responseType === "have" ? values.condition : undefined,
           message: values.message,
           photos: photosList,
         },
@@ -299,20 +316,48 @@ export default function RequestDetail() {
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[500px]">
                   <DialogHeader>
-                    <DialogTitle>Make an Offer</DialogTitle>
+                    <DialogTitle>Respond to this request</DialogTitle>
                     <DialogDescription>
-                      Describe what you have and set your price.
+                      Tell the buyer how you can help and set your price.
                     </DialogDescription>
                   </DialogHeader>
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onResponseSubmit)} className="space-y-6 pt-4">
-                      <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="responseType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>How can you help?</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select an option" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {RESPONSE_TYPES.map((t) => (
+                                  <SelectItem key={t.value} value={t.value}>
+                                    {t.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className={responseType === "have" ? "grid grid-cols-2 gap-4" : ""}>
                         <FormField
                           control={form.control}
                           name="price"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Price ($)</FormLabel>
+                              <FormLabel>
+                                {responseType === "have" || responseType === "can_get"
+                                  ? "Price ($)"
+                                  : "Price / estimate ($)"}
+                              </FormLabel>
                               <FormControl>
                                 <Input type="number" placeholder="0" {...field} />
                               </FormControl>
@@ -320,30 +365,32 @@ export default function RequestDetail() {
                             </FormItem>
                           )}
                         />
-                        <FormField
-                          control={form.control}
-                          name="condition"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Condition</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select condition" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="new">New</SelectItem>
-                                  <SelectItem value="like_new">Like New</SelectItem>
-                                  <SelectItem value="good">Good</SelectItem>
-                                  <SelectItem value="fair">Fair</SelectItem>
-                                  <SelectItem value="used">Used</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        {responseType === "have" && (
+                          <FormField
+                            control={form.control}
+                            name="condition"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Condition</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select condition" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="new">New</SelectItem>
+                                    <SelectItem value="like_new">Like New</SelectItem>
+                                    <SelectItem value="good">Good</SelectItem>
+                                    <SelectItem value="fair">Fair</SelectItem>
+                                    <SelectItem value="used">Used</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
                       </div>
                       <FormField
                         control={form.control}
@@ -352,7 +399,7 @@ export default function RequestDetail() {
                           <FormItem>
                             <FormLabel>Message to Buyer</FormLabel>
                             <FormControl>
-                              <Textarea placeholder="Hi! I have exactly what you're looking for..." className="min-h-[100px]" {...field} />
+                              <Textarea placeholder="Hi! Here's how I can help…" className="min-h-[100px]" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -425,11 +472,17 @@ export default function RequestDetail() {
                         </Link>
                         <div className="text-right">
                           <div className="text-xl font-bold">${response.price}</div>
-                          <Badge variant="secondary" className="capitalize text-xs font-normal">
-                            {response.condition.replace('_', ' ')}
-                          </Badge>
+                          {response.condition && (
+                            <Badge variant="secondary" className="capitalize text-xs font-normal">
+                              {response.condition.replace('_', ' ')}
+                            </Badge>
+                          )}
                         </div>
                       </div>
+
+                      <Badge className="bg-[#0B3954] text-white border-0 rounded-full text-[11px] font-medium">
+                        {RESPONSE_TYPE_LABELS[response.responseType] ?? "I have this"}
+                      </Badge>
 
                       <p className="text-sm leading-relaxed">{response.message}</p>
 

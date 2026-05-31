@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,7 +20,6 @@ import Analytics from "@/pages/me/analytics";
 import Inventory from "@/pages/me/inventory";
 import SellerDashboard from "@/pages/me/dashboard";
 import MyListingsPage from "@/pages/me/listings";
-import BuyerRequests from "@/pages/buyer-requests";
 import Pricing from "@/pages/pricing";
 import CheckoutSuccess from "@/pages/checkout/success";
 import Browse from "@/pages/browse";
@@ -74,7 +73,9 @@ function Router() {
       <Route path="/me/inventory" component={Inventory} />
       <Route path="/me/dashboard" component={SellerDashboard} />
       <Route path="/me/listings" component={MyListingsPage} />
-      <Route path="/buyer-requests" component={BuyerRequests} />
+      <Route path="/buyer-requests">
+        <Redirect to="/browse?filter=requests" />
+      </Route>
       <Route path="/pricing" component={Pricing} />
       <Route path="/checkout/success" component={CheckoutSuccess} />
       <Route path="/post" component={Post} />

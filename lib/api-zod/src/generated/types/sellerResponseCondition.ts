@@ -7,7 +7,8 @@
  */
 
 export type SellerResponseCondition =
-  (typeof SellerResponseCondition)[keyof typeof SellerResponseCondition];
+  | (typeof SellerResponseCondition)[keyof typeof SellerResponseCondition]
+  | null;
 
 export const SellerResponseCondition = {
   new: "new",

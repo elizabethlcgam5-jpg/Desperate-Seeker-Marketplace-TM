@@ -226,8 +226,20 @@ export interface UpdateUserBody {
   avatarUrl?: string;
 }
 
+export type SellerResponseResponseType =
+  (typeof SellerResponseResponseType)[keyof typeof SellerResponseResponseType];
+
+export const SellerResponseResponseType = {
+  have: "have",
+  can_get: "can_get",
+  can_find: "can_find",
+  can_make: "can_make",
+  service: "service",
+} as const;
+
 export type SellerResponseCondition =
-  (typeof SellerResponseCondition)[keyof typeof SellerResponseCondition];
+  | (typeof SellerResponseCondition)[keyof typeof SellerResponseCondition]
+  | null;
 
 export const SellerResponseCondition = {
   new: "new",
@@ -250,8 +262,9 @@ export interface SellerResponse {
   id: string;
   requestId: string;
   seller: User;
+  responseType: SellerResponseResponseType;
   price: number;
-  condition: SellerResponseCondition;
+  condition?: SellerResponseCondition;
   message: string;
   photos: string[];
   status: SellerResponseStatus;
@@ -324,8 +337,20 @@ export interface UpdateRequestBody {
   tags?: string[];
 }
 
+export type CreateResponseBodyResponseType =
+  (typeof CreateResponseBodyResponseType)[keyof typeof CreateResponseBodyResponseType];
+
+export const CreateResponseBodyResponseType = {
+  have: "have",
+  can_get: "can_get",
+  can_find: "can_find",
+  can_make: "can_make",
+  service: "service",
+} as const;
+
 export type CreateResponseBodyCondition =
-  (typeof CreateResponseBodyCondition)[keyof typeof CreateResponseBodyCondition];
+  | (typeof CreateResponseBodyCondition)[keyof typeof CreateResponseBodyCondition]
+  | null;
 
 export const CreateResponseBodyCondition = {
   new: "new",
@@ -336,8 +361,9 @@ export const CreateResponseBodyCondition = {
 } as const;
 
 export interface CreateResponseBody {
+  responseType: CreateResponseBodyResponseType;
   price: number;
-  condition: CreateResponseBodyCondition;
+  condition?: CreateResponseBodyCondition;
   /** @minLength 1 */
   message: string;
   photos: string[];

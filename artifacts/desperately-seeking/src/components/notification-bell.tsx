@@ -237,7 +237,7 @@ export function NotificationBell() {
                           )}
                           {n.requestId && (
                             <Link
-                              href="/buyer-requests"
+                              href="/browse?filter=requests"
                               onClick={() => {
                                 markRead(n.id);
                                 setOpen(false);
@@ -305,7 +305,7 @@ export function NotificationBell() {
                         reaches out.
                       </p>
                       <Link
-                        href="/buyer-requests"
+                        href="/browse?filter=requests"
                         onClick={() => setOpen(false)}
                         className="block w-full text-center rounded-full bg-[#D4AF37] text-[#0B3954] font-bold py-3 text-sm hover:bg-[#c9a430] transition-colors"
                       >

@@ -66,6 +66,9 @@ export function RequestCard({ request, showResponses = true, teaser = false }: R
           <div className="flex justify-between items-start gap-4">
             <div>
               <div className="flex flex-wrap items-center gap-1.5 mb-2">
+                <Badge className="font-semibold rounded-full bg-[#0B3954] text-white border-0 text-[10px]">
+                  Looking For
+                </Badge>
                 <Badge
                   variant="outline"
                   className="font-normal capitalize rounded-full text-[#0B3954] border-[#0B3954]/20 bg-[#0B3954]/5"

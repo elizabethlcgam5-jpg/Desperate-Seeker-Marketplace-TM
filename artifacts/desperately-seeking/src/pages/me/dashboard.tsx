@@ -255,7 +255,7 @@ export default function SellerDashboard() {
                 New Listing
               </Button>
             </Link>
-            <Link href="/buyer-requests">
+            <Link href="/browse?filter=requests">
               <Button variant="outline" size="sm" className="rounded-full border-[#0B3954]/20 text-[#0B3954] gap-1.5">
                 <Inbox className="h-4 w-4" />
                 Buyer Requests

@@ -103,7 +103,7 @@ export default function Home() {
                 Post What You Need
               </Button>
             </Link>
-            <Link href="/browse">
+            <Link href="/browse?filter=requests">
               <Button
                 size="lg"
                 variant="outline"
@@ -297,7 +297,7 @@ export default function Home() {
               <h2 className="font-serif text-2xl md:text-3xl font-bold text-[#0B3954]">
                 Latest Requests
               </h2>
-              <Link href="/browse">
+              <Link href="/browse?filter=requests">
                 <Button variant="ghost" className="text-[#0B3954] gap-1.5 hover:bg-[#0B3954]/5">
                   See all <ArrowRight className="h-4 w-4" />
                 </Button>

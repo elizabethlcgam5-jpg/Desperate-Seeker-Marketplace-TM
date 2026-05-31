@@ -1,13 +1,29 @@
-import { useState, useRef } from "react";
-import { Link } from "wouter";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { Link, useSearch } from "wouter";
 import { Layout } from "@/components/layout";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MicButton } from "@/components/mic-button";
-import { useListListings, useGetCurrentUser } from "@workspace/api-client-react";
-import { MapPin, Search, Tag, X, Star, Camera, Loader2, ShoppingCart, MessageCircle, HandCoins } from "lucide-react";
+import { RequestCard } from "@/components/request-card";
+import {
+  useListListings,
+  useListRequests,
+  useGetCurrentUser,
+  type Listing,
+  type RequestSummary,
+} from "@workspace/api-client-react";
+import {
+  MapPin,
+  Search,
+  Tag,
+  X,
+  Star,
+  Camera,
+  Loader2,
+  ShoppingCart,
+  Inbox,
+} from "lucide-react";
 import { getApiUrl } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -23,28 +39,23 @@ const CATEGORIES = [
   "Home & Garden",
   "Tools",
   "Collectibles",
+  "Art & Collectibles",
+  "Jewelry & Watches",
+  "Musical Instruments",
+  "Outdoor & Sports",
+  "Toys & Games",
   "Other",
 ];
+
+type FeedFilter = "all" | "requests" | "listings";
+type SortOrder = "newest" | "oldest";
 
 function ListingCard({
   listing,
   onBuy,
   buyLoading,
 }: {
-  listing: {
-    id: string;
-    title: string;
-    description: string;
-    price: number;
-    imageUrl: string;
-    category: string;
-    zipCode: string;
-    status: string;
-    isAvailable: boolean;
-    isFeatured: boolean;
-    sellerName?: string | null;
-    createdAt: string;
-  };
+  listing: Listing;
   onBuy?: () => void;
   buyLoading?: boolean;
 }) {
@@ -57,60 +68,63 @@ function ListingCard({
       }`}
     >
       <Link href={`/listings/${listing.id}`} className="block">
-      {listing.imageUrl ? (
-        <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
-          <img
-            src={listing.imageUrl}
-            alt={listing.title}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
-          {listing.isFeatured && (
-            <div className="absolute top-2 left-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-2.5 py-1 text-[10px] font-bold text-[#0B3954] shadow-sm">
-                <Star className="h-3 w-3 fill-[#0B3954]" />
-                Featured
-              </span>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="aspect-[4/3] bg-[#0B3954]/10 flex items-center justify-center relative">
-          <Tag className="h-10 w-10 text-[#0B3954]/30" />
-          {listing.isFeatured && (
-            <div className="absolute top-2 left-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-2.5 py-1 text-[10px] font-bold text-[#0B3954] shadow-sm">
-                <Star className="h-3 w-3 fill-[#0B3954]" />
-                Featured
-              </span>
-            </div>
-          )}
-        </div>
-      )}
+        {listing.imageUrl ? (
+          <div className="aspect-[4/3] overflow-hidden bg-gray-100 relative">
+            <img
+              src={listing.imageUrl}
+              alt={listing.title}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
+            />
+            {listing.isFeatured && (
+              <div className="absolute top-2 left-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-2.5 py-1 text-[10px] font-bold text-[#0B3954] shadow-sm">
+                  <Star className="h-3 w-3 fill-[#0B3954]" />
+                  Featured
+                </span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="aspect-[4/3] bg-[#0B3954]/10 flex items-center justify-center relative">
+            <Tag className="h-10 w-10 text-[#0B3954]/30" />
+            {listing.isFeatured && (
+              <div className="absolute top-2 left-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-2.5 py-1 text-[10px] font-bold text-[#0B3954] shadow-sm">
+                  <Star className="h-3 w-3 fill-[#0B3954]" />
+                  Featured
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </Link>
       <div className="p-4 flex flex-col flex-1">
         <Link href={`/listings/${listing.id}`} className="block">
-        <div className="flex items-center gap-1.5 mb-2">
-          <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#0B3954]">
-            For Sale
-          </span>
-          <Badge variant="outline" className="text-[10px] border-[#0B3954]/15 text-[#0B3954] rounded-full capitalize">
-            {listing.category}
-          </Badge>
-        </div>
-        <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-serif font-semibold text-[#0B3954] leading-snug line-clamp-2 hover:underline">
-            {listing.title}
-          </h3>
-          <span className="text-[#D4AF37] font-bold font-serif text-lg shrink-0">
-            ${listing.price.toLocaleString()}
-          </span>
-        </div>
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-3 flex-1">
-          {listing.description}
-        </p>
+          <div className="flex items-center gap-1.5 mb-2">
+            <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#0B3954]">
+              For Sale
+            </span>
+            <Badge
+              variant="outline"
+              className="text-[10px] border-[#0B3954]/15 text-[#0B3954] rounded-full capitalize"
+            >
+              {listing.category}
+            </Badge>
+          </div>
+          <div className="flex items-start justify-between gap-2 mb-1">
+            <h3 className="font-serif font-semibold text-[#0B3954] leading-snug line-clamp-2 hover:underline">
+              {listing.title}
+            </h3>
+            <span className="text-[#D4AF37] font-bold font-serif text-lg shrink-0">
+              ${listing.price.toLocaleString()}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-3 flex-1">
+            {listing.description}
+          </p>
         </Link>
         <div className="flex items-center justify-between mt-auto">
           <Badge
@@ -166,21 +180,48 @@ function ListingCard({
   );
 }
 
+type FeedItem =
+  | { kind: "request"; id: string; createdAt: string; request: RequestSummary }
+  | { kind: "listing"; id: string; createdAt: string; listing: Listing };
+
 export default function Browse() {
+  const search = useSearch();
+
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [zipInput, setZipInput] = useState("");
   const [activeZip, setActiveZip] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [aiQuery, setAiQuery] = useState("");
+  const [feedFilter, setFeedFilter] = useState<FeedFilter>("all");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
   const [analyzingPhoto, setAnalyzingPhoto] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [buyingId, setBuyingId] = useState<string | null>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
+  // Sync filters from URL query params (?filter=requests&category=Furniture&q=…).
+  // Deterministic: when a param is absent, reset that piece of state to its default
+  // so navigating from /browse?filter=requests back to /browse clears the filter.
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    const f = params.get("filter");
+    setFeedFilter(f === "requests" || f === "listings" ? f : "all");
+    setActiveCategory(params.get("category") ?? "All");
+    const q = params.get("q") ?? "";
+    setSearchInput(q);
+    setSearchQuery(q);
+  }, [search]);
+
   const { data: user } = useGetCurrentUser();
-  const { data: listings, isLoading } = useListListings({
+
+  const { data: listings, isLoading: listingsLoading } = useListListings({
     zip: activeZip || undefined,
-    category: activeCategory === "All" ? undefined : activeCategory,
   });
+  const { data: requests, isLoading: requestsLoading } = useListRequests({
+    status: "open",
+  });
+
+  const isLoading = listingsLoading || requestsLoading;
 
   async function handleBuy(listingId: string) {
     if (!user) {
@@ -204,6 +245,10 @@ export default function Browse() {
     } finally {
       setBuyingId(null);
     }
+  }
+
+  function applySearch(value?: string) {
+    setSearchQuery((value ?? searchInput).trim());
   }
 
   function applyZip(value?: string) {
@@ -233,7 +278,8 @@ export default function Browse() {
         if (res.ok) {
           const { description } = await res.json();
           if (description) {
-            setAiQuery(description);
+            setSearchInput(description);
+            setSearchQuery(description);
             toast.success("Found it! Showing matches for your photo.");
           }
         } else {
@@ -250,20 +296,85 @@ export default function Browse() {
 
   function clearPhotoSearch() {
     setPhotoPreview(null);
-    setAiQuery("");
+    setSearchInput("");
+    setSearchQuery("");
   }
 
-  const featuredCount = listings?.filter((l) => l.isFeatured).length ?? 0;
+  const matchesCategory = (cat: string) =>
+    activeCategory === "All" ||
+    cat.toLowerCase() === activeCategory.toLowerCase();
 
-  const filteredListings = aiQuery
-    ? (listings ?? []).filter((l) => {
-        const q = aiQuery.toLowerCase();
-        const words = q.split(/\s+/).filter((w) => w.length >= 4);
-        if (words.length === 0) return true;
-        const hay = `${l.title} ${l.description} ${l.category}`.toLowerCase();
-        return words.some((w) => hay.includes(w));
-      })
-    : listings;
+  const matchesSearch = (hay: string) => {
+    if (!searchQuery) return true;
+    const words = searchQuery
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.length >= 3);
+    if (words.length === 0) return true;
+    const h = hay.toLowerCase();
+    return words.some((w) => h.includes(w));
+  };
+
+  const feedItems = useMemo<FeedItem[]>(() => {
+    const items: FeedItem[] = [];
+
+    if (feedFilter !== "listings") {
+      for (const r of requests ?? []) {
+        if (!matchesCategory(r.category)) continue;
+        if (!matchesSearch(`${r.title} ${r.description} ${r.category}`)) continue;
+        if (activeZip && !(r.location ?? "").toLowerCase().includes(activeZip.toLowerCase()))
+          continue;
+        items.push({
+          kind: "request",
+          id: r.id,
+          createdAt: r.createdAt,
+          request: r,
+        });
+      }
+    }
+
+    if (feedFilter !== "requests") {
+      for (const l of listings ?? []) {
+        if (!matchesCategory(l.category)) continue;
+        if (!matchesSearch(`${l.title} ${l.description} ${l.category}`)) continue;
+        items.push({
+          kind: "listing",
+          id: l.id,
+          createdAt: l.createdAt,
+          listing: l,
+        });
+      }
+    }
+
+    items.sort((a, b) => {
+      const diff =
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return sortOrder === "newest" ? diff : -diff;
+    });
+
+    return items;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    listings,
+    requests,
+    feedFilter,
+    activeCategory,
+    searchQuery,
+    activeZip,
+    sortOrder,
+  ]);
+
+  const requestCount = feedItems.filter((i) => i.kind === "request").length;
+  const listingCount = feedItems.filter((i) => i.kind === "listing").length;
+  const featuredCount = feedItems.filter(
+    (i) => i.kind === "listing" && i.listing.isFeatured,
+  ).length;
+
+  const FILTER_TABS: { value: FeedFilter; label: string }[] = [
+    { value: "all", label: "All" },
+    { value: "requests", label: "Buyer Requests" },
+    { value: "listings", label: "Seller Listings" },
+  ];
 
   return (
     <Layout>
@@ -284,28 +395,30 @@ export default function Browse() {
       <section className="bg-[#0B3954] py-10">
         <div className="container mx-auto px-4 md:px-8 max-w-5xl">
           <h1 className="font-serif text-3xl md:text-4xl font-bold text-white mb-2">
-            Browse Listings
+            Browse Marketplace
           </h1>
           <p className="text-white/70 mb-6">
-            Filter by location or category — or snap a photo to search visually.
+            Everything in one place — what buyers are looking for and what sellers
+            have for sale.
           </p>
 
           {/* Search bar: text + photo + go */}
-          <div className="flex gap-2 max-w-xl flex-wrap">
+          <div className="flex gap-2 max-w-2xl flex-wrap">
             <div className="flex flex-1 min-w-52 items-center gap-2 bg-white rounded-xl px-3 py-2.5 shadow-sm">
               <Search className="h-4 w-4 text-[#0B3954]/30 shrink-0" />
               <input
                 className="flex-1 text-sm text-[#0B3954] placeholder:text-[#0B3954]/35 bg-transparent focus:outline-none min-w-0"
-                placeholder="Describe what you need…"
-                value={zipInput}
-                onChange={(e) => setZipInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && applyZip()}
+                placeholder="Search requests & listings…"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && applySearch()}
               />
               <MicButton
                 title="Search by voice"
                 className="h-7 w-7"
                 onResult={(text) => {
-                  applyZip(text);
+                  setSearchInput(text);
+                  applySearch(text);
                 }}
               />
             </div>
@@ -327,25 +440,43 @@ export default function Browse() {
               )}
             </button>
             <Button
-              onClick={() => applyZip()}
+              onClick={() => applySearch()}
               className="bg-[#D4AF37] text-[#0B3954] hover:bg-[#c9a430] font-bold border-0"
             >
-              Go
+              Search
             </Button>
-            {activeZip && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={clearZip}
-                className="text-white/70 hover:text-white hover:bg-white/10"
+          </div>
+
+          {/* Nearby ZIP */}
+          <div className="mt-3 flex gap-2 max-w-2xl flex-wrap items-center">
+            <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-3 py-2">
+              <MapPin className="h-4 w-4 text-[#D4AF37] shrink-0" />
+              <input
+                className="w-32 text-sm text-white placeholder:text-white/40 bg-transparent focus:outline-none"
+                placeholder="Nearby ZIP"
+                value={zipInput}
+                onChange={(e) => setZipInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && applyZip()}
+              />
+              <button
+                onClick={() => applyZip()}
+                className="text-xs font-bold text-[#D4AF37] hover:text-white"
               >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
+                Go
+              </button>
+              {activeZip && (
+                <button
+                  onClick={clearZip}
+                  className="text-white/50 hover:text-white"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Photo search status line */}
-          {aiQuery && (
+          {photoPreview && (
             <div className="mt-3 flex items-center gap-1.5">
               <span className="text-[#D4AF37] text-xs font-bold">✓</span>
               <span className="text-[11px] text-white/60">
@@ -359,15 +490,44 @@ export default function Browse() {
 
           {activeZip && (
             <p className="text-white/60 text-sm mt-2">
-              Showing listings near ZIP{" "}
-              <strong className="text-white">{activeZip}</strong> — exact
-              matches first, then nearby area.
+              Showing items near <strong className="text-white">{activeZip}</strong>
+              .
             </p>
           )}
         </div>
       </section>
 
       <div className="container mx-auto px-4 md:px-8 max-w-5xl py-8">
+        {/* Feed type tabs + sort */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+          <div className="inline-flex rounded-full border border-[#0B3954]/15 bg-white p-1">
+            {FILTER_TABS.map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => setFeedFilter(tab.value)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  feedFilter === tab.value
+                    ? "bg-[#0B3954] text-white"
+                    : "text-[#0B3954]/70 hover:text-[#0B3954]"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-muted-foreground">Sort:</span>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+              className="rounded-full border border-[#0B3954]/20 bg-white px-3 py-1.5 text-sm font-medium text-[#0B3954] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40"
+            >
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+            </select>
+          </div>
+        </div>
+
         {/* Category pills */}
         <div className="flex gap-2 flex-wrap mb-6">
           {CATEGORIES.map((cat) => (
@@ -386,12 +546,13 @@ export default function Browse() {
         </div>
 
         {/* Results count */}
-        {!isLoading && filteredListings && (
+        {!isLoading && (
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-muted-foreground">
-              {filteredListings.length} listing{filteredListings.length !== 1 ? "s" : ""} found
-              {aiQuery && ` matching photo`}
+              {feedItems.length} result{feedItems.length !== 1 ? "s" : ""}
+              {feedFilter === "all" && ` · ${requestCount} requests, ${listingCount} listings`}
               {activeCategory !== "All" && ` in ${activeCategory}`}
+              {searchQuery && ` matching "${searchQuery}"`}
               {activeZip && ` near ${activeZip}`}
             </p>
             {featuredCount > 0 && (
@@ -403,35 +564,43 @@ export default function Browse() {
           </div>
         )}
 
-        {/* Listings grid */}
+        {/* Unified grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
             Array.from({ length: 6 }).map((_, i) => (
               <Skeleton key={i} className="h-80 rounded-2xl" />
             ))
-          ) : filteredListings?.length === 0 ? (
+          ) : feedItems.length === 0 ? (
             <div className="col-span-full py-16 text-center">
-              <Tag className="h-12 w-12 text-[#0B3954]/20 mx-auto mb-3" />
+              <Inbox className="h-12 w-12 text-[#0B3954]/20 mx-auto mb-3" />
               <p className="font-serif text-lg font-medium text-[#0B3954] mb-1">
-                No listings found
+                Nothing found
               </p>
               <p className="text-sm text-muted-foreground">
-                {aiQuery
-                  ? "No listings match your photo. Try browsing categories instead."
+                {searchQuery
+                  ? "Nothing matches your search. Try different keywords or categories."
                   : activeZip
-                  ? `Nothing listed near ${activeZip} in that category yet.`
-                  : "No listings yet — check back soon."}
+                  ? `Nothing near ${activeZip} in that category yet.`
+                  : "No items here yet — check back soon."}
               </p>
             </div>
           ) : (
-            filteredListings?.map((listing) => (
-              <ListingCard
-                key={listing.id}
-                listing={listing}
-                onBuy={user && listing.sellerId !== user.id ? () => handleBuy(listing.id) : undefined}
-                buyLoading={buyingId === listing.id}
-              />
-            ))
+            feedItems.map((item) =>
+              item.kind === "request" ? (
+                <RequestCard key={`r-${item.id}`} request={item.request} />
+              ) : (
+                <ListingCard
+                  key={`l-${item.id}`}
+                  listing={item.listing}
+                  onBuy={
+                    user && item.listing.sellerId !== user.id
+                      ? () => handleBuy(item.listing.id)
+                      : undefined
+                  }
+                  buyLoading={buyingId === item.listing.id}
+                />
+              ),
+            )
           )}
         </div>
       </div>

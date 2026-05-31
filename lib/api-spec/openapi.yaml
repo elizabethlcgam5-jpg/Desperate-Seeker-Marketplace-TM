@@ -1141,8 +1141,8 @@ components:
           id,
           requestId,
           seller,
+          responseType,
           price,
-          condition,
           message,
           photos,
           status,
@@ -1156,11 +1156,15 @@ components:
           type: string
         seller:
           $ref: "#/components/schemas/User"
+        responseType:
+          type: string
+          enum: [have, can_get, can_find, can_make, service]
         price:
           type: number
         condition:
           type: string
           enum: [new, like_new, good, fair, used]
+          nullable: true
         message:
           type: string
         photos:
@@ -1181,13 +1185,17 @@ components:
 
     CreateResponseBody:
       type: object
-      required: [price, condition, message, photos]
+      required: [responseType, price, message, photos]
       properties:
+        responseType:
+          type: string
+          enum: [have, can_get, can_find, can_make, service]
         price:
           type: number
         condition:
           type: string
           enum: [new, like_new, good, fair, used]
+          nullable: true
         message:
           type: string
           minLength: 1

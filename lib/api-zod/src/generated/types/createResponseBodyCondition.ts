@@ -7,7 +7,8 @@
  */
 
 export type CreateResponseBodyCondition =
-  (typeof CreateResponseBodyCondition)[keyof typeof CreateResponseBodyCondition];
+  | (typeof CreateResponseBodyCondition)[keyof typeof CreateResponseBodyCondition]
+  | null;
 
 export const CreateResponseBodyCondition = {
   new: "new",
