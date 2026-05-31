@@ -263,7 +263,7 @@ export interface SellerResponse {
   requestId: string;
   seller: User;
   responseType: SellerResponseResponseType;
-  price: number;
+  price?: number | null;
   condition?: SellerResponseCondition;
   message: string;
   photos: string[];
@@ -362,7 +362,7 @@ export const CreateResponseBodyCondition = {
 
 export interface CreateResponseBody {
   responseType: CreateResponseBodyResponseType;
-  price: number;
+  price?: number | null;
   condition?: CreateResponseBodyCondition;
   /** @minLength 1 */
   message: string;

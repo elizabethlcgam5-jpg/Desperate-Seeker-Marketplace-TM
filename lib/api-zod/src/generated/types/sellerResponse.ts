@@ -15,7 +15,7 @@ export interface SellerResponse {
   requestId: string;
   seller: User;
   responseType: SellerResponseResponseType;
-  price: number;
+  price?: number | null;
   condition?: SellerResponseCondition;
   message: string;
   photos: string[];

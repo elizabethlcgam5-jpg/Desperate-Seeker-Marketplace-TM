@@ -10,7 +10,7 @@ import type { CreateResponseBodyResponseType } from "./createResponseBodyRespons
 
 export interface CreateResponseBody {
   responseType: CreateResponseBodyResponseType;
-  price: number;
+  price?: number | null;
   condition?: CreateResponseBodyCondition;
   /** @minLength 1 */
   message: string;

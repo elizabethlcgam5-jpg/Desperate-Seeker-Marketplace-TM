@@ -1142,7 +1142,6 @@ components:
           requestId,
           seller,
           responseType,
-          price,
           message,
           photos,
           status,
@@ -1161,6 +1160,7 @@ components:
           enum: [have, can_get, can_find, can_make, service]
         price:
           type: number
+          nullable: true
         condition:
           type: string
           enum: [new, like_new, good, fair, used]
@@ -1185,13 +1185,14 @@ components:
 
     CreateResponseBody:
       type: object
-      required: [responseType, price, message, photos]
+      required: [responseType, message, photos]
       properties:
         responseType:
           type: string
           enum: [have, can_get, can_find, can_make, service]
         price:
           type: number
+          nullable: true
         condition:
           type: string
           enum: [new, like_new, good, fair, used]

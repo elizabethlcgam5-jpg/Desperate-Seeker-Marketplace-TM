@@ -393,7 +393,7 @@ export const GetRequestResponse = zod
               "can_make",
               "service",
             ]),
-            price: zod.number(),
+            price: zod.number().nullish(),
             condition: zod
               .enum(["new", "like_new", "good", "fair", "used"])
               .nullish(),
@@ -498,7 +498,7 @@ export const UpdateRequestResponse = zod
               "can_make",
               "service",
             ]),
-            price: zod.number(),
+            price: zod.number().nullish(),
             condition: zod
               .enum(["new", "like_new", "good", "fair", "used"])
               .nullish(),
@@ -559,7 +559,7 @@ export const ListResponsesForRequestResponseItem = zod.object({
     "can_make",
     "service",
   ]),
-  price: zod.number(),
+  price: zod.number().nullish(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]).nullish(),
   message: zod.string(),
   photos: zod.array(zod.string()),
@@ -587,7 +587,7 @@ export const CreateResponseBody = zod.object({
     "can_make",
     "service",
   ]),
-  price: zod.number(),
+  price: zod.number().nullish(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]).nullish(),
   message: zod.string().min(1),
   photos: zod.array(zod.string()),
@@ -627,7 +627,7 @@ export const GetResponseResponse = zod.object({
     "can_make",
     "service",
   ]),
-  price: zod.number(),
+  price: zod.number().nullish(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]).nullish(),
   message: zod.string(),
   photos: zod.array(zod.string()),
@@ -675,7 +675,7 @@ export const UpdateResponseStatusResponse = zod.object({
     "can_make",
     "service",
   ]),
-  price: zod.number(),
+  price: zod.number().nullish(),
   condition: zod.enum(["new", "like_new", "good", "fair", "used"]).nullish(),
   message: zod.string(),
   photos: zod.array(zod.string()),

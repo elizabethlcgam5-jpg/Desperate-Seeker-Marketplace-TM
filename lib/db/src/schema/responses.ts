@@ -18,7 +18,7 @@ export const responsesTable = pgTable("responses", {
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   responseType: text("response_type").notNull().default("have"),
-  price: numeric("price").notNull(),
+  price: numeric("price"),
   condition: text("condition"),
   message: text("message").notNull(),
   photos: jsonb("photos").$type<string[]>().notNull().default([]),

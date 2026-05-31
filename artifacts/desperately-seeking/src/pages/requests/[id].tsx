@@ -61,13 +61,34 @@ const RESPONSE_TYPE_LABELS: Record<string, string> = Object.fromEntries(
   RESPONSE_TYPES.map((t) => [t.value, t.label]),
 );
 
-const responseSchema = z.object({
-  responseType: z.enum(["have", "can_get", "can_find", "can_make", "service"]),
-  price: z.coerce.number().min(0),
-  condition: z.enum(["new", "like_new", "good", "fair", "used"]).optional(),
-  message: z.string().min(10, "Please provide a more detailed message"),
-  photos: z.string().optional(), // comma separated
-});
+// Price is required for these (you're quoting a firm number); optional for
+// can_find / service where the seller may only give an estimate or none.
+const PRICE_REQUIRED_TYPES = ["have", "can_get", "can_make"];
+
+const responseSchema = z
+  .object({
+    responseType: z.enum(["have", "can_get", "can_find", "can_make", "service"]),
+    price: z.preprocess(
+      (v) =>
+        v === "" || v === null || v === undefined ? undefined : Number(v),
+      z.number().min(0).optional(),
+    ),
+    condition: z.enum(["new", "like_new", "good", "fair", "used"]).optional(),
+    message: z.string().min(10, "Please provide a more detailed message"),
+    photos: z.string().optional(), // comma separated
+  })
+  .superRefine((val, ctx) => {
+    if (
+      PRICE_REQUIRED_TYPES.includes(val.responseType) &&
+      val.price === undefined
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["price"],
+        message: "Price is required for this option",
+      });
+    }
+  });
 
 export default function RequestDetail() {
   const { id } = useParams();
@@ -92,7 +113,7 @@ export default function RequestDetail() {
     resolver: zodResolver(responseSchema),
     defaultValues: {
       responseType: "have",
-      price: 0,
+      price: undefined,
       condition: "good",
       message: "",
       photos: "",
@@ -354,12 +375,21 @@ export default function RequestDetail() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>
-                                {responseType === "have" || responseType === "can_get"
+                                {PRICE_REQUIRED_TYPES.includes(responseType)
                                   ? "Price ($)"
-                                  : "Price / estimate ($)"}
+                                  : "Price / estimate ($) — optional"}
                               </FormLabel>
                               <FormControl>
-                                <Input type="number" placeholder="0" {...field} />
+                                <Input
+                                  type="number"
+                                  placeholder={
+                                    PRICE_REQUIRED_TYPES.includes(responseType)
+                                      ? "0"
+                                      : "Leave blank if unsure"
+                                  }
+                                  {...field}
+                                  value={field.value ?? ""}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -471,7 +501,9 @@ export default function RequestDetail() {
                           )}
                         </Link>
                         <div className="text-right">
-                          <div className="text-xl font-bold">${response.price}</div>
+                          {response.price != null && (
+                            <div className="text-xl font-bold">${response.price}</div>
+                          )}
                           {response.condition && (
                             <Badge variant="secondary" className="capitalize text-xs font-normal">
                               {response.condition.replace('_', ' ')}
@@ -512,7 +544,7 @@ export default function RequestDetail() {
                           {isBuyer && (
                             <EscrowPanel
                               role="buyer"
-                              price={response.price}
+                              price={response.price ?? 0}
                               sellerName={response.seller.name}
                               compact
                             />
@@ -520,7 +552,7 @@ export default function RequestDetail() {
                           {currentUser?.id === response.seller.id && (
                             <EscrowPanel
                               role="seller"
-                              price={response.price}
+                              price={response.price ?? 0}
                               buyerName={request.buyer.name}
                               compact
                             />
