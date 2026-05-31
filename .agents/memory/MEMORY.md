@@ -1,4 +1,1 @@
-- [Thread access control](thread-idor.md) — message thread reads/actions must be participant-gated; a prior GET /threads/:id leaked any conversation by ID.
-- [Online presence](online-presence.md) — last-seen-derived `online` boolean only (never expose raw `lastSeenAt` via shared serializeUser); throttle writes both in-memory + conditional UPDATE for autoscale.
-- [API errors must be JSON](api-error-responses.md) — global JSON error handler is mandatory; HTML error bodies make WebKit throw "string did not match the expected pattern" on res.json().
-- [Codegen baseline noise](codegen-baseline-noise.md) — repo typecheck has known pre-existing failures unrelated to changes; don't chase them.
+- [SellerResponse serializer sync](response-serializer-sync.md) — offers are serialized in TWO route files (responses.ts + requests.ts aggregate); both must match the OpenAPI schema or request-detail 400s on requests that have offers.
