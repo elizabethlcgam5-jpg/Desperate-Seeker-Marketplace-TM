@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express, { type Express, type ErrorRequestHandler } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
@@ -54,9 +54,53 @@ app.post(
 // ── Apply remaining middleware ───────────────────────────────────────────────
 app.use(cors());
 app.use(cookieParser());
-app.use(express.json({ limit: "2mb" }));
-app.use(express.urlencoded({ extended: true }));
+// 15mb covers the client's 10MB photo guard once base64-encoded (~1.37x).
+app.use(express.json({ limit: "15mb" }));
+app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 
 app.use("/api", router);
+
+// Unmatched /api routes return JSON (not Express's default HTML 404), keeping the
+// "every API response is JSON" guarantee consistent for clients.
+app.use("/api", (_req, res) => {
+  res.status(404).json({ error: "not_found", message: "That endpoint does not exist." });
+});
+
+// ── JSON error handler ───────────────────────────────────────────────────────
+// MUST be last. Guarantees every API error returns JSON, never Express's default
+// HTML page. A non-JSON error body makes the browser throw a cryptic
+// "The string did not match the expected pattern." SyntaxError when the client
+// calls res.json() (Safari/WebKit) — masking the real cause.
+const jsonErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+  req.log?.error({ err }, "Unhandled API error");
+
+  if (err?.name === "ZodError") {
+    res.status(400).json({
+      error: "validation_error",
+      message: "Some fields are missing or invalid. Please check the form and try again.",
+      details: err.issues,
+    });
+    return;
+  }
+
+  if (err?.type === "entity.too.large" || err?.status === 413) {
+    res.status(413).json({
+      error: "payload_too_large",
+      message: "That photo is too large. Please use an image under 10MB.",
+    });
+    return;
+  }
+
+  const status = typeof err?.status === "number" ? err.status : 500;
+  res.status(status).json({
+    error: "server_error",
+    message: "Something went wrong on our end. Please try again.",
+  });
+};
+
+app.use(jsonErrorHandler);
 
 export default app;

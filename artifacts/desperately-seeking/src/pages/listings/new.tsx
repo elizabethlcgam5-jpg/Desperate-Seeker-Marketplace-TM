@@ -111,6 +111,23 @@ function formatDate(iso: string) {
   });
 }
 
+// Safely read an error response without throwing on a non-JSON body.
+// (A raw res.json() on an HTML/empty body throws "The string did not match
+// the expected pattern." in Safari, masking the real failure.)
+async function readError(res: Response): Promise<{ error?: string; message?: string }> {
+  try {
+    const text = await res.text();
+    if (!text) return {};
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { message: text.slice(0, 200) };
+    }
+  } catch {
+    return {};
+  }
+}
+
 export default function NewListing() {
   const [_, setLocation] = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -209,7 +226,7 @@ export default function NewListing() {
         }),
       });
       if (!res.ok) {
-        const err = await res.json();
+        const err = await readError(res);
         if (err.error === "free_limit_reached") {
           setLimitOpen(true);
           return;
@@ -219,7 +236,7 @@ export default function NewListing() {
           setLocation("/verify-phone");
           return;
         }
-        throw new Error(err.error ?? "Failed to post item");
+        throw new Error(err.message ?? err.error ?? "Failed to post item");
       }
       toast.success("Item posted successfully!");
       form.reset();
@@ -243,8 +260,8 @@ export default function NewListing() {
         credentials: "include",
       });
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error ?? "Failed to delete item");
+        const err = await readError(res);
+        throw new Error(err.message ?? err.error ?? "Failed to delete item");
       }
       toast.success("Item deleted.");
       qc.invalidateQueries();
