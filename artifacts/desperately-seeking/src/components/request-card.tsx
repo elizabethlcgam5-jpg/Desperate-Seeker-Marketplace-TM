@@ -3,8 +3,45 @@ import { formatDistanceToNow } from "date-fns";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, MessageSquare, Clock, Lock } from "lucide-react";
+import {
+  MapPin,
+  MessageSquare,
+  Clock,
+  Lock,
+  PackageCheck,
+  Truck,
+  Search,
+  Hammer,
+  Briefcase,
+  type LucideIcon,
+} from "lucide-react";
 import type { RequestSummary } from "@workspace/api-client-react";
+
+export type ResponseTypeKey =
+  | "have"
+  | "can_get"
+  | "can_find"
+  | "can_make"
+  | "service";
+
+export const RESPONSE_TYPE_META: Record<
+  ResponseTypeKey,
+  { label: string; short: string; icon: LucideIcon }
+> = {
+  have: { label: "Has it", short: "Has it", icon: PackageCheck },
+  can_get: { label: "Can get it", short: "Can get", icon: Truck },
+  can_find: { label: "Can find it", short: "Can find", icon: Search },
+  can_make: { label: "Can make it", short: "Can make", icon: Hammer },
+  service: { label: "Offers a service", short: "Service", icon: Briefcase },
+};
+
+export const RESPONSE_TYPE_ORDER: ResponseTypeKey[] = [
+  "have",
+  "can_get",
+  "can_find",
+  "can_make",
+  "service",
+];
 
 interface RequestCardProps {
   request: RequestSummary;
@@ -26,6 +63,22 @@ export function RequestCard({ request, showResponses = true, teaser = false }: R
     if (max) return `Up to $${max}`;
     return "Open budget";
   };
+
+  const typeCounts = request.responseTypeCounts ?? {};
+  const responseTypeChips = RESPONSE_TYPE_ORDER.flatMap((key) => {
+    const count = typeCounts[key] ?? 0;
+    if (count <= 0) return [];
+    const meta = RESPONSE_TYPE_META[key];
+    return [
+      {
+        key,
+        label: meta.label,
+        short: meta.short,
+        Icon: meta.icon,
+        count,
+      },
+    ];
+  });
 
   if (teaser) {
     return (
@@ -125,6 +178,21 @@ export function RequestCard({ request, showResponses = true, teaser = false }: R
               <span>{formatDistanceToNow(new Date(request.createdAt), { addSuffix: true })}</span>
             </div>
           </div>
+          {showResponses && responseTypeChips.length > 0 && (
+            <div className="mt-3 flex flex-wrap items-center gap-1.5">
+              {responseTypeChips.map(({ key, label, short, Icon, count }) => (
+                <span
+                  key={key}
+                  title={`${count} seller${count === 1 ? "" : "s"} ${label.toLowerCase()}`}
+                  className="inline-flex items-center gap-1 rounded-full border border-[#0B3954]/15 bg-[#0B3954]/5 px-2 py-0.5 text-[11px] font-medium text-[#0B3954]"
+                >
+                  <Icon className="h-3 w-3 text-[#D4AF37]" />
+                  {short}
+                  <span className="text-[#0B3954]/50">{count}</span>
+                </span>
+              ))}
+            </div>
+          )}
         </CardContent>
         <CardFooter className="pt-3 border-t border-border/50 flex justify-between items-center bg-[#0B3954]/[0.02]">
           <div className="flex items-center gap-2">

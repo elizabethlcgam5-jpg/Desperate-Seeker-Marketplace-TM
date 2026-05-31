@@ -165,6 +165,17 @@ export const RequestSummaryUrgency = {
   high: "high",
 } as const;
 
+/**
+ * Count of responses received per response type.
+ */
+export type RequestSummaryResponseTypeCounts = {
+  have?: number;
+  can_get?: number;
+  can_find?: number;
+  can_make?: number;
+  service?: number;
+};
+
 export interface RequestSummary {
   id: string;
   title: string;
@@ -184,6 +195,8 @@ export interface RequestSummary {
   createdAt: string;
   buyer: User;
   responseCount: number;
+  /** Count of responses received per response type. */
+  responseTypeCounts?: RequestSummaryResponseTypeCounts;
 }
 
 export interface InventoryMatch {

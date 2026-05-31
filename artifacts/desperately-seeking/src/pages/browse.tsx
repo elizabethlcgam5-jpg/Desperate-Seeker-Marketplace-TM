@@ -5,7 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MicButton } from "@/components/mic-button";
-import { RequestCard } from "@/components/request-card";
+import {
+  RequestCard,
+  RESPONSE_TYPE_META,
+  RESPONSE_TYPE_ORDER,
+  type ResponseTypeKey,
+} from "@/components/request-card";
 import {
   useListListings,
   useListRequests,
@@ -196,6 +201,7 @@ export default function Browse() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [feedFilter, setFeedFilter] = useState<FeedFilter>("all");
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
+  const [responseTypes, setResponseTypes] = useState<ResponseTypeKey[]>([]);
   const [analyzingPhoto, setAnalyzingPhoto] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [buyingId, setBuyingId] = useState<string | null>(null);
@@ -335,6 +341,11 @@ export default function Browse() {
         if (!matchesSearch(`${r.title} ${r.description} ${r.category}`)) continue;
         if (activeZip && !(r.location ?? "").toLowerCase().includes(activeZip.toLowerCase()))
           continue;
+        if (
+          responseTypes.length > 0 &&
+          !responseTypes.some((t) => (r.responseTypeCounts?.[t] ?? 0) > 0)
+        )
+          continue;
         items.push({
           kind: "request",
           id: r.id,
@@ -373,7 +384,14 @@ export default function Browse() {
     searchQuery,
     activeZip,
     sortOrder,
+    responseTypes,
   ]);
+
+  function toggleResponseType(type: ResponseTypeKey) {
+    setResponseTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+    );
+  }
 
   const requestCount = feedItems.filter((i) => i.kind === "request").length;
   const listingCount = feedItems.filter((i) => i.kind === "listing").length;
@@ -560,6 +578,45 @@ export default function Browse() {
             </button>
           ))}
         </div>
+
+        {/* Response-type filter — how sellers can help. Hidden when viewing listings only. */}
+        {feedFilter !== "listings" && (
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-medium text-[#0B3954]/60 mr-1">
+                How sellers can help:
+              </span>
+              {RESPONSE_TYPE_ORDER.map((key) => {
+                const meta = RESPONSE_TYPE_META[key];
+                const Icon = meta.icon;
+                const active = responseTypes.includes(key);
+                return (
+                  <button
+                    key={key}
+                    onClick={() => toggleResponseType(key)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                      active
+                        ? "bg-[#D4AF37] text-[#0B3954] border-[#D4AF37]"
+                        : "bg-white text-[#0B3954]/70 border-[#0B3954]/20 hover:text-[#0B3954] hover:border-[#0B3954]/50"
+                    }`}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {meta.label}
+                  </button>
+                );
+              })}
+              {responseTypes.length > 0 && (
+                <button
+                  onClick={() => setResponseTypes([])}
+                  className="inline-flex items-center gap-1 text-xs font-medium text-[#0B3954]/50 hover:text-[#0B3954]"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Results count */}
         {!isLoading && (

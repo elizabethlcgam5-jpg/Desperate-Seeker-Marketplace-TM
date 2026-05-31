@@ -7,7 +7,7 @@ import {
   listingsTable,
   notificationsTable,
 } from "@workspace/db";
-import { and, desc, asc, eq, ilike, or, sql, count, ne } from "drizzle-orm";
+import { and, desc, asc, eq, ilike, or, sql, count, ne, inArray } from "drizzle-orm";
 import {
   ListRequestsQueryParams,
   ListRequestsResponse,
@@ -133,34 +133,56 @@ router.get("/requests", async (req, res) => {
     .where(whereClause)
     .orderBy(orderClause);
 
-  const summaries = await Promise.all(
-    rows.map(async ({ r, u }) => {
-      const [rc] = await db
-        .select({ c: count() })
+  // One grouped query for per-type response counts across all listed requests
+  // (avoids an N+1 count query per request).
+  const requestIds = rows.map(({ r }) => r.id);
+  const typeRows = requestIds.length
+    ? await db
+        .select({
+          requestId: responsesTable.requestId,
+          responseType: responsesTable.responseType,
+          c: count(),
+        })
         .from(responsesTable)
-        .where(eq(responsesTable.requestId, r.id));
-      return {
-        id: r.id,
-        title: r.title,
-        description: r.description,
-        category: r.category,
-        style: r.style ?? "",
-        budgetMin: r.budgetMin === null ? null : Number(r.budgetMin),
-        budgetMax: r.budgetMax === null ? null : Number(r.budgetMax),
-        lengthIn: r.lengthIn === null ? null : Number(r.lengthIn),
-        widthIn: r.widthIn === null ? null : Number(r.widthIn),
-        heightIn: r.heightIn === null ? null : Number(r.heightIn),
-        photos: r.photos ?? [],
-        status: r.status,
-        urgency: r.urgency,
-        location: r.location,
-        isPrivate: r.isPrivate,
-        createdAt: r.createdAt.toISOString(),
-        buyer: serializeUser(u),
-        responseCount: rc.c,
-      };
-    }),
-  );
+        .where(inArray(responsesTable.requestId, requestIds))
+        .groupBy(responsesTable.requestId, responsesTable.responseType)
+    : [];
+
+  const countsByRequest = new Map<
+    string,
+    { counts: Record<string, number>; total: number }
+  >();
+  for (const tr of typeRows) {
+    const entry = countsByRequest.get(tr.requestId) ?? { counts: {}, total: 0 };
+    entry.counts[tr.responseType] = tr.c;
+    entry.total += tr.c;
+    countsByRequest.set(tr.requestId, entry);
+  }
+
+  const summaries = rows.map(({ r, u }) => {
+    const agg = countsByRequest.get(r.id);
+    return {
+      id: r.id,
+      title: r.title,
+      description: r.description,
+      category: r.category,
+      style: r.style ?? "",
+      budgetMin: r.budgetMin === null ? null : Number(r.budgetMin),
+      budgetMax: r.budgetMax === null ? null : Number(r.budgetMax),
+      lengthIn: r.lengthIn === null ? null : Number(r.lengthIn),
+      widthIn: r.widthIn === null ? null : Number(r.widthIn),
+      heightIn: r.heightIn === null ? null : Number(r.heightIn),
+      photos: r.photos ?? [],
+      status: r.status,
+      urgency: r.urgency,
+      location: r.location,
+      isPrivate: r.isPrivate,
+      createdAt: r.createdAt.toISOString(),
+      buyer: serializeUser(u),
+      responseCount: agg?.total ?? 0,
+      responseTypeCounts: agg?.counts ?? {},
+    };
+  });
 
   let final = summaries;
   if (params.sort === "most_responses") {

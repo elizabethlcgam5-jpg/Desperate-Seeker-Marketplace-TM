@@ -1049,6 +1049,20 @@ components:
           $ref: "#/components/schemas/User"
         responseCount:
           type: integer
+        responseTypeCounts:
+          type: object
+          description: Count of responses received per response type.
+          properties:
+            have:
+              type: integer
+            can_get:
+              type: integer
+            can_find:
+              type: integer
+            can_make:
+              type: integer
+            service:
+              type: integer
 
     RequestDetail:
       allOf:

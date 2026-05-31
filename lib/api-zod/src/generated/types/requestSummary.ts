@@ -5,6 +5,7 @@
  * Desperately Seeking - buyer-first marketplace API
  * OpenAPI spec version: 0.1.0
  */
+import type { RequestSummaryResponseTypeCounts } from "./requestSummaryResponseTypeCounts";
 import type { RequestSummaryStatus } from "./requestSummaryStatus";
 import type { RequestSummaryUrgency } from "./requestSummaryUrgency";
 import type { User } from "./user";
@@ -28,4 +29,6 @@ export interface RequestSummary {
   createdAt: Date;
   buyer: User;
   responseCount: number;
+  /** Count of responses received per response type. */
+  responseTypeCounts?: RequestSummaryResponseTypeCounts;
 }

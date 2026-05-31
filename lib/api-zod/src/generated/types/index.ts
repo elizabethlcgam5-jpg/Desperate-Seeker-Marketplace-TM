@@ -41,6 +41,7 @@ export * from "./pricingPlanInterval";
 export * from "./pricingPlanTier";
 export * from "./requestDetail";
 export * from "./requestSummary";
+export * from "./requestSummaryResponseTypeCounts";
 export * from "./requestSummaryStatus";
 export * from "./requestSummaryUrgency";
 export * from "./sellerAnalytics";

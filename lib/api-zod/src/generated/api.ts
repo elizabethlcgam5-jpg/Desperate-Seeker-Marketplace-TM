@@ -238,6 +238,16 @@ export const GetUserResponse = zod.object({
           online: zod.boolean().optional(),
         }),
         responseCount: zod.number(),
+        responseTypeCounts: zod
+          .object({
+            have: zod.number().optional(),
+            can_get: zod.number().optional(),
+            can_find: zod.number().optional(),
+            can_make: zod.number().optional(),
+            service: zod.number().optional(),
+          })
+          .optional()
+          .describe("Count of responses received per response type."),
       }),
     )
     .optional(),
@@ -293,6 +303,16 @@ export const ListRequestsResponseItem = zod.object({
     online: zod.boolean().optional(),
   }),
   responseCount: zod.number(),
+  responseTypeCounts: zod
+    .object({
+      have: zod.number().optional(),
+      can_get: zod.number().optional(),
+      can_find: zod.number().optional(),
+      can_make: zod.number().optional(),
+      service: zod.number().optional(),
+    })
+    .optional()
+    .describe("Count of responses received per response type."),
 });
 export const ListRequestsResponse = zod.array(ListRequestsResponseItem);
 
@@ -360,6 +380,16 @@ export const GetRequestResponse = zod
       online: zod.boolean().optional(),
     }),
     responseCount: zod.number(),
+    responseTypeCounts: zod
+      .object({
+        have: zod.number().optional(),
+        can_get: zod.number().optional(),
+        can_find: zod.number().optional(),
+        can_make: zod.number().optional(),
+        service: zod.number().optional(),
+      })
+      .optional()
+      .describe("Count of responses received per response type."),
   })
   .and(
     zod.object({
@@ -465,6 +495,16 @@ export const UpdateRequestResponse = zod
       online: zod.boolean().optional(),
     }),
     responseCount: zod.number(),
+    responseTypeCounts: zod
+      .object({
+        have: zod.number().optional(),
+        can_get: zod.number().optional(),
+        can_find: zod.number().optional(),
+        can_make: zod.number().optional(),
+        service: zod.number().optional(),
+      })
+      .optional()
+      .describe("Count of responses received per response type."),
   })
   .and(
     zod.object({
@@ -763,6 +803,16 @@ export const GetThreadResponse = zod.object({
       online: zod.boolean().optional(),
     }),
     responseCount: zod.number(),
+    responseTypeCounts: zod
+      .object({
+        have: zod.number().optional(),
+        can_get: zod.number().optional(),
+        can_find: zod.number().optional(),
+        can_make: zod.number().optional(),
+        service: zod.number().optional(),
+      })
+      .optional()
+      .describe("Count of responses received per response type."),
   }),
   participants: zod.array(
     zod.object({
@@ -915,6 +965,16 @@ export const GetTrendingRequestsResponseItem = zod.object({
     online: zod.boolean().optional(),
   }),
   responseCount: zod.number(),
+  responseTypeCounts: zod
+    .object({
+      have: zod.number().optional(),
+      can_get: zod.number().optional(),
+      can_find: zod.number().optional(),
+      can_make: zod.number().optional(),
+      service: zod.number().optional(),
+    })
+    .optional()
+    .describe("Count of responses received per response type."),
 });
 export const GetTrendingRequestsResponse = zod.array(
   GetTrendingRequestsResponseItem,
@@ -1025,6 +1085,16 @@ export const GetInventoryMatchesResponseItem = zod.object({
       online: zod.boolean().optional(),
     }),
     responseCount: zod.number(),
+    responseTypeCounts: zod
+      .object({
+        have: zod.number().optional(),
+        can_get: zod.number().optional(),
+        can_find: zod.number().optional(),
+        can_make: zod.number().optional(),
+        service: zod.number().optional(),
+      })
+      .optional()
+      .describe("Count of responses received per response type."),
   }),
   score: zod.number().describe("Match percentage 0-100"),
   matchReasons: zod.array(zod.string()),
@@ -1071,6 +1141,16 @@ export const GetProspectingFeedResponseItem = zod.object({
     online: zod.boolean().optional(),
   }),
   responseCount: zod.number(),
+  responseTypeCounts: zod
+    .object({
+      have: zod.number().optional(),
+      can_get: zod.number().optional(),
+      can_find: zod.number().optional(),
+      can_make: zod.number().optional(),
+      service: zod.number().optional(),
+    })
+    .optional()
+    .describe("Count of responses received per response type."),
 });
 export const GetProspectingFeedResponse = zod.array(
   GetProspectingFeedResponseItem,
