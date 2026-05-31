@@ -320,13 +320,15 @@ export default function Home() {
                               {req.category}
                             </span>
                           </div>
-                          {req.budgetMax != null && (
-                            <span className="text-[#D4AF37] font-bold font-serif text-sm shrink-0">
-                              {req.budgetMin != null
-                                ? `$${req.budgetMin}–$${req.budgetMax}`
-                                : `$${req.budgetMax}`}
-                            </span>
-                          )}
+                          <span className="text-[#D4AF37] font-bold font-serif text-sm shrink-0">
+                            {req.budgetMin != null && req.budgetMax != null
+                              ? `$${req.budgetMin} – $${req.budgetMax}`
+                              : req.budgetMin != null
+                                ? `Over $${req.budgetMin}`
+                                : req.budgetMax != null
+                                  ? `Up to $${req.budgetMax}`
+                                  : "Open budget"}
+                          </span>
                         </div>
                         <h3 className="font-serif font-semibold text-[#0B3954] line-clamp-2 leading-snug">
                           {req.title}
