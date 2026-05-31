@@ -320,18 +320,20 @@ export default function Home() {
                               {req.category}
                             </span>
                           </div>
-                          {req.maxBudget && (
+                          {req.budgetMax != null && (
                             <span className="text-[#D4AF37] font-bold font-serif text-sm shrink-0">
-                              ${req.maxBudget}
+                              {req.budgetMin != null
+                                ? `$${req.budgetMin}–$${req.budgetMax}`
+                                : `$${req.budgetMax}`}
                             </span>
                           )}
                         </div>
                         <h3 className="font-serif font-semibold text-[#0B3954] line-clamp-2 leading-snug">
                           {req.title}
                         </h3>
-                        {req.zipCode && (
+                        {req.location && (
                           <p className="text-xs text-muted-foreground mt-2">
-                            Near {req.zipCode}
+                            Near {req.location}
                           </p>
                         )}
                       </div>
