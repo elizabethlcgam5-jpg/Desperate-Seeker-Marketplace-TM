@@ -22,6 +22,7 @@ export * from "./createResponseBody";
 export * from "./createResponseBodyCondition";
 export * from "./createResponseBodyResponseType";
 export * from "./createSellerFeedbackBody";
+export * from "./currentUser";
 export * from "./deleteRequest200";
 export * from "./healthStatus";
 export * from "./inventoryItem";

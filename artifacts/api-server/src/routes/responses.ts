@@ -18,7 +18,11 @@ import {
   UpdateResponseStatusBody,
   UpdateResponseStatusResponse,
 } from "@workspace/api-zod";
-import { withCurrentUser, readCurrentUserId } from "../lib/session";
+import {
+  withCurrentUser,
+  requireCurrentUser,
+  readCurrentUserId,
+} from "../lib/session";
 import { serializeUser } from "../lib/serializers";
 import { randomUUID } from "node:crypto";
 
@@ -69,7 +73,11 @@ router.get("/requests/:requestId/responses", async (req, res) => {
 
 router.post(
   "/requests/:requestId/responses",
-  withCurrentUser,
+  // Fail closed: a seller response must be attributed to a genuinely
+  // authenticated user. `withCurrentUser` would silently fall back to the
+  // first seeded user when the auth cookie is missing, which previously caused
+  // a seller's response to show under the wrong name.
+  requireCurrentUser,
   async (req, res) => {
     const params = CreateResponseParams.parse(req.params);
     const body = CreateResponseBody.parse(req.body);

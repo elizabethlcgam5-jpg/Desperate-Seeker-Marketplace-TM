@@ -32,6 +32,13 @@ export interface User {
   online?: boolean;
 }
 
+/**
+ * The currently authenticated user's own record. Includes the private `email` field, which is intentionally NOT present on the shared `User` schema (to avoid exposing other users' emails).
+ */
+export type CurrentUser = User & {
+  email?: string | null;
+};
+
 export type AnalyticsOfferStatus =
   (typeof AnalyticsOfferStatus)[keyof typeof AnalyticsOfferStatus];
 

@@ -17,23 +17,32 @@ export const HealthCheckResponse = zod.object({
 /**
  * @summary Get the currently active user
  */
-export const GetCurrentUserResponse = zod.object({
-  id: zod.string(),
-  name: zod.string(),
-  handle: zod.string(),
-  avatarUrl: zod.string(),
-  joinedAt: zod.coerce.date(),
-  bio: zod.string(),
-  location: zod.string(),
-  subscriptionTier: zod.enum([
-    "free",
-    "seller_basic",
-    "seller_pro",
-    "seller_annual",
-  ]),
-  subscriptionRenewsAt: zod.coerce.date().nullish(),
-  online: zod.boolean().optional(),
-});
+export const GetCurrentUserResponse = zod
+  .object({
+    id: zod.string(),
+    name: zod.string(),
+    handle: zod.string(),
+    avatarUrl: zod.string(),
+    joinedAt: zod.coerce.date(),
+    bio: zod.string(),
+    location: zod.string(),
+    subscriptionTier: zod.enum([
+      "free",
+      "seller_basic",
+      "seller_pro",
+      "seller_annual",
+    ]),
+    subscriptionRenewsAt: zod.coerce.date().nullish(),
+    online: zod.boolean().optional(),
+  })
+  .and(
+    zod.object({
+      email: zod.string().nullish(),
+    }),
+  )
+  .describe(
+    "The currently authenticated user's own record. Includes the private `email` field, which is intentionally NOT present on the shared `User` schema (to avoid exposing other users' emails).",
+  );
 
 /**
  * @summary Update profile of currently active user

@@ -360,7 +360,16 @@ export async function customFetch<T = unknown>(
 
   const requestInfo = { method, url: resolveUrl(input) };
 
-  const response = await fetch(input, { ...init, method, headers });
+  // Always send credentials (session cookies) so generated hooks authenticate
+  // the same way as hand-written fetches. Without this, cross-origin API calls
+  // in production drop the auth cookie and the server falls back to an
+  // anonymous/auto-assigned identity. Callers may still override via `init`.
+  const response = await fetch(input, {
+    credentials: "include",
+    ...init,
+    method,
+    headers,
+  });
 
   if (!response.ok) {
     const errorData = await parseErrorBody(response, method);

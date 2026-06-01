@@ -30,6 +30,7 @@ import type {
   CreateRequestBody,
   CreateResponseBody,
   CreateSellerFeedbackBody,
+  CurrentUser,
   DeleteRequest200,
   HealthStatus,
   InventoryItem,
@@ -209,8 +210,10 @@ export const getGetCurrentUserUrl = () => {
   return `/api/me`;
 };
 
-export const getCurrentUser = async (options?: RequestInit): Promise<User> => {
-  return customFetch<User>(getGetCurrentUserUrl(), {
+export const getCurrentUser = async (
+  options?: RequestInit,
+): Promise<CurrentUser> => {
+  return customFetch<CurrentUser>(getGetCurrentUserUrl(), {
     ...options,
     method: "GET",
   });

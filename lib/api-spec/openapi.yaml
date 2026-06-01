@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/CurrentUser"
     put:
       operationId: updateCurrentUser
       tags: [users]
@@ -761,6 +761,19 @@ components:
           nullable: true
         online:
           type: boolean
+
+    CurrentUser:
+      description: >-
+        The currently authenticated user's own record. Includes the private
+        `email` field, which is intentionally NOT present on the shared `User`
+        schema (to avoid exposing other users' emails).
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            email:
+              type: string
+              nullable: true
 
     SellerAnalytics:
       type: object
