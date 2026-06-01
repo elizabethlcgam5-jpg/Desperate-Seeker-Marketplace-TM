@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "TWBarPLScjx96pDiyYns8"
+uri = "file://.local/exports/desperately-seeking-qr.png"
+type = "image"
+title = "Desperately Seeking — QR Code"
