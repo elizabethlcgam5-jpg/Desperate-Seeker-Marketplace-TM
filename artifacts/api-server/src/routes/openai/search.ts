@@ -43,7 +43,7 @@ Return ONLY valid JSON in this exact format:
 }
 
 BUYER REQUESTS (what buyers are looking for):
-${JSON.stringify(requests.map(r => ({ id: r.id, title: r.title, description: r.description?.slice(0, 100), category: r.category, budget: r.maxBudget, zip: r.zipCode })))}
+${JSON.stringify(requests.map(r => ({ id: r.id, title: r.title, description: r.description?.slice(0, 100), category: r.category, budget: r.budgetMax, zip: r.location })))}
 
 SELLER LISTINGS (items for sale):
 ${JSON.stringify(listings.map(l => ({ id: l.id, title: l.title, description: l.description?.slice(0, 100), category: l.category, price: l.price, zip: l.zipCode, featured: l.isFeatured })))}
@@ -84,8 +84,8 @@ Match semantically — "couch" should match "sofa", "vintage" should match "retr
         id: r!.id,
         title: r!.title,
         category: r!.category,
-        zipCode: r!.zipCode,
-        maxBudget: r!.maxBudget ? Number(r!.maxBudget) : null,
+        zipCode: r!.location,
+        maxBudget: r!.budgetMax ? Number(r!.budgetMax) : null,
         type: "request" as const,
       }));
 

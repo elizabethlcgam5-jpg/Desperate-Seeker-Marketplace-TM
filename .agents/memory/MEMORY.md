@@ -1,2 +1,4 @@
 - [api-spec codegen typecheck](api-codegen-typecheck.md) — `api-spec run codegen` exits non-zero on pre-existing lib errors even when orval succeeds; verify generated output directly.
 - [Orval react-query version](orval-react-query-version.md) — catalog: dep hides version so orval makes queryKey required; pin `override.query.version: 5`; rebuild lib dist after regen.
+- [Express params types pin](express-params-types-pin.md) — `@types/express-serve-static-core` pinned to 5.0.x; 5.1.x makes `req.params` values `string | string[]` and breaks routes.
+- [p-retry AbortError import](p-retry-abort-error.md) — p-retry v7: `import { AbortError }`, not `pRetry.AbortError` (TS2339).

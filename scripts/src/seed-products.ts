@@ -64,7 +64,6 @@ async function seedProducts() {
       currency: "usd",
       recurring: {
         interval: plan.interval,
-        ...(plan.intervalCount ? { interval_count: plan.intervalCount } : {}),
       },
     });
     console.log(

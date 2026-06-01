@@ -479,7 +479,7 @@ router.post("/requests/:requestId/repost", withCurrentUser, async (req, res) => 
 
   await db
     .update(requestsTable)
-    .set({ status: "open", keywords: null })
+    .set({ status: "open", keywords: [] })
     .where(eq(requestsTable.id, requestId));
 
   // Re-run keyword gen + InstantMatch

@@ -52,7 +52,10 @@ async function syncSubscriptionForCustomer(stripeCustomerId: string) {
     const product = sub.items.data[0]?.price?.product as any;
     const tier =
       (product?.metadata as Record<string, string>)?.tier ?? "seller_basic";
-    const renewsAt = new Date(sub.current_period_end * 1000);
+    const renewsAt = new Date(
+      (sub as unknown as { current_period_end: number }).current_period_end *
+        1000,
+    );
 
     await db
       .update(usersTable)
@@ -204,10 +207,10 @@ router.post("/stripe/checkout", withCurrentUser, async (req, res) => {
       cancel_url: `${baseUrl}/pricing`,
     });
 
-    res.json({ url: session.url });
+    return res.json({ url: session.url });
   } catch (err: any) {
     console.error("Checkout error:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -229,10 +232,10 @@ router.get("/stripe/success", async (req, res) => {
       await syncSubscriptionForCustomer(customerId);
     }
 
-    res.json({ success: true });
+    return res.json({ success: true });
   } catch (err: any) {
     console.error("Success sync error:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -257,10 +260,10 @@ router.post("/stripe/portal", withCurrentUser, async (req, res) => {
       return_url: `${baseUrl}/pricing`,
     });
 
-    res.json({ url: portal.url });
+    return res.json({ url: portal.url });
   } catch (err: any) {
     console.error("Portal error:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -306,9 +309,9 @@ router.post("/stripe/connect/onboard", withCurrentUser, async (req, res) => {
       type: "account_onboarding",
     });
 
-    res.json({ url: accountLink.url });
+    return res.json({ url: accountLink.url });
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -346,7 +349,7 @@ router.get("/stripe/connect/status", withCurrentUser, async (req, res) => {
 
     return res.json({ connected: true, onboardingComplete: true });
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -362,7 +365,7 @@ router.post("/stripe/buy-listing/:listingId", withCurrentUser, async (req, res) 
     const [listing] = await db
       .select()
       .from(listingsTable)
-      .where(eq(listingsTable.id, listingId))
+      .where(eq(listingsTable.id, String(listingId)))
       .limit(1);
 
     if (!listing) return res.status(404).json({ error: "Listing not found" });
@@ -446,9 +449,9 @@ router.post("/stripe/buy-listing/:listingId", withCurrentUser, async (req, res) 
       .set({ stripeCheckoutSessionId: session.id })
       .where(eq(commissionsTable.id, commissionId));
 
-    res.json({ url: session.url });
+    return res.json({ url: session.url });
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
