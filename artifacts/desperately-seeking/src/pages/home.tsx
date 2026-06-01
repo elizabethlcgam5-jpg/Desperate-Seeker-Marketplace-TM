@@ -2,6 +2,7 @@ import { Layout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AISearch } from "@/components/ai-search";
+import { RequestCard } from "@/components/request-card";
 import {
   useListRequests,
   useGetCurrentUser,
@@ -309,37 +310,7 @@ export default function Home() {
                     <Skeleton key={i} className="h-40 rounded-2xl" />
                   ))
                 : requests.slice(0, 6).map((req) => (
-                    <Link key={req.id} href={`/requests/${req.id}`}>
-                      <div className="bg-white rounded-2xl border border-border/60 p-5 hover:border-[#D4AF37] hover:shadow-sm transition-all cursor-pointer">
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#0B3954] text-white">
-                              Looking For
-                            </span>
-                            <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#0B3954]/8 text-[#0B3954]">
-                              {req.category}
-                            </span>
-                          </div>
-                          <span className="text-[#D4AF37] font-bold font-serif text-sm shrink-0">
-                            {req.budgetMin != null && req.budgetMax != null
-                              ? `$${req.budgetMin} – $${req.budgetMax}`
-                              : req.budgetMin != null
-                                ? `Over $${req.budgetMin}`
-                                : req.budgetMax != null
-                                  ? `Up to $${req.budgetMax}`
-                                  : "Open budget"}
-                          </span>
-                        </div>
-                        <h3 className="font-serif font-semibold text-[#0B3954] line-clamp-2 leading-snug">
-                          {req.title}
-                        </h3>
-                        {req.location && (
-                          <p className="text-xs text-muted-foreground mt-2">
-                            Near {req.location}
-                          </p>
-                        )}
-                      </div>
-                    </Link>
+                    <RequestCard key={req.id} request={req} />
                   ))}
             </div>
           </div>
