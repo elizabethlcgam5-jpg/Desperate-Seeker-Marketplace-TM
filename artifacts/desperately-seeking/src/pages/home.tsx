@@ -73,29 +73,8 @@ export default function Home() {
     currentUser.subscriptionTier &&
     currentUser.subscriptionTier !== "free";
 
-  const isAuthenticated = Boolean(currentUser && (currentUser as any).email);
-  const firstName =
-    isAuthenticated && currentUser?.name
-      ? currentUser.name.trim().split(/\s+/)[0]
-      : null;
-
   return (
     <Layout>
-      {/* ── PERSONALIZED WELCOME ─────────────────────────────────────── */}
-      {firstName && (
-        <section
-          className="text-center px-4 py-6"
-          style={{ backgroundColor: "#f6eedd" }}
-        >
-          <h2
-            className="m-0 text-[1.8rem] font-semibold"
-            style={{ color: "#5b4a35" }}
-          >
-            Welcome, {firstName}
-          </h2>
-        </section>
-      )}
-
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="bg-[#0B3954] pt-20 pb-24 md:pt-28 md:pb-32">
         <div className="container mx-auto px-4 md:px-8 max-w-4xl text-center">
