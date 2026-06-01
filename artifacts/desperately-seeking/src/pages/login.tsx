@@ -59,28 +59,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B3954] flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#f6eedd] flex flex-col items-center justify-center px-4 py-12">
       {/* Logo */}
       <Link href="/">
         <div className="mb-8 text-center cursor-pointer">
-          <h1 className="font-serif text-3xl font-bold text-white">
-            <span className="italic text-[#D4AF37]">Desperately</span> Seeking
+          <h1 className="font-serif text-3xl font-bold text-[#5b4a35]">
+            <span className="italic text-[#7a6247]">Desperately</span> Seeking
           </h1>
-          <p className="text-white/50 text-sm mt-1">Post what you need. Help comes to you.</p>
+          <p className="text-[#5b4a35]/60 text-sm mt-1">Post what you need. Help comes to you.</p>
         </div>
       </Link>
 
-      <Card className="w-full max-w-md rounded-3xl border-0 shadow-2xl bg-white">
+      <Card className="w-full max-w-md rounded-3xl border-0 shadow-2xl bg-[#fffaf2]">
         <CardHeader className="pb-2 pt-8 px-8">
           <div className="flex items-center gap-2 mb-1">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#D4AF37]/15">
-              <Sparkles className="h-4.5 w-4.5 text-[#D4AF37]" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#5b4a35]/10">
+              <Sparkles className="h-4.5 w-4.5 text-[#5b4a35]" />
             </div>
-            <h2 className="font-serif text-2xl font-bold text-[#0B3954]">
+            <h2 className="font-serif text-2xl font-bold text-[#5b4a35]">
               {mode === "login" ? "Welcome back" : "Create account"}
             </h2>
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-[#5b4a35]/70">
             {mode === "login"
               ? "Sign in to manage your listings and requests."
               : "Join to start buying or selling in your area."}
@@ -89,14 +89,14 @@ export default function LoginPage() {
 
         <CardContent className="px-8 pb-8 pt-4">
           {/* Mode toggle */}
-          <div className="flex rounded-xl bg-muted/60 p-1 mb-6">
+          <div className="flex rounded-xl bg-[#f6eedd] p-1 mb-6">
             <button
               type="button"
               onClick={() => setMode("login")}
               className={`flex-1 rounded-lg py-2 text-sm font-medium transition-all ${
                 mode === "login"
-                  ? "bg-white shadow text-[#0B3954]"
-                  : "text-muted-foreground hover:text-[#0B3954]"
+                  ? "bg-white shadow text-[#5b4a35]"
+                  : "text-[#5b4a35]/60 hover:text-[#5b4a35]"
               }`}
             >
               Sign In
@@ -106,8 +106,8 @@ export default function LoginPage() {
               onClick={() => setMode("register")}
               className={`flex-1 rounded-lg py-2 text-sm font-medium transition-all ${
                 mode === "register"
-                  ? "bg-white shadow text-[#0B3954]"
-                  : "text-muted-foreground hover:text-[#0B3954]"
+                  ? "bg-white shadow text-[#5b4a35]"
+                  : "text-[#5b4a35]/60 hover:text-[#5b4a35]"
               }`}
             >
               Create Account
@@ -117,11 +117,11 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "register" && (
               <div className="space-y-1.5">
-                <Label htmlFor="name" className="text-[#0B3954] text-sm font-medium">
+                <Label htmlFor="name" className="text-[#5b4a35] text-sm font-medium">
                   Full Name
                 </Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5b4a35]/50" />
                   <Input
                     id="name"
                     type="text"
@@ -130,18 +130,18 @@ export default function LoginPage() {
                     onChange={(e) => setName(e.target.value)}
                     required
                     autoComplete="name"
-                    className="pl-9 rounded-xl border-[#0B3954]/15 focus:border-[#0B3954]"
+                    className="pl-9 rounded-xl border-[#d8c7b0] focus:border-[#5b4a35]"
                   />
                 </div>
               </div>
             )}
 
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-[#0B3954] text-sm font-medium">
+              <Label htmlFor="email" className="text-[#5b4a35] text-sm font-medium">
                 Email Address
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5b4a35]/50" />
                 <Input
                   id="email"
                   type="email"
@@ -150,17 +150,17 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="email"
-                  className="pl-9 rounded-xl border-[#0B3954]/15 focus:border-[#0B3954]"
+                  className="pl-9 rounded-xl border-[#d8c7b0] focus:border-[#5b4a35]"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-[#0B3954] text-sm font-medium">
+              <Label htmlFor="password" className="text-[#5b4a35] text-sm font-medium">
                 Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5b4a35]/50" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -169,13 +169,13 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete={mode === "register" ? "new-password" : "current-password"}
-                  className="pl-9 pr-10 rounded-xl border-[#0B3954]/15 focus:border-[#0B3954]"
+                  className="pl-9 pr-10 rounded-xl border-[#d8c7b0] focus:border-[#5b4a35]"
                 />
                 <button
                   type="button"
                   tabIndex={-1}
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-[#0B3954]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5b4a35]/50 hover:text-[#5b4a35]"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -185,7 +185,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-xl bg-[#D4AF37] text-[#0B3954] font-bold text-base hover:bg-[#c9a430] border-0 mt-2 transition-transform hover:-translate-y-0.5"
+              className="w-full h-11 rounded-xl bg-[#5b4a35] text-white font-bold text-base hover:bg-[#7a6247] border-0 mt-2 transition-transform hover:-translate-y-0.5"
             >
               {loading
                 ? mode === "login"
@@ -197,16 +197,16 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <p className="mt-5 text-center text-xs text-muted-foreground">
+          <p className="mt-5 text-center text-xs text-[#5b4a35]/60">
             By continuing you agree to our{" "}
             <Link href="/pricing#terms">
-              <span className="underline underline-offset-2 cursor-pointer hover:text-[#0B3954]">
+              <span className="underline underline-offset-2 cursor-pointer hover:text-[#5b4a35]">
                 Terms of Use
               </span>
             </Link>{" "}
             and{" "}
             <Link href="/pricing#privacy">
-              <span className="underline underline-offset-2 cursor-pointer hover:text-[#0B3954]">
+              <span className="underline underline-offset-2 cursor-pointer hover:text-[#5b4a35]">
                 Privacy Policy
               </span>
             </Link>
@@ -215,7 +215,7 @@ export default function LoginPage() {
         </CardContent>
       </Card>
 
-      <p className="mt-6 text-white/40 text-xs text-center">
+      <p className="mt-6 text-[#5b4a35]/40 text-xs text-center">
         © {new Date().getFullYear()} Desperately Seeking™. All rights reserved.
       </p>
     </div>
