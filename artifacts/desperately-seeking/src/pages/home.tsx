@@ -84,15 +84,16 @@ export default function Home() {
       {/* ── PERSONALIZED WELCOME ─────────────────────────────────────── */}
       {firstName && (
         <section
-          className="text-center px-4 py-6"
+          className="border-b border-[#D4AF37]/20"
           style={{ backgroundColor: "#f6eedd" }}
         >
-          <h2
-            className="m-0 text-[1.8rem] font-semibold"
-            style={{ color: "#5b4a35" }}
-          >
-            Welcome, {firstName}
-          </h2>
+          <div className="container mx-auto flex items-center gap-2 px-4 md:px-8 py-2.5">
+            <span className="inline-flex h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
+            <p className="m-0 text-sm" style={{ color: "#5b4a35" }}>
+              Welcome back,{" "}
+              <span className="font-semibold">{firstName}</span>
+            </p>
+          </div>
         </section>
       )}
 

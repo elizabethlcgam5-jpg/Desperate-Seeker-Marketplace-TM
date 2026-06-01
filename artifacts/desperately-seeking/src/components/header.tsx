@@ -258,11 +258,10 @@ export function Header() {
                   Sign In
                 </Button>
               </Link>
-              <Link href="/login">
+              <Link href="/login?mode=register">
                 <Button
                   size="sm"
                   className="bg-[#D4AF37] text-[#0B3954] font-semibold hover:bg-[#c9a430] border-0 rounded-full"
-                  onClick={() => {}}
                 >
                   Register
                 </Button>

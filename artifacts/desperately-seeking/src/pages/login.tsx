@@ -10,7 +10,12 @@ import { toast } from "sonner";
 import { Eye, EyeOff, Sparkles, Mail, Lock, User } from "lucide-react";
 
 export default function LoginPage() {
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const initialMode =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("mode") === "register"
+      ? "register"
+      : "login";
+  const [mode, setMode] = useState<"login" | "register">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");

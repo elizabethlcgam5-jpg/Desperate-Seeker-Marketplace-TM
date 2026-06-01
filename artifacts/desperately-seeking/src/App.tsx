@@ -1,7 +1,9 @@
+import { ComponentType } from "react";
 import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { RequireAuth } from "@/components/require-auth";
 import NotFound from "@/pages/not-found";
 
 import Home from "@/pages/home";
@@ -53,36 +55,48 @@ const queryClient = new QueryClient({
   },
 });
 
+// Wraps a page so it requires a signed-in user. Visitors can still view all
+// public/marketing pages, but any browsing or interaction prompts sign in.
+function protect<P extends object>(Component: ComponentType<P>): ComponentType<P> {
+  return function Protected(props: P) {
+    return (
+      <RequireAuth>
+        <Component {...props} />
+      </RequireAuth>
+    );
+  };
+}
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/browse" component={Browse} />
-      <Route path="/requests/new" component={NewRequest} />
-      <Route path="/requests/:id/edit" component={EditRequest} />
-      <Route path="/requests/:id" component={RequestDetail} />
-      <Route path="/messages" component={Messages} />
-      <Route path="/messages/:id" component={ThreadDetail} />
-      <Route path="/profile" component={UserProfile} />
-      <Route path="/profile/:id" component={UserProfile} />
-      <Route path="/me/posts" component={MyPosts} />
-      <Route path="/verify-phone" component={VerifyPhone} />
-      <Route path="/settings/notifications" component={NotificationSettings} />
-      <Route path="/me/requests" component={MyRequests} />
-      <Route path="/me/analytics" component={Analytics} />
-      <Route path="/me/inventory" component={Inventory} />
-      <Route path="/me/dashboard" component={SellerDashboard} />
-      <Route path="/me/listings" component={MyListingsPage} />
+      <Route path="/browse" component={protect(Browse)} />
+      <Route path="/requests/new" component={protect(NewRequest)} />
+      <Route path="/requests/:id/edit" component={protect(EditRequest)} />
+      <Route path="/requests/:id" component={protect(RequestDetail)} />
+      <Route path="/messages" component={protect(Messages)} />
+      <Route path="/messages/:id" component={protect(ThreadDetail)} />
+      <Route path="/profile" component={protect(UserProfile)} />
+      <Route path="/profile/:id" component={protect(UserProfile)} />
+      <Route path="/me/posts" component={protect(MyPosts)} />
+      <Route path="/verify-phone" component={protect(VerifyPhone)} />
+      <Route path="/settings/notifications" component={protect(NotificationSettings)} />
+      <Route path="/me/requests" component={protect(MyRequests)} />
+      <Route path="/me/analytics" component={protect(Analytics)} />
+      <Route path="/me/inventory" component={protect(Inventory)} />
+      <Route path="/me/dashboard" component={protect(SellerDashboard)} />
+      <Route path="/me/listings" component={protect(MyListingsPage)} />
       <Route path="/buyer-requests">
         <Redirect to="/browse?filter=requests" />
       </Route>
       <Route path="/pricing" component={Pricing} />
-      <Route path="/checkout/success" component={CheckoutSuccess} />
-      <Route path="/post" component={Post} />
+      <Route path="/checkout/success" component={protect(CheckoutSuccess)} />
+      <Route path="/post" component={protect(Post)} />
       <Route path="/login" component={Login} />
-      <Route path="/seller" component={Seller} />
-      <Route path="/listings/new" component={NewListing} />
-      <Route path="/listings/:id" component={ListingDetail} />
+      <Route path="/seller" component={protect(Seller)} />
+      <Route path="/listings/new" component={protect(NewListing)} />
+      <Route path="/listings/:id" component={protect(ListingDetail)} />
       <Route path="/about" component={About} />
       <Route path="/how-it-works" component={HowItWorks} />
       <Route path="/help" component={HelpCenter} />
@@ -97,7 +111,7 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/contact" component={Contact} />
-      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin" component={protect(AdminDashboard)} />
       <Route path="/welcome" component={Welcome} />
       <Route component={NotFound} />
     </Switch>

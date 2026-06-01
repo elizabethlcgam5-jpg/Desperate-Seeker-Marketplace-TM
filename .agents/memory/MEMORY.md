@@ -1,1 +1,2 @@
 - [Auth cookie identity & auto-assign trap](auth-cookie-identity.md) — generated hooks must send credentials; use requireCurrentUser on write endpoints; own-email only via CurrentUser schema on GET /me.
+- [Client-side auth gating](auth-route-gating.md) — public marketing routes open; every other route must be wrapped in protect() in App.tsx or it becomes a logged-out access gap.
