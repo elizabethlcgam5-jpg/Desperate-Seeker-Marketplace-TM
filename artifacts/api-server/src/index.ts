@@ -2,6 +2,7 @@ import { runMigrations } from "stripe-replit-sync";
 import { getStripeSync } from "./stripeClient";
 import app from "./app";
 import { logger } from "./lib/logger";
+import { getAppUrl } from "./lib/appUrl";
 
 const rawPort = process.env["PORT"];
 
@@ -38,9 +39,8 @@ async function initStripe() {
 
   try {
     const stripeSync = await getStripeSync();
-    const webhookBaseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
     await stripeSync.findOrCreateManagedWebhook(
-      `${webhookBaseUrl}/api/stripe/webhook`,
+      `${getAppUrl()}/api/stripe/webhook`,
     );
     logger.info("Stripe webhook configured");
   } catch (err) {
@@ -68,3 +68,5 @@ app.listen(port, (err) => {
   }
   logger.info({ port }, "Server listening");
 });
+
+export default app;

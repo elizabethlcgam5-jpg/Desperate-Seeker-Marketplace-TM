@@ -72,7 +72,8 @@ export function readCurrentUserId(req: Request): string | undefined {
 export function setCurrentUserId(res: Response, userId: string): void {
   res.cookie(COOKIE_NAME, userId, {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: process.env.APP_URL ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
     maxAge: COOKIE_MAX_AGE,
     path: "/",
   });
