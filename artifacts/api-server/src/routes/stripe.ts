@@ -6,6 +6,7 @@ import {
   getStripePublishableKey,
   getStripeSync,
 } from "../stripeClient";
+import { getAppUrl } from "../lib/appUrl";
 import { withCurrentUser } from "../lib/session";
 import { randomUUID } from "node:crypto";
 
@@ -181,7 +182,7 @@ router.post("/stripe/checkout", withCurrentUser, async (req, res) => {
 
     // If already subscribed, send to billing portal to change/cancel
     if (user.stripeSubscriptionId) {
-      const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
+      const baseUrl = getAppUrl();
       const portal = await stripe.billingPortal.sessions.create({
         customer: customerId,
         return_url: `${baseUrl}/pricing`,
@@ -197,7 +198,7 @@ router.post("/stripe/checkout", withCurrentUser, async (req, res) => {
         .json({ error: `No active Stripe price found for tier: ${tier}` });
     }
 
-    const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
+    const baseUrl = getAppUrl();
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ["card"],
@@ -254,7 +255,7 @@ router.post("/stripe/portal", withCurrentUser, async (req, res) => {
       return res.status(400).json({ error: "No Stripe customer found" });
     }
 
-    const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
+    const baseUrl = getAppUrl();
     const portal = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
       return_url: `${baseUrl}/pricing`,
@@ -301,7 +302,7 @@ router.post("/stripe/connect/onboard", withCurrentUser, async (req, res) => {
         .where(eq(usersTable.id, user.id));
     }
 
-    const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
+    const baseUrl = getAppUrl();
     const accountLink = await stripe.accountLinks.create({
       account: connectAccountId,
       refresh_url: `${baseUrl}/dashboard?connect=refresh`,
@@ -390,7 +391,7 @@ router.post("/stripe/buy-listing/:listingId", withCurrentUser, async (req, res) 
     }
 
     const stripe = await getUncachableStripeClient();
-    const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(",")[0]}`;
+    const baseUrl = getAppUrl();
 
     const priceInCents = Math.round(Number(listing.price) * 100);
     const applicationFeeInCents = Math.round(priceInCents * COMMISSION_RATE);

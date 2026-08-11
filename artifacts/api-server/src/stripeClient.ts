@@ -9,6 +9,12 @@ async function getStripeCredentials(): Promise<{
   secretKey: string;
   publishableKey: string;
 }> {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+  if (secretKey && publishableKey) {
+    return { secretKey, publishableKey };
+  }
+
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
     ? "repl " + process.env.REPL_IDENTITY
@@ -18,8 +24,8 @@ async function getStripeCredentials(): Promise<{
 
   if (!hostname || !xReplitToken) {
     throw new Error(
-      "Missing Replit environment variables. " +
-        "Ensure the Stripe integration is connected via the Integrations tab.",
+      "Stripe credentials are missing. Set STRIPE_SECRET_KEY and " +
+        "STRIPE_PUBLISHABLE_KEY on Vercel, or connect Stripe in Replit.",
     );
   }
 

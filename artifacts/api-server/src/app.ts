@@ -6,6 +6,8 @@ import { WebhookHandlers } from "./webhookHandlers";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
+const appUrl = process.env.APP_URL;
+
 const app: Express = express();
 
 app.use(
@@ -52,7 +54,7 @@ app.post(
 );
 
 // ── Apply remaining middleware ───────────────────────────────────────────────
-app.use(cors());
+app.use(appUrl ? cors({ origin: appUrl, credentials: true }) : cors());
 app.use(cookieParser());
 // 15mb covers the client's 10MB photo guard once base64-encoded (~1.37x).
 app.use(express.json({ limit: "15mb" }));
