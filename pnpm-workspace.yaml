@@ -67,12 +67,6 @@ catalog:
 
 autoInstallPeers: false
 
-onlyBuiltDependencies:
-  - '@swc/core'
-  - esbuild
-  - msw
-  - unrs-resolver
-
 overrides:
   # replit uses linux-x64 only, we can exclude all other platforms
   "esbuild>@esbuild/darwin-arm64": "-"
@@ -160,3 +154,6 @@ overrides:
   # @types/express-serve-static-core 5.1.x widened req.params values to `string | string[]`
   # to support wildcard params; pin to 5.0.x so route params stay `string`.
   "@types/express-serve-static-core": "5.0.7"
+
+allowBuilds:
+  esbuild: true
